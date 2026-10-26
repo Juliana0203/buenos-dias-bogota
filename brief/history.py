@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import csv
 import json
-from datetime import date
+from dataclasses import asdict, is_dataclass
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
@@ -85,9 +86,14 @@ def append_row(row: dict[str, str], path: Path = HISTORY_CSV) -> None:
 
 
 def _default(o: Any) -> Any:
-    if isinstance(o, date):
+    """Serializador JSON para dataclasses, fechas y conjuntos; falla claro con otros tipos."""
+    if is_dataclass(o) and not isinstance(o, type):
+        return asdict(o)
+    if isinstance(o, datetime | date):
         return o.isoformat()
-    raise TypeError(type(o))
+    if isinstance(o, set | frozenset):
+        return sorted(o, key=str)
+    raise TypeError(f"Objeto de tipo {type(o).__name__} no serializable a JSON")
 
 
 def write_latest(brief: Brief, row: dict[str, str], docs: Path = DOCS) -> None:
@@ -98,9 +104,7 @@ def write_latest(brief: Brief, row: dict[str, str], docs: Path = DOCS) -> None:
         "name": brief.name,
         "greeting": brief.greeting.text,
         "summary": row,
-        "weather": brief.weather
-        and brief.weather.__dict__
-        | {k: v.__dict__ for k, v in brief.weather.__dict__.items() if hasattr(v, "__dict__")},
+        "weather": brief.weather,
         "air": brief.air
         and {
             "aqi": brief.air.aqi.value,
@@ -109,9 +113,9 @@ def write_latest(brief: Brief, row: dict[str, str], docs: Path = DOCS) -> None:
             "sources": brief.air.sources,
             "confidence": brief.air.confidence,
         },
-        "trm": brief.trm and brief.trm.__dict__,
+        "trm": brief.trm,
         "news": [{"title": n.title, "link": n.link, "source": n.source} for n in brief.news],
-        "quote": brief.quote.__dict__,
+        "quote": brief.quote,
     }
     (docs / "latest.json").write_text(
         json.dumps(data, ensure_ascii=False, indent=2, default=_default), encoding="utf-8"

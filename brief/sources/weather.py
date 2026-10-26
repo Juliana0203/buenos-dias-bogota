@@ -91,6 +91,7 @@ def parse_open_meteo(data: dict[str, Any], models: dict[str, list[str]], now_hou
             reading.tmax = max(valid_t) if valid_t else None
             reading.wind_kmh = cur("wind_speed_10m") if cur("wind_speed_10m") is not None else at_hour(winds)
             reading.uv = max(valid_uv) if valid_uv else None
+            reading.hourly_feels = _hourly_map(times, feels)
         if in_pop:
             reading.hourly_pop = _hourly_map(times, _series(hourly, "precipitation_probability", model, single))
         if in_mm:
@@ -128,10 +129,14 @@ def parse_weatherapi(data: dict[str, Any]) -> WeatherReading:
     day_block = data["forecast"]["forecastday"][0]
     day = day_block["day"]
     pops: dict[int, float] = {}
+    feels: dict[int, float] = {}
     for h in day_block.get("hour", []):
         p = _num(h.get("chance_of_rain"))
         if p is not None:
             pops[int(h["time"][11:13])] = p
+        f = _num(h.get("feelslike_c"))
+        if f is not None:
+            feels[int(h["time"][11:13])] = f
     return WeatherReading(
         source="WeatherAPI",
         temp=_num(cur.get("temp_c")),
@@ -141,6 +146,7 @@ def parse_weatherapi(data: dict[str, Any]) -> WeatherReading:
         wind_kmh=_num(cur.get("wind_kph")),
         uv=_num(day.get("uv")),
         hourly_pop=pops,
+        hourly_feels=feels,
     )
 
 

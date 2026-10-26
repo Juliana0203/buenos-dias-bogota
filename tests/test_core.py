@@ -1,5 +1,6 @@
 from datetime import UTC, date, datetime
 
+from brief.config import ROOT
 from brief.consensus import aqi_level, combine, consensus_air, consensus_weather
 from brief.formatter import fmt_stat, format_brief, split_message
 from brief.models import (
@@ -10,8 +11,30 @@ from brief.models import (
     Quote,
     WeatherReading,
 )
-from brief.personalization import build_greeting, date_es, holiday_name
-from brief.quotes import load_quotes, pick_local, uses_api
+from brief.personalization import (
+    FRIDAY,
+    GENERIC,
+    HOLIDAY,
+    HOLIDAY_TOMORROW,
+    MONDAY,
+    RAIN,
+    WEEKEND,
+    build_greeting,
+    date_es,
+    holiday_name,
+)
+from brief.quotes import load_quotes, pick_local
+
+FOOD_WORDS = (
+    "tinto", "tintico", "café", "cafecito", "bebida", "chocolate", "aguapanela",
+    "cerveza", "vino", "jugo", "desayuno", "almuerzo", "comida", "alimento",
+)  # fmt: skip
+
+
+def test_no_food_or_drink_in_templates():
+    for tpl in [*GENERIC, *MONDAY, *FRIDAY, *WEEKEND, *RAIN, *HOLIDAY, *HOLIDAY_TOMORROW]:
+        assert not any(w in tpl.lower() for w in FOOD_WORDS), tpl
+
 
 PERIODS = {"mañana": (6, 12), "tarde": (12, 18), "noche": (18, 24)}
 TH = {"temp_c": 3.0, "rain_pct": 25.0, "aqi": 30.0, "uv": 3.0, "wind_kmh": 15.0}
@@ -77,14 +100,28 @@ def test_date_es():
     assert date_es(date(2026, 10, 25)) == "Domingo 25 de octubre"
 
 
-def test_quotes_at_least_60_and_no_repeat_in_60_days():
+def test_quotes_at_least_90_no_repeat_in_90_days():
     quotes = load_quotes()
-    assert len(quotes) >= 60
+    assert len(quotes) >= 90
     start = date(2026, 1, 1).toordinal()
-    picks = [pick_local(quotes, date.fromordinal(start + i)).text for i in range(60)]
-    assert len(set(picks)) == 60
+    picks = [pick_local(quotes, date.fromordinal(start + i)).text for i in range(90)]
+    assert len(set(picks)) == 90
     assert pick_local(quotes, date(2026, 5, 5)) == pick_local(quotes, date(2026, 5, 5))
-    assert uses_api(date.fromordinal(3 * 1000), 3) and not uses_api(date.fromordinal(3001), 3)
+
+
+def test_quotes_spanish_with_author_and_no_zenquotes():
+    english = {" the ", " and ", " you ", " is ", " of ", " to "}
+    raw = (ROOT / "data" / "quotes_es.json").read_text(encoding="utf-8").lower()
+    assert "zenquotes" not in raw
+    for singer in ("violeta parra", "serrat", "numhauser", "facundo cabral"):
+        assert singer not in raw
+    for q in load_quotes():
+        assert q.author.strip()
+        assert not any(w in f" {q.text.lower()} " for w in english)
+        assert not any(w in q.text.lower() for w in FOOD_WORDS)
+    import brief.quotes as bq
+
+    assert not hasattr(bq, "fetch_zenquote")
 
 
 def _brief(news):

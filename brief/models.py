@@ -23,6 +23,7 @@ class Stat:
     confidence: str = CONF_LOW
     disagree: bool = False  # True si la dispersión supera el umbral
     sources: list[str] = field(default_factory=list)
+    score: int | None = None  # % de concordancia entre fuentes (30-98), None si no hay datos
 
     @property
     def available(self) -> bool:
@@ -44,6 +45,17 @@ class WeatherReading:
     hourly_pop: dict[int, float] = field(default_factory=dict)
     # Precipitación (mm) por hora local 0-23.
     hourly_mm: dict[int, float] = field(default_factory=dict)
+    # Sensación térmica (°C) por hora local 0-23.
+    hourly_feels: dict[int, float] = field(default_factory=dict)
+
+
+@dataclass
+class FeelsRange:
+    """Rango de sensación térmica de una franja (mediana entre fuentes de la mínima y de la máxima)."""
+
+    low: float
+    high: float
+    n: int = 0
 
 
 @dataclass
@@ -64,6 +76,13 @@ class WeatherSummary:
     rain_sources: list[str] = field(default_factory=list)  # votaron en probabilidad de lluvia
     rain_confidence: str = CONF_LOW
     rain_note: str | None = None  # p. ej. "lluvia probable, aunque un modelo no la ve"
+    feels_periods: dict[str, FeelsRange] = field(default_factory=dict)
+    score: int | None = None  # confianza (concordancia) del clima general
+    rain_score: int | None = None  # confianza (concordancia) de la lluvia
+    now_hour: int | None = None  # hora local de ejecución (0-23)
+    period_hours: dict[str, tuple[int, int]] = field(
+        default_factory=lambda: {"mañana": (6, 12), "tarde": (12, 18), "noche": (18, 24)}
+    )
 
 
 @dataclass
@@ -82,6 +101,7 @@ class AirSummary:
     pollutant: str | None
     sources: list[str]
     confidence: str
+    score: int | None = None
 
 
 @dataclass
@@ -100,6 +120,9 @@ class TrmSummary:
     backup_value: float | None
     sources: list[str]
     confidence: str
+    score: int | None = None
+    valid_until: str | None = None
+    is_weekend_or_holiday: bool = False
 
 
 @dataclass
@@ -109,14 +132,13 @@ class NewsItem:
     source: str
     published: datetime
     summary: str = ""
-    scope: str = "colombia"
+    local: bool = False
     score: float = 0.0
 
 
 @dataclass
 class MobilitySummary:
     pyp_text: str | None
-    alerts: list[NewsItem] = field(default_factory=list)
 
 
 @dataclass
@@ -146,6 +168,7 @@ class Brief:
     mobility: MobilitySummary
     news: list[NewsItem]
     quote: Quote
+    good_news: NewsItem | None = None
     notes: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:

@@ -48,6 +48,9 @@ alerts:
   hot_c: 24
   uv_high: 6
   wind_strong_kmh: 30
+  feels_cold_c: 12          # sensación < esto: abrigo
+  feels_mild_c: 17          # sensación 12-17: chaqueta ligera
+  feels_warm_c: 22          # sensación > esto: ropa fresca
 
 weather:
   # Modelos de Open-Meteo que votan en cada variable (temperature también aporta viento y UV).
@@ -71,58 +74,107 @@ trm:
   soda_dataset: "32sa-8pi3"       # TRM - Superintendencia Financiera (verificado)
   backup_url: "https://open.er-api.com/v6/latest/USD"
 
-quotes:
-  api_every_n_days: 3             # 1 de cada N días intenta zenquotes.io (inglés)
-  api_url: "https://zenquotes.io/api/today"
+# Porcentaje de confianza = concordancia entre fuentes (no es una probabilidad de acierto).
+#   puntaje = 100 - min(spread_penalty_max, spread_penalty_per_threshold * dispersión / umbral)
+#             - missing_penalty * (fuentes esperadas - fuentes que votaron)
+#   si votó una sola fuente: tope single_source_cap; resultado limitado a [floor, ceiling].
+confidence:
+  spread_penalty_per_threshold: 30.0
+  spread_penalty_max: 50.0
+  missing_penalty: 8.0
+  single_source_cap: 60.0
+  floor: 30.0
+  ceiling: 98.0
 
 news:
+  max_items: 4
   max_age_hours: 24
-  colombia_count: 3
-  bogota_count: 2
   dedup_threshold: 78             # similitud (0-100) para considerar duplicadas
   summary_max_words: 20
-  # Feeds verificados el 2026-10-25. enabled:false = falló la verificación (se registra en logs).
+  empty_text: "Sin alertas de movilidad importantes por ahora"
+  local_bonus: 3                  # puntos extra a feeds propios de Bogotá
+  services_weight: 0.5            # peso de los servicios públicos frente a movilidad (1.0)
+  # Feeds verificados el 2026-10-25. enabled:false = falló la verificación (403/404/vacío).
+  # local:true = feed de Bogotá; los demás son nacionales y solo pasan si el texto menciona Bogotá.
   feeds:
-    - {name: "El Tiempo - Colombia", url: "https://www.eltiempo.com/rss/colombia.xml", scope: colombia, enabled: true}
-    - {name: "El Tiempo - Bogotá", url: "https://www.eltiempo.com/rss/bogota.xml", scope: bogota, enabled: true}
-    - {name: "El Tiempo - Economía", url: "https://www.eltiempo.com/rss/economia.xml", scope: colombia, enabled: true}
-    - {name: "El Espectador", url: "https://www.elespectador.com/arc/outboundfeeds/discover/?outputType=xml", scope: colombia, enabled: true}
-    - {name: "Semana", url: "https://www.semana.com/arc/outboundfeeds/rss/?outputType=xml", scope: colombia, enabled: true}
-    - {name: "Caracol Radio", url: "https://caracol.com.co/arc/outboundfeeds/rss/?outputType=xml", scope: colombia, enabled: true}
-    - {name: "Infobae Colombia", url: "https://www.infobae.com/arc/outboundfeeds/rss/category/colombia/", scope: colombia, enabled: true}
-    - {name: "Alcaldía de Bogotá", url: "https://bogota.gov.co/rss.xml", scope: bogota, enabled: true}
-    # Fallaron la verificación (vacío, bloqueado 403 o 404):
-    - {name: "RCN Radio", url: "https://www.rcnradio.com/feed", scope: colombia, enabled: false}
-    - {name: "Citytv", url: "https://citytv.com.co/feed/", scope: bogota, enabled: false}
-    - {name: "Secretaría de Movilidad", url: "https://www.movilidadbogota.gov.co/web/rss", scope: bogota, enabled: false}
-  # Temas de interés (palabra -> peso). Se busca en título y resumen, sin tildes.
-  keywords:
-    paro: 5
-    marcha: 5
-    bloqueo: 5
-    manifestacion: 4
+    - {name: "El Tiempo - Bogotá", url: "https://www.eltiempo.com/rss/bogota.xml", local: true, enabled: true}
+    - {name: "Semana - Bogotá", url: "https://www.semana.com/arc/outboundfeeds/rss/category/nacion/bogota/?outputType=xml", local: true, enabled: true}
+    - {name: "Alcaldía de Bogotá", url: "https://bogota.gov.co/rss.xml", local: true, enabled: true}
+    - {name: "El Tiempo - Colombia", url: "https://www.eltiempo.com/rss/colombia.xml", local: false, enabled: true}
+    - {name: "El Espectador", url: "https://www.elespectador.com/arc/outboundfeeds/discover/?outputType=xml", local: false, enabled: true}
+    - {name: "Caracol Radio", url: "https://caracol.com.co/arc/outboundfeeds/rss/?outputType=xml", local: false, enabled: true}
+    - {name: "Infobae Colombia", url: "https://www.infobae.com/arc/outboundfeeds/rss/category/colombia/", local: false, enabled: true}
+    # Fallaron la verificación:
+    - {name: "Citytv", url: "https://citytv.com.co/feed/", local: true, enabled: false}
+    - {name: "Secretaría de Movilidad", url: "https://www.movilidadbogota.gov.co/web/rss", local: true, enabled: false}
+    - {name: "Transmilenio", url: "https://www.transmilenio.gov.co/rss", local: true, enabled: false}
+  # Términos que prueban que la noticia es de Bogotá (se buscan en título + resumen, sin tildes).
+  bogota_terms:
+    ciudad: ["bogota", "capitalinos", "capital del pais", "distrito capital"]
+    localidades: ["usaquen", "chapinero", "santa fe", "san cristobal", "usme", "tunjuelito", "bosa", "kennedy", "fontibon", "engativa", "suba", "barrios unidos", "teusaquillo", "los martires", "antonio narino", "puente aranda", "la candelaria", "rafael uribe", "ciudad bolivar", "sumapaz"]
+    avenidas: ["autopista norte", "calle 80", "avenida boyaca", "avenida caracas", "carrera septima", "avenida el dorado", "avenida las americas", "avenida ciudad de cali", "avenida 68", "calle 26", "avenida primero de mayo", "avenida villavicencio", "calle 13", "avenida suba", "avenida jimenez", "calle 72", "calle 100"]
+    sistemas: ["transmilenio", "sitp", "metro de bogota", "secretaria de movilidad", "tibabuyes", "portal norte", "portal 80", "portal sur"]
+  # Prioridad 1: movilidad y calle (peso por palabra).
+  mobility_keywords:
     transmilenio: 5
-    "orden publico": 5
-    alerta: 3
+    sitp: 5
+    "metro de bogota": 5
+    "cierre vial": 5
+    "cierres viales": 5
+    "obras viales": 4
+    obras: 3
+    accidente: 4
+    choque: 3
+    manifestacion: 5
+    manifestaciones: 5
+    marcha: 5
+    marchas: 5
+    "pico y placa": 5
+    paro: 5
+    "paro de transporte": 6
+    bloqueo: 5
+    bloqueos: 5
+    trancon: 4
+    "via al llano": 5
+    "autopista norte": 3
+    "vias de acceso": 4
+    movilidad: 3
+    ciclovia: 2
+    cierre: 2
+  # Prioridad 2: servicios públicos y calle (se multiplican por services_weight).
+  services_keywords:
+    "corte de agua": 5
+    "corte de luz": 5
+    "corte de energia": 5
+    acueducto: 3
     apagon: 5
     racionamiento: 5
     inundacion: 5
-    lluvia: 3
-    trm: 4
-    dolar: 4
-    inflacion: 3
-    gasolina: 3
-    seguridad: 3
-    atraco: 2
-    robo: 2
-    movilidad: 3
-    "cierre vial": 5
-    acueducto: 3
-    energia: 2
-    emergencia: 3
-    bogota: 2
-  low_priority_keywords: ["farandula", "famosa", "famoso", "reality", "novela", "futbol", "gol", "liga betplay", "partido", "chisme", "horoscopo", "influenciador"]
+    inundaciones: 5
+    "alerta por lluvia": 5
+    "orden publico": 5
+    disturbios: 4
+  low_priority_keywords: ["farandula", "famosa", "famoso", "reality", "novela", "futbol", "liga betplay", "chisme", "horoscopo", "influenciador"]
+  # Una noticia de movilidad solo entra si indica un efecto en el servicio o las vías.
+  effect_keywords: ["cierre", "cierres", "desvio", "desvios", "retraso", "retrasos", "demora", "suspension", "suspende", "suspenden", "suspendido", "bloqueo", "bloqueos", "manifestacion", "manifestaciones", "marcha", "marchas", "paro", "por obra", "por obras", "obra vial", "obras viales", "accidente con afectacion", "trancon", "congestion", "afectacion", "afectaciones", "restriccion", "restricciones", "cambio de ruta", "cambio de horario", "cambios de ruta", "cambios de horario", "pico y placa", "sin servicio", "habilitan", "inhabilitada"]
+  # Anécdotas: si coinciden y no hay ninguna palabra de efecto, se descarta.
+  mobility_discard_keywords: ["viral", "reclamo", "video", "polémica", "me parece", "insólito", "curioso", "usuario", "pasajera", "pasajero", "TikTok", "redes sociales"]
 
 mobility:
-  keywords: ["transmilenio", "sitp", "cierre vial", "cierres viales", "marcha", "marchas", "manifestacion", "manifestaciones", "bloqueo", "bloqueos", "paro", "plan tortuga", "trancon", "cierre"]
-  max_alerts: 3
+  show_pico_y_placa: true
+
+good_news:
+  max_age_hours: 48
+  summary_max_words: 20
+  # Solo feeds en español, verificados el 2026-10-25. No se traduce nada.
+  feeds:
+    - {name: "BBC Mundo", url: "https://feeds.bbci.co.uk/mundo/rss.xml", enabled: true}
+    - {name: "DW Español", url: "https://rss.dw.com/xml/rss-sp-all", enabled: true}
+    - {name: "Noticias ONU", url: "https://news.un.org/feed/subscribe/es/news/all/rss.xml", enabled: true}
+    - {name: "El País - Ciencia", url: "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/ciencia/portada", enabled: true}
+    - {name: "El País - Clima y Medio Ambiente", url: "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/clima-y-medio-ambiente/portada", enabled: true}
+    - {name: "Europa Press - Ciencia", url: "https://www.europapress.es/rss/rss.aspx?ch=69", enabled: true}
+    - {name: "Mongabay Latam", url: "https://es.mongabay.com/feed/", enabled: true}
+  positive_words: ["descubrimiento", "descubren", "avance", "avanza", "record", "rescate", "rescatan", "recuperacion", "recupera", "logro", "logra", "aprobado", "aprueba", "curacion", "reduccion", "reduce", "exito", "salvan", "esperanza", "mejora"]
+  negative_words: ["muerte", "muere", "muertos", "ataque", "guerra", "crisis", "accidente", "tragedia", "asesin", "bomba", "terror", "violencia", "masacre", "desastre", "secuestro", "conflicto", "invasion", "cancer", "pandemia", "derrota", "eleccion", "electoral", "balotaje", "anulacion", "fraude", "protesta", "denuncia", "polemica", "juicio", "condena", "sancion", "arancel", "trump", "bolsonaro", "politic", "gobierno", "presidente", "ataca", "heridos", "incendio", "inundacion", "sequia"]
+  stopwords_en: ["the", "and", "with", "for", "from", "that", "this", "after", "will", "says"]

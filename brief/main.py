@@ -11,16 +11,30 @@ from datetime import datetime, timedelta
 from brief import history
 from brief.config import Config, load_config
 from brief.consensus import gather_air, gather_weather, run_parallel
-from brief.formatter import format_brief
+from brief.formatter import _is_past_period, format_brief
 from brief.models import Brief
 from brief.personalization import build_greeting
 from brief.quotes import get_quote
+from brief.sources.good_news import gather_good_news
 from brief.sources.mobility import build_mobility
-from brief.sources.news import gather_news, select_top
+from brief.sources.news import gather_news
 from brief.sources.trm import gather_trm
 from brief.telegram import send_messages
 
 log = logging.getLogger("brief")
+
+
+def parse_as_of(value: str | None) -> int | None:
+    """Convierte 'HH:MM' en la hora entera (0-23), o None si no se especificó."""
+    if value is None:
+        return None
+    parts = value.strip().split(":")
+    if len(parts) != 2:
+        raise ValueError(f"--as-of inválido ({value!r}): usa el formato HH:MM")
+    hh, mm = int(parts[0]), int(parts[1])
+    if not (0 <= hh <= 23 and 0 <= mm <= 59):
+        raise ValueError(f"--as-of fuera de rango ({value!r}): HH entre 00-23 y MM entre 00-59")
+    return hh
 
 
 def wait_until_send_time(cfg: Config, now: datetime | None = None) -> float:
@@ -43,30 +57,32 @@ def wait_until_send_time(cfg: Config, now: datetime | None = None) -> float:
     return remaining
 
 
-def build_brief(cfg: Config) -> Brief:
+def build_brief(cfg: Config, as_of_hour: int | None = None) -> Brief:
     """Reúne todas las secciones. Cada fuente fallida deja su sección en None."""
     now = datetime.now(cfg.tz)
     today = now.date()
     res = run_parallel(
         {
-            "weather": lambda: gather_weather(cfg),
+            "weather": lambda: gather_weather(cfg, now_hour=as_of_hour),
             "air": lambda: gather_air(cfg),
             "trm": lambda: gather_trm(cfg, today),
             "news": lambda: gather_news(cfg),
+            "good_news": lambda: gather_good_news(cfg),
         }
     )
     weather, air, trm = res["weather"], res["air"], res["trm"]
-    all_news = res["news"] or []
-    news_cfg = cfg.section("news")
-    mobility = build_mobility(cfg, all_news, today)
-    alert_links = {a.link for a in mobility.alerts}
-    top = select_top(
-        [n for n in all_news if n.link not in alert_links],
-        int(news_cfg.get("colombia_count", 3)),
-        int(news_cfg.get("bogota_count", 2)),
-    )
+    news = res["news"] or []
     rain = (
-        max((s.value for s in weather.rain_periods.values() if s.value is not None), default=None) if weather else None
+        max(
+            (
+                s.value
+                for k, s in weather.rain_periods.items()
+                if s.value is not None and not _is_past_period(k, weather.now_hour, weather.period_hours)
+            ),
+            default=None,
+        )
+        if weather
+        else None
     )
     return Brief(
         name=cfg.name,
@@ -75,8 +91,9 @@ def build_brief(cfg: Config) -> Brief:
         weather=weather,
         air=air,
         trm=trm,
-        mobility=mobility,
-        news=top,
+        mobility=build_mobility(cfg, today),
+        news=news,
+        good_news=res["good_news"],
         quote=get_quote(cfg, today),
     )
 
@@ -86,6 +103,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--dry-run", action="store_true", help="imprime el mensaje sin enviar ni guardar")
     parser.add_argument("--no-wait", action="store_true", help="no espera hasta la hora de envío")
     parser.add_argument("--force", action="store_true", help="envía aunque ya se haya enviado hoy")
+    parser.add_argument(
+        "--as-of",
+        default=None,
+        metavar="HH:MM",
+        help="simula la hora actual (hora Bogotá) para el cálculo de franjas 'ya pasó'",
+    )
     parser.add_argument("--config", default=None, help="ruta alternativa a config.yaml")
     args = parser.parse_args(argv)
 
@@ -93,6 +116,7 @@ def main(argv: list[str] | None = None) -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
 
+    as_of_hour = parse_as_of(args.as_of)
     cfg = load_config(args.config)
     today = datetime.now(cfg.tz).date()
 
@@ -104,7 +128,9 @@ def main(argv: list[str] | None = None) -> int:
         log.error("Faltan TELEGRAM_BOT_TOKEN y/o TELEGRAM_CHAT_ID")
         return 2
 
-    brief = build_brief(cfg)
+    brief = build_brief(cfg) if as_of_hour is None else build_brief(cfg, as_of_hour)
+    if as_of_hour is not None and brief.weather is not None:
+        brief.weather.now_hour = as_of_hour
     messages = format_brief(brief, cfg.section("alerts"))
 
     if args.dry_run:
@@ -117,10 +143,22 @@ def main(argv: list[str] | None = None) -> int:
         wait_until_send_time(cfg)
     send_messages(cfg.secrets.telegram_token, cfg.secrets.telegram_chat_id, messages)  # type: ignore[arg-type]
 
+    # El envío ya ocurrió: lo primero es registrarlo para que nunca se duplique.
     row = history.build_row(brief, sent=True)
-    history.append_row(row)
-    history.write_latest(brief, row)
-    history.write_history_json()
+    try:
+        history.append_row(row)
+    except Exception:
+        log.exception(
+            "ERROR GRAVE: el mensaje se envió pero NO se pudo registrar en history.csv; "
+            "un reintento duplicaría el envío"
+        )
+        return 3
+    try:
+        history.write_latest(brief, row)
+        history.write_history_json()
+    except Exception:
+        log.exception("El mensaje se envió y history.csv se guardó, pero falló latest.json/history.json del dashboard")
+        return 4
     return 0
 
 

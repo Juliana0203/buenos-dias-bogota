@@ -20,7 +20,9 @@ GENERIC = [
     "Arriba, {name}, hoy es {dia}.",
     "¡Buenos días, {name}! Que hoy te rinda el día.",
     "Hola, {name}, buen día. Aquí va tu resumen para salir tranquila a la calle.",
-    "Buen día, {name}. Un tintico y a empezar con toda.",
+    "Buen día, {name}. Que la buena energía te acompañe hoy.",
+    "Buenos días, {name}. Que sea un día lleno de buen ánimo.",
+    "Hola, {name}. Un día nuevo para hacerlo con ganas y con calma.",
 ]
 MONDAY = [
     "Buenos días, {name}. Lunes de arranque: con calma y con ganas.",

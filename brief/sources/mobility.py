@@ -1,15 +1,13 @@
-"""Movilidad: pico y placa (configurable) y alertas detectadas en las noticias."""
+"""Movilidad: pico y placa (configurable). Las noticias de movilidad las aporta sources/news.py."""
 
 from __future__ import annotations
 
-import re
 from datetime import date
 
 import holidays
 
 from brief.config import Config
-from brief.models import MobilitySummary, NewsItem
-from brief.sources.news import normalize
+from brief.models import MobilitySummary
 
 DAY_NAMES = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
 
@@ -45,23 +43,6 @@ def pico_y_placa_text(cfg_section: dict, today: date, is_holiday: bool | None = 
     return f"Hoy no tienes pico y placa (placa {digit})."
 
 
-def find_alerts(news: list[NewsItem], keywords: list[str], max_alerts: int = 3) -> list[NewsItem]:
-    """Noticias de Bogotá cuyo titular contiene palabras clave de movilidad/orden público."""
-    kws = [normalize(k) for k in keywords]
-    found: list[NewsItem] = []
-    for item in sorted(news, key=lambda i: i.score, reverse=True):
-        text = normalize(item.title)
-        bogota_ctx = item.scope == "bogota" or "bogota" in text or "transmilenio" in text
-        if bogota_ctx and any(re.search(rf"\b{re.escape(k)}\b", text) for k in kws):
-            found.append(item)
-        if len(found) >= max_alerts:
-            break
-    return found
-
-
-def build_mobility(cfg: Config, news: list[NewsItem], today: date) -> MobilitySummary:
-    mob = cfg.section("mobility")
-    return MobilitySummary(
-        pyp_text=pico_y_placa_text(cfg.section("pico_y_placa"), today),
-        alerts=find_alerts(news, mob.get("keywords", []), int(mob.get("max_alerts", 3))),
-    )
+def build_mobility(cfg: Config, today: date) -> MobilitySummary:
+    """Pico y placa de hoy (si hay placa configurada); las noticias de movilidad van en Brief.news."""
+    return MobilitySummary(pyp_text=pico_y_placa_text(cfg.section("pico_y_placa"), today))

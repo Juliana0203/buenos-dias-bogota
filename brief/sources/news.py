@@ -67,9 +67,6 @@ def parse_feed(content: bytes | str, feed: dict[str, Any], summary_words: int = 
         when = _entry_datetime(entry)
         if not title or not link or when is None:
             continue
-        scope = feed.get("scope", "colombia")
-        if scope == "colombia" and "bogota" in normalize(title):
-            scope = "bogota"
         items.append(
             NewsItem(
                 title=title,
@@ -77,7 +74,7 @@ def parse_feed(content: bytes | str, feed: dict[str, Any], summary_words: int = 
                 source=feed["name"],
                 published=when,
                 summary=short_summary(entry.get("summary", ""), title, summary_words),
-                scope=scope,
+                local=bool(feed.get("local", False)),
             )
         )
     return items
@@ -93,17 +90,55 @@ def fetch_feed(feed: dict[str, Any], summary_words: int = 20) -> list[NewsItem]:
     return items
 
 
-def score_item(item: NewsItem, keywords: dict[str, float], low_priority: list[str], now: datetime) -> float:
-    """Puntúa relevancia: palabras clave (+), farándula/deportes (-) y frescura (+)."""
+def _term_pattern(term: str) -> str:
+    return rf"\b{re.escape(normalize(term))}"
+
+
+def mentions_bogota(text: str, bogota_terms: dict[str, list[str]]) -> bool:
+    """True si el texto normalizado menciona Bogotá, una localidad, avenida o sistema de la ciudad."""
+    return any(re.search(_term_pattern(t), text) for terms in bogota_terms.values() for t in terms)
+
+
+def mobility_score(text: str, mobility: dict[str, float], services: dict[str, float], services_weight: float) -> float:
+    """Suma de pesos de palabras de movilidad (prioridad 1) y de servicios (prioridad 2, con menor peso)."""
+    score = sum(float(w) for kw, w in mobility.items() if re.search(_term_pattern(kw), text))
+    score += services_weight * sum(float(w) for kw, w in services.items() if re.search(_term_pattern(kw), text))
+    return score
+
+
+def _has_any(text: str, terms: list[str]) -> bool:
+    """True si alguno de los términos (sin tildes, prefijo de palabra) aparece en el texto normalizado."""
+    return any(re.search(_term_pattern(t), text) for t in terms)
+
+
+def score_item(item: NewsItem, news_cfg: dict[str, Any], now: datetime) -> float:
+    """Puntaje de relevancia, o 0 si NO es de Bogotá o no trata de movilidad/calle (filtro estricto).
+
+    Se exige Bogotá Y una palabra clave de movilidad o servicios; luego se suma un bono por feed local,
+    se penaliza farándula/deportes y se premia la frescura.
+    """
     text = normalize(f"{item.title} {item.summary}")
-    score = 0.0
-    for kw, weight in keywords.items():
-        if re.search(rf"\b{re.escape(normalize(kw))}", text):
-            score += float(weight)
-    if any(re.search(rf"\b{re.escape(normalize(w))}\b", text) for w in low_priority):
-        score -= 6
+    if not mentions_bogota(text, news_cfg.get("bogota_terms", {})):
+        return 0.0
+    base = mobility_score(
+        text,
+        news_cfg.get("mobility_keywords", {}),
+        news_cfg.get("services_keywords", {}),
+        float(news_cfg.get("services_weight", 0.5)),
+    )
+    if base <= 0:
+        return 0.0
+    has_effect = _has_any(text, news_cfg.get("effect_keywords", []))
+    if not has_effect and _has_any(text, news_cfg.get("mobility_discard_keywords", [])):
+        return 0.0
+    if not has_effect and not _has_any(text, list(news_cfg.get("services_keywords", {}))):
+        return 0.0  # sin efecto en servicio o vías: anécdota o nota sin utilidad práctica
+    if _has_any(text, news_cfg.get("low_priority_keywords", [])):
+        base -= 6
+    if item.local:
+        base += float(news_cfg.get("local_bonus", 3))
     age_h = max((now - item.published).total_seconds() / 3600, 0)
-    return score + max(0.0, 1 - age_h / 24)
+    return base + max(0.0, 1 - age_h / 24) if base > 0 else 0.0
 
 
 def dedupe(items: list[NewsItem], threshold: float) -> list[NewsItem]:
@@ -119,8 +154,40 @@ def dedupe(items: list[NewsItem], threshold: float) -> list[NewsItem]:
     return kept
 
 
+def filter_bogota_mobility(items: list[NewsItem], news_cfg: dict[str, Any], now: datetime) -> list[NewsItem]:
+    """Aplica ventana de tiempo, filtro estricto Bogotá+movilidad y deduplicación; mejor puntaje primero."""
+    cutoff = now - timedelta(hours=float(news_cfg.get("max_age_hours", 24)))
+    fresh = [i for i in items if cutoff <= i.published <= now + timedelta(hours=1)]
+    kept: list[NewsItem] = []
+    bogota_count = 0
+    discard_words_count = 0
+    for item in fresh:
+        text = normalize(f"{item.title} {item.summary}")
+        if mentions_bogota(text, news_cfg.get("bogota_terms", {})):
+            bogota_count += 1
+            has_effect = _has_any(text, news_cfg.get("effect_keywords", []))
+            if not has_effect and _has_any(text, news_cfg.get("mobility_discard_keywords", [])):
+                discard_words_count += 1
+        item.score = score_item(item, news_cfg, now)
+        if item.score > 0:
+            kept.append(item)
+    deduped = dedupe(kept, float(news_cfg.get("dedup_threshold", 78)))
+    log.info(
+        "Filtro noticias Bogotá: total=%d, frescas_24h=%d, mencionan_bogota=%d, "
+        "pasan_movilidad=%d, descartadas_palabras_descarte=%d, descartadas_duplicadas=%d, finales=%d",
+        len(items),
+        len(fresh),
+        bogota_count,
+        len(kept),
+        discard_words_count,
+        len(kept) - len(deduped),
+        len(deduped),
+    )
+    return deduped
+
+
 def gather_news(cfg: Config, now: datetime | None = None) -> list[NewsItem]:
-    """Lee todos los feeds habilitados en paralelo; devuelve noticias de 24 h, deduplicadas y puntuadas."""
+    """Lee los feeds habilitados en paralelo; devuelve solo noticias de Bogotá sobre movilidad/calle (máx. config)."""
     news_cfg = cfg.section("news")
     now = now or datetime.now(UTC)
     feeds = [f for f in news_cfg.get("feeds", []) if f.get("enabled", True)]
@@ -129,24 +196,11 @@ def gather_news(cfg: Config, now: datetime | None = None) -> list[NewsItem]:
     failed = [name for name, res in results.items() if res is None]
     if failed:
         log.warning("Feeds sin datos: %s", ", ".join(failed))
-
-    cutoff = now - timedelta(hours=float(news_cfg.get("max_age_hours", 24)))
-    keywords = news_cfg.get("keywords", {})
-    low = news_cfg.get("low_priority_keywords", [])
-    items = [i for res in results.values() for i in (res or []) if cutoff <= i.published <= now + timedelta(hours=1)]
-    for item in items:
-        item.score = score_item(item, keywords, low, now)
-    return dedupe(items, float(news_cfg.get("dedup_threshold", 78)))
-
-
-def select_top(items: list[NewsItem], colombia: int, bogota: int) -> list[NewsItem]:
-    """Elige N de Colombia y M de Bogotá; si falta alguno, completa con el otro grupo."""
-    ranked = sorted(items, key=lambda i: (i.score, i.published), reverse=True)
-    col = [i for i in ranked if i.scope != "bogota"]
-    bog = [i for i in ranked if i.scope == "bogota"]
-    picked = col[:colombia] + bog[:bogota]
-    total = colombia + bogota
-    if len(picked) < total:
-        rest = [i for i in ranked if i not in picked]
-        picked += rest[: total - len(picked)]
-    return sorted(picked, key=lambda i: (i.scope == "bogota", -i.score))
+    per_feed = {name: len(res) for name, res in results.items() if res is not None}
+    items = [i for res in results.values() for i in (res or [])]
+    log.info(
+        "Noticias Bogotá leídas por feed: %s (total=%d)",
+        ", ".join(f"{k}: {v}" for k, v in per_feed.items()) or "ninguno",
+        len(items),
+    )
+    return filter_bogota_mobility(items, news_cfg, now)[: int(news_cfg.get("max_items", 4))]

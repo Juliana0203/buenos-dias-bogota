@@ -3,7 +3,7 @@
 import logging
 
 from brief.consensus import consensus_weather
-from brief.formatter import weather_section
+from brief.formatter import rain_section, weather_section
 from brief.models import WeatherReading
 from brief.sources.weather import parse_open_meteo
 
@@ -60,17 +60,20 @@ def test_range_3_100_no_longer_appears_and_confidence_high():
     assert w.rain_confidence == "alta" and w.confidence == "alta"
 
 
-def test_mm_cross_check_note_when_one_model_does_not_see_rain():
+def test_internal_note_kept_for_history_but_message_has_no_model_talk():
     _, w = _today()
     assert w.rain_note == "lluvia probable, aunque un modelo no la ve"
-    assert "Lluvia probable, aunque un modelo no la ve." in weather_section(w, {})
+    text = rain_section(w, {})
+    assert "Lluvia muy probable en la tarde (100 %)" in text
+    assert "modelo" not in text.lower()
 
 
-def test_verification_note_counts_only_voters_per_variable():
+def test_message_shows_confidence_percentages_without_source_counts():
     _, w = _today()
-    text = weather_section(w, {})
-    assert "Verificado con 3 fuentes en temperatura" in text
-    assert "y 2 fuentes en lluvia" in text
+    text = weather_section(w, {}) + "\n" + rain_section(w, {})
+    assert "Verificado con" not in text and "fuentes" not in text
+    assert text.count("Confianza del dato:") == 2
+    assert 30 <= w.score <= 98 and 30 <= w.rain_score <= 98
 
 
 def test_two_models_not_seeing_rain_lowers_confidence():

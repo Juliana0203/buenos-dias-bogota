@@ -24,6 +24,7 @@ from brief.models import (
     CONF_MID,
     AirReading,
     AirSummary,
+    FeelsRange,
     Stat,
     WeatherReading,
     WeatherSummary,
@@ -50,8 +51,59 @@ def run_parallel(tasks: Mapping[str, Callable[[], Any]], max_workers: int = 8) -
     return results
 
 
-def combine(values: Mapping[str, float | None], threshold: float) -> Stat:
-    """Combina valores por fuente en una estadística con mediana, rango y confianza."""
+DEFAULT_CONFIDENCE: dict[str, float] = {
+    "spread_penalty_per_threshold": 30.0,
+    "spread_penalty_max": 50.0,
+    "missing_penalty": 8.0,
+    "single_source_cap": 60.0,
+    "floor": 30.0,
+    "ceiling": 98.0,
+}
+
+
+def agreement_score(
+    spread: float,
+    threshold: float,
+    n: int,
+    expected: int | None = None,
+    params: Mapping[str, float] | None = None,
+) -> int | None:
+    """Puntaje (%) de concordancia entre fuentes; None si no votó ninguna.
+
+    100 - min(tope, k * dispersión / umbral) - penalización * (esperadas - votaron).
+    Con una sola fuente el máximo es ``single_source_cap``; el resultado queda en [floor, ceiling].
+    Mide qué tanto coinciden las fuentes, NO la probabilidad estadística de acierto.
+    """
+    if n <= 0:
+        return None
+    p = {**DEFAULT_CONFIDENCE, **(params or {})}
+    penalty = (
+        min(p["spread_penalty_max"], p["spread_penalty_per_threshold"] * spread / threshold) if threshold > 0 else 0
+    )
+    score = 100.0 - penalty
+    if expected is not None and expected > n:
+        score -= p["missing_penalty"] * (expected - n)
+    if n == 1:
+        score = min(score, p["single_source_cap"])
+    return round(max(p["floor"], min(p["ceiling"], score)))
+
+
+def clamp_score(score: float, params: Mapping[str, float] | None = None) -> int:
+    """Limita un puntaje al rango [floor, ceiling] configurado."""
+    p = {**DEFAULT_CONFIDENCE, **(params or {})}
+    return round(max(p["floor"], min(p["ceiling"], score)))
+
+
+def combine(
+    values: Mapping[str, float | None],
+    threshold: float,
+    expected: int | None = None,
+    params: Mapping[str, float] | None = None,
+) -> Stat:
+    """Combina valores por fuente en una estadística con mediana, rango, confianza y puntaje.
+
+    ``expected`` es cuántas fuentes se esperaban votar (las que fallaron o se descartaron restan puntaje).
+    """
     valid = {k: float(v) for k, v in values.items() if v is not None}
     if not valid:
         return Stat()
@@ -74,6 +126,7 @@ def combine(values: Mapping[str, float | None], threshold: float) -> Stat:
         confidence=conf,
         disagree=disagree,
         sources=sorted(valid),
+        score=agreement_score(spread, threshold, n, expected, params),
     )
 
 
@@ -186,31 +239,72 @@ def cross_check_rain(
     return conf, note
 
 
+def feels_by_period(readings: list[WeatherReading], periods: Mapping[str, tuple[int, int]]) -> dict[str, FeelsRange]:
+    """Sensación térmica por franja: mediana entre fuentes de la mínima y de la máxima de cada una."""
+    out: dict[str, FeelsRange] = {}
+    for label, (start, end) in periods.items():
+        lows: list[float] = []
+        highs: list[float] = []
+        for r in readings:
+            vals = [v for h, v in r.hourly_feels.items() if start <= h < end]
+            if vals:
+                lows.append(min(vals))
+                highs.append(max(vals))
+        if lows:
+            out[label] = FeelsRange(low=statistics.median(lows), high=statistics.median(highs), n=len(lows))
+    return out
+
+
+def mm_disagree_fraction(
+    pop_periods: Mapping[str, Stat], mm_readings: list[WeatherReading], thresholds: Mapping[str, float]
+) -> float:
+    """Fracción de modelos de precipitación (mm) que contradicen el veredicto de la probabilidad."""
+    medians = [s.value for s in pop_periods.values() if s.value is not None]
+    if not medians or not mm_readings:
+        return 0.0
+    likely = max(medians) >= float(thresholds.get("rain_likely_pct", 50.0))
+    min_mm = float(thresholds.get("rain_mm_day", 1.0))
+    sees = [sum(r.hourly_mm.values()) >= min_mm for r in mm_readings]
+    return sum((not s) if likely else s for s in sees) / len(sees)
+
+
 def consensus_weather(
     readings: list[WeatherReading],
     thresholds: Mapping[str, float],
     periods: Mapping[str, tuple[int, int]],
+    expected: Mapping[str, int] | None = None,
+    conf_params: Mapping[str, float] | None = None,
+    now_hour: int | None = None,
 ) -> WeatherSummary | None:
-    """Consolida lecturas de clima de varias fuentes. Devuelve None si no hay ninguna."""
+    """Consolida lecturas de clima de varias fuentes. Devuelve None si no hay ninguna.
+
+    ``expected`` ({"temp": N, "rain": M}) indica cuántas fuentes se esperaban en temperatura y lluvia.
+    """
     if not readings:
         return None
+    expected = expected or {}
     t_temp = float(thresholds.get("temp_c", 3.0))
     t_rain = float(thresholds.get("rain_pct", 25.0))
 
     def by(attr: str) -> dict[str, float | None]:
         return {r.source: getattr(r, attr) for r in readings}
 
-    temp = combine(by("temp"), t_temp)
-    feels = combine(by("feels_like"), t_temp)
-    tmin = combine(by("tmin"), t_temp)
-    tmax = combine(by("tmax"), t_temp)
+    temp = combine(by("temp"), t_temp, expected.get("temp"), conf_params)
+    feels = combine(by("feels_like"), t_temp, None, conf_params)
+    tmin = combine(by("tmin"), t_temp, None, conf_params)
+    tmax = combine(by("tmax"), t_temp, None, conf_params)
     wind = combine(by("wind_kmh"), float(thresholds.get("wind_kmh", 15.0)))
     uv = combine(by("uv"), float(thresholds.get("uv", 3.0)))
 
     pop_voters = filter_suspect_pop(readings, thresholds)
     rain: dict[str, Stat] = {}
     for label, (start, end) in periods.items():
-        rain[label] = combine({r.source: _period_max(r.hourly_pop, start, end) for r in pop_voters}, t_rain)
+        rain[label] = combine(
+            {r.source: _period_max(r.hourly_pop, start, end) for r in pop_voters},
+            t_rain,
+            expected.get("rain"),
+            conf_params,
+        )
 
     hours: dict[int, list[float]] = {}
     for r in pop_voters:
@@ -218,7 +312,12 @@ def consensus_weather(
             hours.setdefault(h, []).append(p)
     peak_hour = peak_pct = None
     if hours:
-        medians = {h: statistics.median(v) for h, v in hours.items()}
+        future_hours = (
+            {h: v for h, v in hours.items() if h >= now_hour}
+            if now_hour is not None and not (6 <= now_hour <= 10)
+            else hours
+        )
+        medians = {h: statistics.median(v) for h, v in (future_hours or hours).items()}
         peak_hour = max(medians, key=lambda h: (medians[h], -h))
         peak_pct = medians[peak_hour]
 
@@ -226,11 +325,18 @@ def consensus_weather(
     rain_sources = sorted({src for s in rain_stats for src in s.sources})
     rain_conf = lowest_confidence(s.confidence for s in rain_stats) if rain_stats else CONF_LOW
     rain_note = None
+    rain_score: int | None = None
     if rain_stats:
         mm_readings = [r for r in readings if r.hourly_mm]
         rain_conf, rain_note = cross_check_rain(rain, mm_readings, thresholds, rain_conf)
+        period_scores = [s.score for s in rain_stats if s.score is not None]
+        base = sum(period_scores) / len(period_scores)
+        mm_penalty = 30.0 * mm_disagree_fraction(rain, mm_readings, thresholds)
+        rain_score = clamp_score(base - mm_penalty, conf_params)
 
     main = [s for s in (temp, tmin, tmax) if s.available]
+    main_scores = [s.score for s in main if s.score is not None]
+    weather_score = min(main_scores) if main_scores else None
     confidence = lowest_confidence([*(s.confidence for s in main), *([rain_conf] if rain_stats else [])])
     sources = sorted({r.source for r in readings})
     return WeatherSummary(
@@ -248,14 +354,24 @@ def consensus_weather(
         rain_sources=rain_sources,
         rain_confidence=rain_conf,
         rain_note=rain_note,
+        feels_periods=feels_by_period(readings, periods),
+        score=weather_score,
+        rain_score=rain_score,
+        now_hour=now_hour,
+        period_hours=dict(periods),
     )
 
 
-def consensus_air(readings: list[AirReading], thresholds: Mapping[str, float]) -> AirSummary | None:
+def consensus_air(
+    readings: list[AirReading],
+    thresholds: Mapping[str, float],
+    expected: int | None = None,
+    conf_params: Mapping[str, float] | None = None,
+) -> AirSummary | None:
     """Consolida lecturas de AQI. Devuelve None si no hay ninguna."""
     if not readings:
         return None
-    stat = combine({r.source: r.aqi for r in readings}, float(thresholds.get("aqi", 30.0)))
+    stat = combine({r.source: r.aqi for r in readings}, float(thresholds.get("aqi", 30.0)), expected, conf_params)
     pollutants = [r.pollutant for r in readings if r.pollutant]
     return AirSummary(
         aqi=stat,
@@ -263,6 +379,7 @@ def consensus_air(readings: list[AirReading], thresholds: Mapping[str, float]) -
         pollutant=pollutants[0] if pollutants else None,
         sources=stat.sources,
         confidence=stat.confidence,
+        score=stat.score,
     )
 
 
@@ -281,13 +398,40 @@ def parse_periods(cfg: Config) -> dict[str, tuple[int, int]]:
     return {k: (int(v[0]), int(v[1])) for k, v in raw.items()}
 
 
-def gather_weather(cfg: Config) -> WeatherSummary | None:
+def expected_weather_sources(cfg: Config) -> dict[str, int]:
+    """Cuántas fuentes se esperan en temperatura y en lluvia según config.yaml y las claves disponibles."""
+    wcfg = cfg.section("weather")
+    models = wcfg.get("models", {})
+    optional = int(bool(cfg.secrets.weatherapi_key)) + int(bool(cfg.secrets.openweather_key))
+    ideam = int(bool((wcfg.get("ideam") or {}).get("enabled")))
+    return {
+        "temp": len(models.get("temperature", [])) + optional + ideam,
+        "rain": len(models.get("precip_probability", [])) + optional,
+    }
+
+
+def expected_air_sources(cfg: Config) -> int:
+    """Open-Meteo Air Quality siempre, más WAQI si hay token."""
+    return 1 + int(bool(cfg.secrets.waqi_token))
+
+
+def gather_weather(cfg: Config, now_hour: int | None = None) -> WeatherSummary | None:
     """Consulta todas las fuentes de clima en paralelo y las consolida."""
+    from datetime import datetime
+
     from brief.sources import weather
 
     tasks = weather.build_tasks(cfg)
     readings: list[WeatherReading] = _flatten(run_parallel(tasks))
-    return consensus_weather(readings, cfg.section("thresholds"), parse_periods(cfg))
+    hour = datetime.now(cfg.tz).hour if now_hour is None else now_hour
+    return consensus_weather(
+        readings,
+        cfg.section("thresholds"),
+        parse_periods(cfg),
+        expected_weather_sources(cfg),
+        cfg.section("confidence"),
+        now_hour=hour,
+    )
 
 
 def gather_air(cfg: Config) -> AirSummary | None:
@@ -296,4 +440,4 @@ def gather_air(cfg: Config) -> AirSummary | None:
 
     tasks = air_quality.build_tasks(cfg)
     readings: list[AirReading] = _flatten(run_parallel(tasks))
-    return consensus_air(readings, cfg.section("thresholds"))
+    return consensus_air(readings, cfg.section("thresholds"), expected_air_sources(cfg), cfg.section("confidence"))

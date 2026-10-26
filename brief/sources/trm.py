@@ -8,12 +8,14 @@ from __future__ import annotations
 
 import logging
 import statistics
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from datetime import date, timedelta
 from typing import Any
 
+import holidays
+
 from brief.config import Config
-from brief.consensus import run_parallel
+from brief.consensus import agreement_score, run_parallel
 from brief.http import get_json
 from brief.models import CONF_HIGH, CONF_MID, TrmSummary
 
@@ -24,19 +26,47 @@ OFFICIAL = "TRM Superfinanciera"
 BACKUP = "open.er-api.com"
 HISTORY_DAYS = 45
 
+TrmRow = tuple[date, date, float]
 
-def parse_rows(rows: list[dict[str, Any]]) -> list[tuple[date, float]]:
-    """Convierte filas SODA en [(vigencia_desde, valor)] únicas y ordenadas (más reciente primero)."""
-    seen: dict[date, float] = {}
+
+def is_business_day(d: date) -> bool:
+    """True si la fecha es día hábil en Colombia (lunes a viernes no festivo)."""
+    return d.weekday() < 5 and d not in holidays.country_holidays("CO", years=d.year)
+
+
+def parse_rows(rows: list[dict[str, Any]]) -> list[TrmRow]:
+    """Convierte filas SODA en [(vigenciadesde, vigenciahasta, valor)] únicas y ordenadas (más reciente primero)."""
+    seen: dict[date, TrmRow] = {}
     for row in rows:
         try:
-            seen[date.fromisoformat(row["vigenciadesde"][:10])] = float(row["valor"])
+            d_from = date.fromisoformat(row["vigenciadesde"][:10])
+            raw_until = row.get("vigenciahasta") or row["vigenciadesde"]
+            d_until = date.fromisoformat(raw_until[:10])
+            seen[d_from] = (d_from, max(d_from, d_until), float(row["valor"]))
         except (KeyError, ValueError, TypeError):
             continue
-    return sorted(seen.items(), key=lambda kv: kv[0], reverse=True)
+    return sorted(seen.values(), key=lambda r: r[0], reverse=True)
 
 
-def fetch_official(cfg: Config, today: date) -> list[tuple[date, float]]:
+def _normalize_history(history: Iterable[Any]) -> list[TrmRow]:
+    """Acepta filas como (desde, hasta, valor), (desde, valor) o diccionarios SODA."""
+    items = list(history)
+    if not items:
+        return []
+    if isinstance(items[0], dict):
+        return parse_rows(items)
+    seen: dict[date, TrmRow] = {}
+    for item in items:
+        if len(item) == 3:
+            d_from, d_until, val = item
+            seen[d_from] = (d_from, max(d_from, d_until), float(val))
+        else:
+            d_from, val = item
+            seen[d_from] = (d_from, d_from, float(val))
+    return sorted(seen.values(), key=lambda r: r[0], reverse=True)
+
+
+def fetch_official(cfg: Config, today: date) -> list[TrmRow]:
     """Descarga ~45 días de TRM del dataset oficial."""
     start = today - timedelta(days=HISTORY_DAYS)
     rows = get_json(
@@ -59,26 +89,31 @@ def fetch_backup(cfg: Config) -> float | None:
 
 
 def compute_trm(
-    history: list[tuple[date, float]],
+    history: Iterable[Any],
     today: date,
     backup: float | None,
     thresholds: Mapping[str, float],
+    conf_params: Mapping[str, float] | None = None,
 ) -> TrmSummary | None:
     """Calcula variaciones y alertas de mínimo/máximo a partir del historial."""
-    rows = [(d, v) for d, v in history if d <= today]
+    rows = [r for r in _normalize_history(history) if r[0] <= today]
     if not rows:
         return None
-    rows.sort(key=lambda kv: kv[0], reverse=True)
-    valid_from, value = rows[0]
-    previous = rows[1][1] if len(rows) > 1 else None
+    covering = [r for r in rows if r[0] <= today <= r[1]]
+    valid_from, valid_until, value = covering[0] if covering else rows[0]
+    prev_candidates = [v for d_from, _, v in rows if d_from < valid_from and v != value]
+    previous = prev_candidates[0] if prev_candidates else None
+    weekend_or_holiday = not is_business_day(today)
+    change = (value - previous) if (previous is not None and not weekend_or_holiday) else None
+
     days = int(thresholds.get("trm_alert_days", 30))
-    window = [v for d, v in rows if d >= today - timedelta(days=days)]
+    window = [v for d_from, _, v in rows if d_from >= today - timedelta(days=days)]
     avg = statistics.fmean(window) if window else None
     enough = len(window) >= 5
-    change = value - previous if previous is not None else None
 
     sources = [OFFICIAL]
     confidence = CONF_MID
+    gap = 0.0
     if backup is not None:
         sources.append(BACKUP)
         gap = abs(backup - value) / value * 100
@@ -86,6 +121,7 @@ def compute_trm(
             confidence = CONF_HIGH
         else:
             log.warning("TRM oficial (%.2f) y respaldo (%.2f) difieren %.1f%%", value, backup, gap)
+    score = agreement_score(gap, float(thresholds.get("trm_pct", 1.5)), len(sources), 2, conf_params)
     return TrmSummary(
         value=value,
         valid_from=valid_from.isoformat(),
@@ -99,6 +135,9 @@ def compute_trm(
         backup_value=backup,
         sources=sources,
         confidence=confidence,
+        score=score,
+        valid_until=valid_until.isoformat(),
+        is_weekend_or_holiday=weekend_or_holiday,
     )
 
 
@@ -107,4 +146,4 @@ def gather_trm(cfg: Config, today: date) -> TrmSummary | None:
     res = run_parallel({"official": lambda: fetch_official(cfg, today), "backup": lambda: fetch_backup(cfg)})
     if not res.get("official"):
         return None
-    return compute_trm(res["official"], today, res.get("backup"), cfg.section("thresholds"))
+    return compute_trm(res["official"], today, res.get("backup"), cfg.section("thresholds"), cfg.section("confidence"))

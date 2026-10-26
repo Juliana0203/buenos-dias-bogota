@@ -37,6 +37,7 @@ jobs:
         run: python -m brief.main
 
       - name: Commit del histórico
+        if: always() # también si el envío o el dashboard fallaron: history.csv evita duplicados
         env:
           OWNER: ${{ github.repository_owner }}
           GH_TOKEN: ${{ github.token }}
