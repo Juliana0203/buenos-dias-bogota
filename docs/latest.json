@@ -1,24 +1,24 @@
 {
-  "date": "2026-10-25",
+  "date": "2026-10-26",
   "name": "Juli",
-  "greeting": "Hola, Juli. Un día nuevo para hacerlo con ganas y con calma. Parece que hoy Bogotá se pone romántica con la lluvia.",
+  "greeting": "Buenos días, Juli. Lunes de arranque: con calma y con ganas. Parece que hoy Bogotá se pone romántica con la lluvia.",
   "summary": {
-    "date": "2026-10-25",
+    "date": "2026-10-26",
     "sent": "1",
-    "temp_min": "10.6",
-    "temp_max": "20.9",
+    "temp_min": "10.1",
+    "temp_max": "19.7",
     "rain_prob": "100",
-    "aqi": "60",
+    "aqi": "74",
     "trm": "3158.43",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 12.5,
-      "low": 11.3,
-      "high": 12.6,
-      "spread": 1.299999999999999,
+      "value": 19.2,
+      "low": 18.3,
+      "high": 21.2,
+      "spread": 2.8999999999999986,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -27,12 +27,42 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 79
+      "score": 63
     },
     "feels_like": {
-      "value": 12.4,
-      "low": 10.6,
-      "high": 12.6,
+      "value": 20.4,
+      "low": 17.4,
+      "high": 22.3,
+      "spread": 4.900000000000002,
+      "n": 3,
+      "confidence": "media",
+      "disagree": true,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 51
+    },
+    "tmin": {
+      "value": 10.1,
+      "low": 8.4,
+      "high": 11.8,
+      "spread": 3.4000000000000004,
+      "n": 3,
+      "confidence": "media",
+      "disagree": true,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 66
+    },
+    "tmax": {
+      "value": 19.7,
+      "low": 19.2,
+      "high": 21.2,
       "spread": 2.0,
       "n": 3,
       "confidence": "alta",
@@ -44,41 +74,11 @@
       ],
       "score": 80
     },
-    "tmin": {
-      "value": 10.6,
-      "low": 9.2,
-      "high": 10.8,
-      "spread": 1.6000000000000014,
-      "n": 3,
-      "confidence": "alta",
-      "disagree": false,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 84
-    },
-    "tmax": {
-      "value": 20.9,
-      "low": 20.1,
-      "high": 21.4,
-      "spread": 1.2999999999999972,
-      "n": 3,
-      "confidence": "alta",
-      "disagree": false,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 87
-    },
     "wind_kmh": {
-      "value": 2.6,
-      "low": 2.4,
-      "high": 3.7,
-      "spread": 1.3000000000000003,
+      "value": 5.2,
+      "low": 4.2,
+      "high": 8.4,
+      "spread": 4.2,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +87,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 97
+      "score": 92
     },
     "uv": {
-      "value": 7.25,
-      "low": 7.25,
-      "high": 7.25,
+      "value": 8.2,
+      "low": 8.2,
+      "high": 8.2,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,18 +104,18 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 46.5,
-        "low": 43.0,
-        "high": 50.0,
-        "spread": 7.0,
+        "value": 53.0,
+        "low": 32.0,
+        "high": 74.0,
+        "spread": 42.0,
         "n": 2,
-        "confidence": "media",
-        "disagree": false,
+        "confidence": "baja",
+        "disagree": true,
         "sources": [
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 92
+        "score": 50
       },
       "tarde": {
         "value": 100.0,
@@ -132,10 +132,10 @@
         "score": 98
       },
       "noche": {
-        "value": 90.5,
-        "low": 81.0,
+        "value": 93.0,
+        "low": 86.0,
         "high": 100.0,
-        "spread": 19.0,
+        "spread": 14.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -143,43 +143,43 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 77
+        "score": 83
       }
     },
-    "rain_peak_hour": 23,
-    "rain_peak_pct": 23.0,
+    "rain_peak_hour": 14,
+    "rain_peak_pct": 100.0,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
       "Open-Meteo/ICON"
     ],
-    "confidence": "alta",
+    "confidence": "baja",
     "rain_sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS"
     ],
-    "rain_confidence": "alta",
+    "rain_confidence": "baja",
     "rain_note": "lluvia probable, aunque un modelo no la ve",
     "feels_periods": {
       "mañana": {
-        "low": 9.7,
-        "high": 22.5,
+        "low": 9.1,
+        "high": 20.4,
         "n": 3
       },
       "tarde": {
-        "low": 15.0,
-        "high": 19.5,
+        "low": 15.9,
+        "high": 19.0,
         "n": 3
       },
       "noche": {
-        "low": 12.4,
-        "high": 13.9,
+        "low": 11.2,
+        "high": 14.1,
         "n": 3
       }
     },
-    "score": 79,
-    "rain_score": 79,
-    "now_hour": 23,
+    "score": 63,
+    "rain_score": 67,
+    "now_hour": 11,
     "period_hours": {
       "mañana": [
         6,
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 60.0,
+    "aqi": 74.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -208,10 +208,10 @@
     "value": 3158.43,
     "valid_from": "2026-10-24",
     "previous": 3185.01,
-    "change_abs": null,
-    "change_pct": null,
-    "avg30": 3232.3219047619045,
-    "vs_avg30_pct": -2.2860317424773213,
+    "change_abs": -26.580000000000382,
+    "change_pct": -0.8345342714779664,
+    "avg30": 3227.4575,
+    "vs_avg30_pct": -2.1387578302735246,
     "is_min30": false,
     "is_max30": false,
     "backup_value": 3170.487231,
@@ -222,18 +222,18 @@
     "confidence": "alta",
     "score": 92,
     "valid_until": "2026-10-26",
-    "is_weekend_or_holiday": true
+    "is_weekend_or_holiday": false
   },
   "news": [
     {
-      "title": "Así opera el pico y placa en Bogotá para la semana del 26 al 31 de octubre de 2026 ¡Evite sanciones!",
-      "link": "https://caracol.com.co/2026/10/25/asi-opera-el-pico-y-placa-en-bogota-para-la-semana-del-26-al-31-de-octubre-de-2026-evite-sanciones/",
-      "source": "Caracol Radio"
+      "title": "Pico y Placa: qué vehículos no circulan en Bogotá este lunes 26 de octubre",
+      "link": "https://www.infobae.com/colombia/2026/10/26/pico-y-placa-que-vehiculos-no-circulan-en-bogota-este-lunes-26-de-octubre/",
+      "source": "Infobae Colombia"
     }
   ],
   "quote": {
-    "text": "Gracias a la vida, que me ha dado tanto.",
-    "author": "Violeta Parra",
+    "text": "La vida no es la que uno vivió, sino la que uno recuerda y cómo la recuerda para contarla.",
+    "author": "Gabriel García Márquez",
     "origin": "local"
   }
 }
