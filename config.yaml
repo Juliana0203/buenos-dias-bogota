@@ -31,6 +31,10 @@ pico_y_placa:
 thresholds:
   temp_c: 3.0
   rain_pct: 25.0
+  rain_likely_pct: 50.0     # mediana de probabilidad desde la cual la lluvia se considera probable
+  rain_mm_day: 1.0          # mm/día desde los cuales un modelo "ve" lluvia
+  suspect_max_pct: 5.0      # fuente sospechosa: máximo del día por debajo de esto...
+  suspect_others_pct: 50.0  # ...mientras la mediana de las demás supera esto
   aqi: 30.0
   uv: 3.0
   wind_kmh: 15.0
@@ -46,7 +50,12 @@ alerts:
   wind_strong_kmh: 30
 
 weather:
-  models: ["ecmwf_ifs025", "gfs_seamless", "icon_seamless"]
+  # Modelos de Open-Meteo que votan en cada variable (temperature también aporta viento y UV).
+  # ICON queda fuera de precip_probability: en Bogotá casi no reporta probabilidad (máx. ~3 %).
+  models:
+    temperature: ["ecmwf_ifs025", "gfs_seamless", "icon_seamless"]
+    precip_probability: ["ecmwf_ifs025", "gfs_seamless"]
+    precip_amount: ["ecmwf_ifs025", "gfs_seamless", "icon_seamless"]
   # Franjas del día (hora local, [inicio, fin))
   periods: {mañana: [6, 12], tarde: [12, 18], noche: [18, 24]}
   ideam:

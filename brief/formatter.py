@@ -77,12 +77,31 @@ def weather_section(w: WeatherSummary, alerts: Mapping[str, float]) -> str:
     if extra:
         text = ", ".join(extra)
         lines.append(text[0].upper() + text[1:])
+    if w.rain_note:
+        lines.append(w.rain_note[0].upper() + w.rain_note[1:] + ".")
     lines.append(weather_recommendation(w, alerts))
-    note = f"Verificado con {len(w.sources)} fuente{'s' if len(w.sources) != 1 else ''}"
-    if len(w.sources) > 1 and any(s.disagree for s in (w.temp, w.tmin, w.tmax, *w.rain_periods.values())):
-        note += "; las fuentes difieren, por eso algunos datos van en rango"
-    lines.append(f"<i>{note} ({esc(', '.join(w.sources))}). Confianza {w.confidence}.</i>")
+    lines.append(f"<i>{_verification_note(w)} Confianza {w.confidence}.</i>")
     return "\n".join(lines)
+
+
+def _count(n: int) -> str:
+    return f"{n} fuente{'s' if n != 1 else ''}"
+
+
+def _verification_note(w: WeatherSummary) -> str:
+    """Cuenta solo las fuentes que votaron en cada variable (temperatura y lluvia)."""
+    temp_src = w.temp.sources
+    rain_src = w.rain_sources
+    if rain_src and set(rain_src) != set(temp_src):
+        note = f"Verificado con {_count(len(temp_src))} en temperatura ({esc(', '.join(temp_src))})"
+        note += f" y {_count(len(rain_src))} en lluvia ({esc(', '.join(rain_src))})."
+    else:
+        src = temp_src or rain_src
+        note = f"Verificado con {_count(len(src))} ({esc(', '.join(src))})."
+    stats = (w.temp, w.tmin, w.tmax, *w.rain_periods.values())
+    if any(s.disagree for s in stats):
+        note += " Las fuentes difieren, por eso algunos datos van en rango."
+    return note
 
 
 def air_recommendation(a: AirSummary) -> str:

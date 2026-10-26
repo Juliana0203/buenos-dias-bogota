@@ -42,6 +42,8 @@ class WeatherReading:
     uv: float | None = None
     # Probabilidad de lluvia (%) por hora local 0-23.
     hourly_pop: dict[int, float] = field(default_factory=dict)
+    # Precipitación (mm) por hora local 0-23.
+    hourly_mm: dict[int, float] = field(default_factory=dict)
 
 
 @dataclass
@@ -59,6 +61,9 @@ class WeatherSummary:
     rain_peak_pct: float | None
     sources: list[str]
     confidence: str
+    rain_sources: list[str] = field(default_factory=list)  # votaron en probabilidad de lluvia
+    rain_confidence: str = CONF_LOW
+    rain_note: str | None = None  # p. ej. "lluvia probable, aunque un modelo no la ve"
 
 
 @dataclass

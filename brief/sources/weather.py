@@ -42,19 +42,32 @@ def _series(block: dict[str, Any], var: str, model: str, single: bool) -> list[A
     return block.get(var, []) if single else []
 
 
-def parse_open_meteo(data: dict[str, Any], models: list[str], now_hour: int) -> list[WeatherReading]:
-    """Convierte la respuesta de Open-Meteo en una lectura por modelo."""
+def _hourly_map(times: list[Any], series: list[Any]) -> dict[int, float]:
+    """Serie horaria -> {hora local: valor}, omitiendo valores nulos."""
+    out: dict[int, float] = {}
+    for i, ts in enumerate(times):
+        v = _num(series[i]) if i < len(series) else None
+        if v is not None:
+            out[int(ts[11:13])] = v
+    return out
+
+
+def parse_open_meteo(data: dict[str, Any], models: dict[str, list[str]], now_hour: int) -> list[WeatherReading]:
+    """Convierte la respuesta de Open-Meteo en una lectura por modelo.
+
+    ``models`` indica qué modelos votan en cada variable (temperature, precip_probability,
+    precip_amount); un modelo solo aporta las variables en las que está listado.
+    """
     hourly = data.get("hourly", {})
     current = data.get("current", {})
     times = hourly.get("time", [])
-    single = len(models) == 1
+    all_models = list(dict.fromkeys(m for group in models.values() for m in group))
+    single = len(all_models) == 1
     readings: list[WeatherReading] = []
-    for model in models:
-        temps = _series(hourly, "temperature_2m", model, single)
-        feels = _series(hourly, "apparent_temperature", model, single)
-        winds = _series(hourly, "wind_speed_10m", model, single)
-        uvs = _series(hourly, "uv_index", model, single)
-        pops = _series(hourly, "precipitation_probability", model, single)
+    for model in all_models:
+        in_temp = model in models.get("temperature", [])
+        in_pop = model in models.get("precip_probability", [])
+        in_mm = model in models.get("precip_amount", [])
 
         def at_hour(series: list[Any]) -> float | None:
             return _num(series[now_hour]) if now_hour < len(series) else None
@@ -62,24 +75,27 @@ def parse_open_meteo(data: dict[str, Any], models: list[str], now_hour: int) -> 
         def cur(var: str, model: str = model) -> float | None:
             return _num(current.get(f"{var}_{model}", current.get(var) if single else None))
 
-        valid_t = [t for t in (_num(x) for x in temps) if t is not None]
-        valid_uv = [u for u in (_num(x) for x in uvs) if u is not None]
-        hourly_pop: dict[int, float] = {}
-        for i, ts in enumerate(times):
-            p = _num(pops[i]) if i < len(pops) else None
-            if p is not None:
-                hourly_pop[int(ts[11:13])] = p
-        reading = WeatherReading(
-            source=f"Open-Meteo/{_MODEL_LABEL.get(model, model)}",
-            temp=cur("temperature_2m") if cur("temperature_2m") is not None else at_hour(temps),
-            feels_like=(cur("apparent_temperature") if cur("apparent_temperature") is not None else at_hour(feels)),
-            tmin=min(valid_t) if valid_t else None,
-            tmax=max(valid_t) if valid_t else None,
-            wind_kmh=cur("wind_speed_10m") if cur("wind_speed_10m") is not None else at_hour(winds),
-            uv=max(valid_uv) if valid_uv else None,
-            hourly_pop=hourly_pop,
-        )
-        if reading.temp is None and reading.tmax is None:
+        reading = WeatherReading(source=f"Open-Meteo/{_MODEL_LABEL.get(model, model)}")
+        if in_temp:
+            temps = _series(hourly, "temperature_2m", model, single)
+            feels = _series(hourly, "apparent_temperature", model, single)
+            winds = _series(hourly, "wind_speed_10m", model, single)
+            uvs = _series(hourly, "uv_index", model, single)
+            valid_t = [t for t in (_num(x) for x in temps) if t is not None]
+            valid_uv = [u for u in (_num(x) for x in uvs) if u is not None]
+            reading.temp = cur("temperature_2m") if cur("temperature_2m") is not None else at_hour(temps)
+            reading.feels_like = (
+                cur("apparent_temperature") if cur("apparent_temperature") is not None else at_hour(feels)
+            )
+            reading.tmin = min(valid_t) if valid_t else None
+            reading.tmax = max(valid_t) if valid_t else None
+            reading.wind_kmh = cur("wind_speed_10m") if cur("wind_speed_10m") is not None else at_hour(winds)
+            reading.uv = max(valid_uv) if valid_uv else None
+        if in_pop:
+            reading.hourly_pop = _hourly_map(times, _series(hourly, "precipitation_probability", model, single))
+        if in_mm:
+            reading.hourly_mm = _hourly_map(times, _series(hourly, "precipitation", model, single))
+        if reading.temp is None and reading.tmax is None and not reading.hourly_pop and not reading.hourly_mm:
             log.warning("Open-Meteo: el modelo %s no devolvió datos útiles", model)
             continue
         readings.append(reading)
@@ -88,13 +104,16 @@ def parse_open_meteo(data: dict[str, Any], models: list[str], now_hour: int) -> 
 
 def fetch_open_meteo(cfg: Config) -> list[WeatherReading]:
     """Consulta Open-Meteo con varios modelos en una sola petición."""
-    models = list(cfg.section("weather").get("models", ["gfs_seamless"]))
+    models = {k: list(v) for k, v in cfg.section("weather").get("models", {}).items()}
+    all_models = list(dict.fromkeys(m for group in models.values() for m in group))
+    if not all_models:
+        return []
     params = {
         "latitude": cfg.lat,
         "longitude": cfg.lon,
-        "hourly": "temperature_2m,apparent_temperature,precipitation_probability,wind_speed_10m,uv_index",
+        "hourly": "temperature_2m,apparent_temperature,precipitation_probability,precipitation,wind_speed_10m,uv_index",
         "current": "temperature_2m,apparent_temperature,wind_speed_10m",
-        "models": ",".join(models),
+        "models": ",".join(all_models),
         "timezone": str(cfg.tz.key),
         "forecast_days": 1,
         "wind_speed_unit": "kmh",
