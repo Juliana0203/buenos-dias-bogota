@@ -1,0 +1,16 @@
+[project]
+name = "buenos-dias-bogota"
+version = "1.0.0"
+description = "Bot de resumen matutino para Bogotá, enviado por Telegram."
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

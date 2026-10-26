@@ -1,0 +1,119 @@
+# Configuración de "Buenos días, Bogotá".
+# Los secretos NUNCA van aquí: se leen de variables de entorno
+# (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, WEATHERAPI_KEY, OPENWEATHER_API_KEY, WAQI_TOKEN).
+
+persona:
+  name: "Juli"
+
+location:
+  city: "Bogotá"
+  lat: 4.7110
+  lon: -74.0721
+  timezone: "America/Bogota"
+
+schedule:
+  send_time: "08:00"        # hora local de envío
+  max_wait_minutes: 25      # máximo que el script espera si llega antes de la hora
+
+# Pico y placa (placa: último dígito, 0-9, o null para desactivar la sección).
+# La regla cambia cada semestre y NO se pudo verificar automáticamente: revísala en
+# https://www.movilidadbogota.gov.co y ajusta `mode` y `restricted`.
+#   mode: null       -> no calcula; solo recuerda consultar la regla vigente
+#   mode: "weekday"  -> restricted: {0: [..dígitos..], 1: [...], ..., 4: [...]}  (0 = lunes)
+#   mode: "parity"   -> restringe dígitos impares en días impares del mes y pares en días pares
+pico_y_placa:
+  plate: null
+  mode: null
+  hours: ["06:00-09:00", "15:00-19:00"]
+  restricted: {}
+
+# Umbrales: si dos fuentes difieren más que esto, se muestra un rango.
+thresholds:
+  temp_c: 3.0
+  rain_pct: 25.0
+  aqi: 30.0
+  uv: 3.0
+  wind_kmh: 15.0
+  trm_pct: 1.5              # diferencia máxima (%) entre TRM oficial y respaldo
+  trm_alert_days: 30
+
+# Umbrales de recomendaciones.
+alerts:
+  rain_umbrella_pct: 40
+  cold_c: 12
+  hot_c: 24
+  uv_high: 6
+  wind_strong_kmh: 30
+
+weather:
+  models: ["ecmwf_ifs025", "gfs_seamless", "icon_seamless"]
+  # Franjas del día (hora local, [inicio, fin))
+  periods: {mañana: [6, 12], tarde: [12, 18], noche: [18, 24]}
+  ideam:
+    enabled: true
+    dataset: "sbwg-7ju4"          # Temperatura ambiente del aire (datos.gov.co)
+    station_code: "0021205791"    # El Dorado CATAM (Bogotá)
+    max_age_hours: 3
+
+air_quality:
+  waqi_station: null              # p. ej. "@8442"; null = búsqueda por coordenadas
+
+trm:
+  soda_dataset: "32sa-8pi3"       # TRM - Superintendencia Financiera (verificado)
+  backup_url: "https://open.er-api.com/v6/latest/USD"
+
+quotes:
+  api_every_n_days: 3             # 1 de cada N días intenta zenquotes.io (inglés)
+  api_url: "https://zenquotes.io/api/today"
+
+news:
+  max_age_hours: 24
+  colombia_count: 3
+  bogota_count: 2
+  dedup_threshold: 78             # similitud (0-100) para considerar duplicadas
+  summary_max_words: 20
+  # Feeds verificados el 2026-10-25. enabled:false = falló la verificación (se registra en logs).
+  feeds:
+    - {name: "El Tiempo - Colombia", url: "https://www.eltiempo.com/rss/colombia.xml", scope: colombia, enabled: true}
+    - {name: "El Tiempo - Bogotá", url: "https://www.eltiempo.com/rss/bogota.xml", scope: bogota, enabled: true}
+    - {name: "El Tiempo - Economía", url: "https://www.eltiempo.com/rss/economia.xml", scope: colombia, enabled: true}
+    - {name: "El Espectador", url: "https://www.elespectador.com/arc/outboundfeeds/discover/?outputType=xml", scope: colombia, enabled: true}
+    - {name: "Semana", url: "https://www.semana.com/arc/outboundfeeds/rss/?outputType=xml", scope: colombia, enabled: true}
+    - {name: "Caracol Radio", url: "https://caracol.com.co/arc/outboundfeeds/rss/?outputType=xml", scope: colombia, enabled: true}
+    - {name: "Infobae Colombia", url: "https://www.infobae.com/arc/outboundfeeds/rss/category/colombia/", scope: colombia, enabled: true}
+    - {name: "Alcaldía de Bogotá", url: "https://bogota.gov.co/rss.xml", scope: bogota, enabled: true}
+    # Fallaron la verificación (vacío, bloqueado 403 o 404):
+    - {name: "RCN Radio", url: "https://www.rcnradio.com/feed", scope: colombia, enabled: false}
+    - {name: "Citytv", url: "https://citytv.com.co/feed/", scope: bogota, enabled: false}
+    - {name: "Secretaría de Movilidad", url: "https://www.movilidadbogota.gov.co/web/rss", scope: bogota, enabled: false}
+  # Temas de interés (palabra -> peso). Se busca en título y resumen, sin tildes.
+  keywords:
+    paro: 5
+    marcha: 5
+    bloqueo: 5
+    manifestacion: 4
+    transmilenio: 5
+    "orden publico": 5
+    alerta: 3
+    apagon: 5
+    racionamiento: 5
+    inundacion: 5
+    lluvia: 3
+    trm: 4
+    dolar: 4
+    inflacion: 3
+    gasolina: 3
+    seguridad: 3
+    atraco: 2
+    robo: 2
+    movilidad: 3
+    "cierre vial": 5
+    acueducto: 3
+    energia: 2
+    emergencia: 3
+    bogota: 2
+  low_priority_keywords: ["farandula", "famosa", "famoso", "reality", "novela", "futbol", "gol", "liga betplay", "partido", "chisme", "horoscopo", "influenciador"]
+
+mobility:
+  keywords: ["transmilenio", "sitp", "cierre vial", "cierres viales", "marcha", "marchas", "manifestacion", "manifestaciones", "bloqueo", "bloqueos", "paro", "plan tortuga", "trancon", "cierre"]
+  max_alerts: 3

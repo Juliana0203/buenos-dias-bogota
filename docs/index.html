@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buenos días, Bogotá</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; background: #f5f7fa; color: #1c2430; }
+  header { background: #1f4e79; color: #fff; padding: 1.2rem 1.5rem; }
+  header h1 { margin: 0; font-size: 1.4rem; }
+  main { max-width: 960px; margin: 0 auto; padding: 1rem; }
+  .card { background: #fff; border-radius: 10px; padding: 1rem 1.2rem; margin-bottom: 1rem;
+          box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .8rem; }
+  .kpi b { display: block; font-size: 1.5rem; }
+  .kpi span { color: #5b6773; font-size: .85rem; }
+  small { color: #5b6773; }
+  a { color: #1f4e79; }
+</style>
+</head>
+<body>
+<header><h1>☀️ Buenos días, Bogotá</h1><small id="fecha" style="color:#cfe0f1"></small></header>
+<main>
+  <section class="card">
+    <h2>Resumen de hoy</h2>
+    <p id="saludo"></p>
+    <div class="grid" id="kpis"><p>Aún no hay datos.</p></div>
+    <p><small id="fuentes"></small></p>
+  </section>
+  <section class="card"><h2>Temperatura (°C) · últimos 30 días</h2><canvas id="temp"></canvas></section>
+  <section class="card"><h2>TRM (COP por USD) · últimos 30 días</h2><canvas id="trm"></canvas></section>
+  <section class="card"><h2>Calidad del aire (US AQI) · últimos 30 días</h2><canvas id="aqi"></canvas></section>
+</main>
+<script>
+const num = v => (v === "" || v == null) ? null : Number(v);
+const line = (id, labels, datasets) => new Chart(document.getElementById(id), {
+  type: "line", data: { labels, datasets }, options: { spanGaps: true, responsive: true }
+});
+
+async function load() {
+  const [latest, hist] = await Promise.all([
+    fetch("latest.json").then(r => r.json()).catch(() => ({})),
+    fetch("history.json").then(r => r.json()).catch(() => []),
+  ]);
+
+  if (latest.summary) {
+    const s = latest.summary;
+    document.getElementById("fecha").textContent = latest.date;
+    document.getElementById("saludo").textContent = latest.greeting || "";
+    const kpi = (v, l) => `<div class="kpi"><b>${v}</b><span>${l}</span></div>`;
+    document.getElementById("kpis").innerHTML = [
+      kpi(`${s.temp_min || "—"} – ${s.temp_max || "—"} °C`, "Mín – máx"),
+      kpi(`${s.rain_prob || "—"}%`, "Prob. de lluvia (máx. franja)"),
+      kpi(s.aqi || "—", "AQI"),
+      kpi(s.trm ? "$" + Number(s.trm).toLocaleString("es-CO") : "—", "TRM"),
+      kpi(s.confidence || "—", "Confianza"),
+    ].join("");
+    document.getElementById("fuentes").textContent = "Fuentes: " + (s.sources || "—");
+  }
+
+  const rows = hist.slice(-30);
+  const labels = rows.map(r => r.date);
+  line("temp", labels, [
+    { label: "Mínima", data: rows.map(r => num(r.temp_min)), borderColor: "#3b82f6" },
+    { label: "Máxima", data: rows.map(r => num(r.temp_max)), borderColor: "#ef4444" },
+  ]);
+  line("trm", labels, [{ label: "TRM", data: rows.map(r => num(r.trm)), borderColor: "#16a34a" }]);
+  line("aqi", labels, [{ label: "AQI", data: rows.map(r => num(r.aqi)), borderColor: "#a855f7" }]);
+}
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+requests>=2.32
+feedparser>=6.0
+pyyaml>=6.0
+holidays>=0.60
+rapidfuzz>=3.9
+pytest>=8.0
+ruff>=0.6
