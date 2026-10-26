@@ -138,3 +138,16 @@ def test_csv_failure_after_send_exits_with_clear_error(run_env, monkeypatch, cap
     monkeypatch.setattr(history, "append_row", boom)
     assert main.main(["--no-wait", "--force"]) == 3
     assert "NO se pudo registrar" in caplog.text
+
+
+def test_morning_brief_workflow_has_backup_cron_pull_and_failure_alert():
+    import yaml
+
+    wf_path = history.ROOT / ".github" / "workflows" / "morning-brief.yml"
+    raw = wf_path.read_text(encoding="utf-8")
+    data = yaml.safe_load(raw)
+    triggers = data.get("on") or data.get(True)
+    crons = [item["cron"] for item in triggers["schedule"]]
+    assert "40 12 * * *" in crons and "10 13 * * *" in crons
+    assert raw.index("git pull --rebase") < raw.index("python -m brief.main")
+    assert "el resumen de hoy falló: revisa Actions" in raw

@@ -2,7 +2,8 @@ name: Resumen matutino
 
 on:
   schedule:
-    - cron: "40 12 * * *" # 7:40 a.m. America/Bogota (UTC-5)
+    - cron: "40 12 * * *" # 7:40 a.m. America/Bogota (UTC-5) — principal
+    - cron: "10 13 * * *" # 8:10 a.m. America/Bogota (UTC-5) — respaldo
   workflow_dispatch:
 
 permissions:
@@ -18,6 +19,8 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
 
       - uses: actions/setup-python@v5
         with:
@@ -27,14 +30,16 @@ jobs:
       - name: Instalar dependencias
         run: pip install -r requirements.txt
 
-      - name: Enviar resumen
+      - name: Actualizar histórico y enviar resumen
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           WEATHERAPI_KEY: ${{ secrets.WEATHERAPI_KEY }}
           OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
           WAQI_TOKEN: ${{ secrets.WAQI_TOKEN }}
-        run: python -m brief.main
+        run: |
+          git pull --rebase origin "${GITHUB_REF_NAME:-main}"
+          python -m brief.main
 
       - name: Commit del histórico
         if: always() # también si el envío o el dashboard fallaron: history.csv evita duplicados
@@ -51,5 +56,42 @@ jobs:
             exit 0
           fi
           git commit -m "data: resumen del $(TZ=America/Bogota date +%F)"
-          git pull --rebase
+          git pull --rebase origin "${GITHUB_REF_NAME:-main}"
           git push
+
+      - name: Avisar por Telegram si el workflow falló
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          echo "::error::El resumen de hoy falló: revisa los pasos anteriores en GitHub Actions."
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+            curl -fsS --max-time 15 -X POST \
+              "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+              --data-urlencode "text=el resumen de hoy falló: revisa Actions" \
+              >/dev/null || echo "::warning::No se pudo enviar la alerta de fallo a Telegram."
+          else
+            echo "::warning::No hay credenciales de Telegram para enviar la alerta de fallo."
+          fi
+          exit 1
+
+      - name: Avisar por Telegram si el workflow falló
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          echo "::error::El resumen de hoy falló: revisa los pasos anteriores en GitHub Actions."
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+            curl -fsS --max-time 15 -X POST \
+              "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+              --data-urlencode "text=el resumen de hoy falló: revisa Actions" \
+              >/dev/null || echo "::warning::No se pudo enviar la alerta de fallo a Telegram."
+          else
+            echo "::warning::No hay credenciales de Telegram para enviar la alerta de fallo."
+          fi
+          exit 1
+
