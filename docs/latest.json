@@ -1,24 +1,24 @@
 {
-  "date": "2026-10-29",
+  "date": "2026-10-30",
   "name": "Juli",
-  "greeting": "Buen día, Juli. Que la buena energía te acompañe hoy. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
+  "greeting": "Buen día, Juli. Que la buena energía te acompañe hoy. Parece que hoy Bogotá se pone romántica con la lluvia.",
   "summary": {
-    "date": "2026-10-29",
+    "date": "2026-10-30",
     "sent": "1",
-    "temp_min": "11.2",
-    "temp_max": "19.8",
-    "rain_prob": "95",
-    "aqi": "56",
-    "trm": "3162.35",
+    "temp_min": "8.7",
+    "temp_max": "20.3",
+    "rain_prob": "100",
+    "aqi": "57",
+    "trm": "3166.91",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 19.4,
-      "low": 19.1,
-      "high": 20.4,
-      "spread": 1.2999999999999972,
+      "value": 20.3,
+      "low": 20.0,
+      "high": 20.6,
+      "spread": 0.6000000000000014,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -27,13 +27,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 79
+      "score": 86
     },
     "feels_like": {
-      "value": 18.3,
-      "low": 17.7,
-      "high": 21.5,
-      "spread": 3.8000000000000007,
+      "value": 18.8,
+      "low": 18.7,
+      "high": 21.8,
+      "spread": 3.1000000000000014,
       "n": 3,
       "confidence": "media",
       "disagree": true,
@@ -42,13 +42,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 62
+      "score": 69
     },
     "tmin": {
-      "value": 11.2,
-      "low": 10.8,
-      "high": 12.7,
-      "spread": 1.8999999999999986,
+      "value": 8.7,
+      "low": 8.4,
+      "high": 10.1,
+      "spread": 1.6999999999999993,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -57,28 +57,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 81
+      "score": 83
     },
     "tmax": {
-      "value": 19.8,
-      "low": 19.6,
-      "high": 20.9,
-      "spread": 1.2999999999999972,
-      "n": 3,
-      "confidence": "alta",
-      "disagree": false,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 87
-    },
-    "wind_kmh": {
-      "value": 11.5,
-      "low": 7.0,
-      "high": 11.5,
-      "spread": 4.5,
+      "value": 20.3,
+      "low": 20.1,
+      "high": 21.0,
+      "spread": 0.8999999999999986,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -89,10 +74,25 @@
       ],
       "score": 91
     },
+    "wind_kmh": {
+      "value": 13.2,
+      "low": 5.0,
+      "high": 13.3,
+      "spread": 8.3,
+      "n": 3,
+      "confidence": "alta",
+      "disagree": false,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 83
+    },
     "uv": {
-      "value": 8.3,
-      "low": 8.3,
-      "high": 8.3,
+      "value": 8.85,
+      "low": 8.85,
+      "high": 8.85,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,10 +104,10 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 23.5,
-        "low": 22.0,
-        "high": 25.0,
-        "spread": 3.0,
+        "value": 22.0,
+        "low": 15.0,
+        "high": 29.0,
+        "spread": 14.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -115,13 +115,13 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 96
+        "score": 83
       },
       "tarde": {
-        "value": 95.0,
-        "low": 90.0,
+        "value": 100.0,
+        "low": 100.0,
         "high": 100.0,
-        "spread": 10.0,
+        "spread": 0.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -129,56 +129,56 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 88
+        "score": 98
       },
       "noche": {
-        "value": 81.5,
-        "low": 63.0,
+        "value": 99.0,
+        "low": 98.0,
         "high": 100.0,
-        "spread": 37.0,
+        "spread": 2.0,
         "n": 2,
-        "confidence": "baja",
-        "disagree": true,
+        "confidence": "media",
+        "disagree": false,
         "sources": [
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 56
+        "score": 98
       }
     },
     "rain_peak_hour": 16,
-    "rain_peak_pct": 95.0,
+    "rain_peak_pct": 100.0,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
       "Open-Meteo/ICON"
     ],
-    "confidence": "baja",
+    "confidence": "alta",
     "rain_sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS"
     ],
-    "rain_confidence": "baja",
+    "rain_confidence": "alta",
     "rain_note": "lluvia probable, aunque un modelo no la ve",
     "feels_periods": {
       "mañana": {
-        "low": 10.6,
-        "high": 20.3,
+        "low": 7.0,
+        "high": 21.2,
         "n": 3
       },
       "tarde": {
-        "low": 16.4,
-        "high": 19.0,
+        "low": 16.0,
+        "high": 19.8,
         "n": 3
       },
       "noche": {
-        "low": 11.1,
-        "high": 15.7,
+        "low": 11.7,
+        "high": 14.7,
         "n": 3
       }
     },
-    "score": 79,
-    "rain_score": 70,
+    "score": 83,
+    "rain_score": 83,
     "now_hour": 13,
     "period_hours": {
       "mañana": [
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 56.0,
+    "aqi": 57.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -205,49 +205,49 @@
     "confidence": "baja"
   },
   "trm": {
-    "value": 3162.35,
-    "valid_from": "2026-10-29",
-    "previous": 3148.02,
-    "change_abs": 14.329999999999927,
-    "change_pct": 0.4552067648871331,
-    "avg30": 3214.118181818182,
-    "vs_avg30_pct": -1.6106496055754154,
+    "value": 3166.91,
+    "valid_from": "2026-10-30",
+    "previous": 3162.35,
+    "change_abs": 4.559999999999945,
+    "change_pct": 0.14419656268281328,
+    "avg30": 3205.8127272727274,
+    "vs_avg30_pct": -1.2135059213462915,
     "is_min30": false,
     "is_max30": false,
-    "backup_value": 3146.899554,
+    "backup_value": 3164.112219,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
     ],
     "confidence": "alta",
-    "score": 90,
-    "valid_until": "2026-10-29",
+    "score": 98,
+    "valid_until": "2026-10-30",
     "is_weekend_or_holiday": false
   },
   "news": [
     {
-      "title": "Cierran estación Calle 57 de Transmilenio desde el 1 de noviembre: ¿qué rutas tomar?",
-      "link": "https://www.elespectador.com/bogota/cierran-estacion-calle-57-de-transmilenio-desde-el-1-de-noviembre-que-rutas-tomar/",
-      "source": "El Espectador"
-    },
-    {
-      "title": "Ingreso a Bogotá por la calle 13 estuvo bloqueado por manifestación: este fue el reporte de la Alcaldía",
-      "link": "https://www.semana.com/vehiculos/articulo/manifestacion-bloquea-por-completo-el-ingreso-a-bogota-por-la-calle-13-alcaldia-comparte-el-estado-actual/202657/",
-      "source": "Semana - Bogotá"
-    },
-    {
-      "title": "Restricción de motos en Bogotá por Halloween: ¿a qué hora comienza y cuándo termina?",
-      "link": "https://www.eltiempo.com/bogota/restriccion-de-motos-en-bogota-por-halloween-a-que-hora-comienza-y-cuando-termina-3597242",
+      "title": "Manifestaciones hoy 30 de octubre en Bogotá: se reportaron bloqueos en la avenida Caracas con calle 63; hubo estaciones de TransMilenio sin servicio",
+      "link": "https://www.eltiempo.com/bogota/manifestaciones-hoy-30-de-octubre-en-bogota-se-reportan-bloqueos-en-la-avenida-caracas-con-calle-63-hay-estaciones-de-transmilenio-sin-servicio-3597435",
       "source": "El Tiempo - Bogotá"
     },
     {
-      "title": "Conductor del Sitp conmovió a los pasajeros al pedirles orientación si se perdía durante su primer día de trabajo: “Es mi primera ruta”",
-      "link": "https://www.infobae.com/colombia/2026/10/29/conductor-del-sitp-conmovio-a-los-pasajeros-al-pedirles-orientacion-si-se-perdia-durante-su-primer-dia-de-trabajo-es-mi-primera-ruta/",
+      "title": "Pico y placa en Bogotá para el viernes 30 de octubre de 2026: conozca qué carros y taxis tienen restricción",
+      "link": "https://www.eltiempo.com/bogota/pico-y-placa-en-bogota-para-el-viernes-30-de-octubre-de-2026-conozca-que-carros-y-taxis-tienen-restriccion-3597265",
+      "source": "El Tiempo - Bogotá"
+    },
+    {
+      "title": "Se inundó estación de TransMilenio sobre la av. Caracas por fuertes lluvias en Bogotá: hasta memes hicieron en redes",
+      "link": "https://www.infobae.com/colombia/2026/10/30/se-inundo-estacion-de-transmilenio-sobre-la-av-caracas-por-fuertes-lluvias-en-bogota-hasta-memes-hicieron-en-redes/",
+      "source": "Infobae Colombia"
+    },
+    {
+      "title": "Pico y Placa en Bogotá: qué automóviles no circulan este viernes 30 de octubre",
+      "link": "https://www.infobae.com/colombia/2026/10/30/pico-y-placa-en-bogota-que-automoviles-no-circulan-este-viernes-30-de-octubre/",
       "source": "Infobae Colombia"
     }
   ],
   "quote": {
-    "text": "Uno no es lo que es por lo que escribe, sino por lo que ha leído.",
+    "text": "El tiempo es la sustancia de la que estoy hecho.",
     "author": "Jorge Luis Borges",
     "origin": "local"
   }
