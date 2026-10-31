@@ -1,24 +1,24 @@
 {
-  "date": "2026-10-30",
+  "date": "2026-10-31",
   "name": "Juli",
-  "greeting": "Buen día, Juli. Que la buena energía te acompañe hoy. Parece que hoy Bogotá se pone romántica con la lluvia.",
+  "greeting": "Hola, Juli, buen sábado. Hoy toca ir con calma. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
   "summary": {
-    "date": "2026-10-30",
+    "date": "2026-10-31",
     "sent": "1",
-    "temp_min": "8.7",
-    "temp_max": "20.3",
+    "temp_min": "10.7",
+    "temp_max": "18.9",
     "rain_prob": "100",
-    "aqi": "57",
-    "trm": "3166.91",
+    "aqi": "59",
+    "trm": "3182.99",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 20.3,
-      "low": 20.0,
-      "high": 20.6,
-      "spread": 0.6000000000000014,
+      "value": 18.1,
+      "low": 17.1,
+      "high": 19.4,
+      "spread": 2.299999999999997,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -27,13 +27,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 86
+      "score": 69
     },
     "feels_like": {
-      "value": 18.8,
-      "low": 18.7,
-      "high": 21.8,
-      "spread": 3.1000000000000014,
+      "value": 18.0,
+      "low": 15.2,
+      "high": 18.7,
+      "spread": 3.5,
       "n": 3,
       "confidence": "media",
       "disagree": true,
@@ -42,13 +42,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 69
+      "score": 65
     },
     "tmin": {
-      "value": 8.7,
-      "low": 8.4,
-      "high": 10.1,
-      "spread": 1.6999999999999993,
+      "value": 10.7,
+      "low": 9.4,
+      "high": 11.9,
+      "spread": 2.5,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -57,28 +57,28 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 83
+      "score": 75
     },
     "tmax": {
-      "value": 20.3,
-      "low": 20.1,
-      "high": 21.0,
-      "spread": 0.8999999999999986,
+      "value": 18.9,
+      "low": 18.0,
+      "high": 21.2,
+      "spread": 3.1999999999999993,
       "n": 3,
-      "confidence": "alta",
-      "disagree": false,
+      "confidence": "media",
+      "disagree": true,
       "sources": [
         "Open-Meteo/ECMWF",
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 91
+      "score": 68
     },
     "wind_kmh": {
-      "value": 13.2,
-      "low": 5.0,
-      "high": 13.3,
-      "spread": 8.3,
+      "value": 6.6,
+      "low": 2.3,
+      "high": 9.9,
+      "spread": 7.6000000000000005,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +87,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 83
+      "score": 85
     },
     "uv": {
-      "value": 8.85,
-      "low": 8.85,
-      "high": 8.85,
+      "value": 8.15,
+      "low": 8.15,
+      "high": 8.15,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,24 +104,24 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 22.0,
-        "low": 15.0,
-        "high": 29.0,
-        "spread": 14.0,
+        "value": 64.5,
+        "low": 30.0,
+        "high": 99.0,
+        "spread": 69.0,
         "n": 2,
-        "confidence": "media",
-        "disagree": false,
+        "confidence": "baja",
+        "disagree": true,
         "sources": [
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 83
+        "score": 50
       },
       "tarde": {
-        "value": 100.0,
-        "low": 100.0,
+        "value": 99.5,
+        "low": 99.0,
         "high": 100.0,
-        "spread": 0.0,
+        "spread": 1.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -146,40 +146,40 @@
         "score": 98
       }
     },
-    "rain_peak_hour": 16,
-    "rain_peak_pct": 100.0,
+    "rain_peak_hour": 14,
+    "rain_peak_pct": 99.5,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
       "Open-Meteo/ICON"
     ],
-    "confidence": "alta",
+    "confidence": "baja",
     "rain_sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS"
     ],
-    "rain_confidence": "alta",
+    "rain_confidence": "baja",
     "rain_note": "lluvia probable, aunque un modelo no la ve",
     "feels_periods": {
       "mañana": {
-        "low": 7.0,
-        "high": 21.2,
+        "low": 9.7,
+        "high": 19.2,
         "n": 3
       },
       "tarde": {
-        "low": 16.0,
-        "high": 19.8,
+        "low": 15.3,
+        "high": 18.6,
         "n": 3
       },
       "noche": {
-        "low": 11.7,
-        "high": 14.7,
+        "low": 10.4,
+        "high": 14.6,
         "n": 3
       }
     },
-    "score": 83,
-    "rain_score": 83,
-    "now_hour": 13,
+    "score": 68,
+    "rain_score": 72,
+    "now_hour": 12,
     "period_hours": {
       "mañana": [
         6,
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 57.0,
+    "aqi": 59.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -205,50 +205,40 @@
     "confidence": "baja"
   },
   "trm": {
-    "value": 3166.91,
-    "valid_from": "2026-10-30",
-    "previous": 3162.35,
-    "change_abs": 4.559999999999945,
-    "change_pct": 0.14419656268281328,
-    "avg30": 3205.8127272727274,
-    "vs_avg30_pct": -1.2135059213462915,
+    "value": 3182.99,
+    "valid_from": "2026-10-31",
+    "previous": 3166.91,
+    "change_abs": null,
+    "change_pct": null,
+    "avg30": 3198.62,
+    "vs_avg30_pct": -0.48864822954899645,
     "is_min30": false,
     "is_max30": false,
-    "backup_value": 3164.112219,
+    "backup_value": 3164.0729,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
     ],
     "confidence": "alta",
-    "score": 98,
-    "valid_until": "2026-10-30",
-    "is_weekend_or_holiday": false
+    "score": 88,
+    "valid_until": "2026-11-03",
+    "is_weekend_or_holiday": true
   },
   "news": [
     {
-      "title": "Manifestaciones hoy 30 de octubre en Bogotá: se reportaron bloqueos en la avenida Caracas con calle 63; hubo estaciones de TransMilenio sin servicio",
-      "link": "https://www.eltiempo.com/bogota/manifestaciones-hoy-30-de-octubre-en-bogota-se-reportan-bloqueos-en-la-avenida-caracas-con-calle-63-hay-estaciones-de-transmilenio-sin-servicio-3597435",
-      "source": "El Tiempo - Bogotá"
+      "title": "Metro de Bogotá respondió a la protesta que bloqueó TransMilenio: esto dijo sobre el pago a los trabajadores",
+      "link": "https://www.semana.com/nacion/bogota/articulo/metro-de-bogota-respondio-a-la-protesta-que-bloqueo-transmilenio-esto-dijo-sobre-el-pago-a-los-trabajadores/202601/",
+      "source": "Semana - Bogotá"
     },
     {
-      "title": "Pico y placa en Bogotá para el viernes 30 de octubre de 2026: conozca qué carros y taxis tienen restricción",
-      "link": "https://www.eltiempo.com/bogota/pico-y-placa-en-bogota-para-el-viernes-30-de-octubre-de-2026-conozca-que-carros-y-taxis-tienen-restriccion-3597265",
-      "source": "El Tiempo - Bogotá"
-    },
-    {
-      "title": "Se inundó estación de TransMilenio sobre la av. Caracas por fuertes lluvias en Bogotá: hasta memes hicieron en redes",
-      "link": "https://www.infobae.com/colombia/2026/10/30/se-inundo-estacion-de-transmilenio-sobre-la-av-caracas-por-fuertes-lluvias-en-bogota-hasta-memes-hicieron-en-redes/",
-      "source": "Infobae Colombia"
-    },
-    {
-      "title": "Pico y Placa en Bogotá: qué automóviles no circulan este viernes 30 de octubre",
-      "link": "https://www.infobae.com/colombia/2026/10/30/pico-y-placa-en-bogota-que-automoviles-no-circulan-este-viernes-30-de-octubre/",
+      "title": "Tras la crisis de racionamiento, Bogotá blindará sus fuentes de agua con inversión internacional",
+      "link": "https://www.infobae.com/colombia/2026/10/31/tras-la-crisis-de-racionamiento-bogota-blindara-sus-fuentes-de-agua-con-inversion-internacional/",
       "source": "Infobae Colombia"
     }
   ],
   "quote": {
-    "text": "El tiempo es la sustancia de la que estoy hecho.",
-    "author": "Jorge Luis Borges",
+    "text": "Confieso que he vivido.",
+    "author": "Pablo Neruda",
     "origin": "local"
   }
 }
