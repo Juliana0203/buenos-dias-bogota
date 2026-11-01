@@ -1,24 +1,24 @@
 {
-  "date": "2026-10-31",
+  "date": "2026-11-01",
   "name": "Juli",
-  "greeting": "Hola, Juli, buen sábado. Hoy toca ir con calma. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
+  "greeting": "¡Buenos días, Juli! Que hoy te rinda el día. Dato: mañana es festivo (Día de Todos los Santos (observado)). Parece que hoy Bogotá se pone romántica con la lluvia.",
   "summary": {
-    "date": "2026-10-31",
+    "date": "2026-11-01",
     "sent": "1",
-    "temp_min": "10.7",
-    "temp_max": "18.9",
-    "rain_prob": "100",
-    "aqi": "59",
+    "temp_min": "9.7",
+    "temp_max": "18.2",
+    "rain_prob": "99",
+    "aqi": "60",
     "trm": "3182.99",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 18.1,
-      "low": 17.1,
-      "high": 19.4,
-      "spread": 2.299999999999997,
+      "value": 18.2,
+      "low": 17.2,
+      "high": 19.5,
+      "spread": 2.3000000000000007,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -30,10 +30,10 @@
       "score": 69
     },
     "feels_like": {
-      "value": 18.0,
-      "low": 15.2,
-      "high": 18.7,
-      "spread": 3.5,
+      "value": 17.1,
+      "low": 14.8,
+      "high": 19.5,
+      "spread": 4.699999999999999,
       "n": 3,
       "confidence": "media",
       "disagree": true,
@@ -42,28 +42,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 65
+      "score": 53
     },
     "tmin": {
-      "value": 10.7,
-      "low": 9.4,
-      "high": 11.9,
-      "spread": 2.5,
-      "n": 3,
-      "confidence": "alta",
-      "disagree": false,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 75
-    },
-    "tmax": {
-      "value": 18.9,
-      "low": 18.0,
-      "high": 21.2,
-      "spread": 3.1999999999999993,
+      "value": 9.7,
+      "low": 8.4,
+      "high": 12.9,
+      "spread": 4.5,
       "n": 3,
       "confidence": "media",
       "disagree": true,
@@ -72,13 +57,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 68
+      "score": 55
     },
-    "wind_kmh": {
-      "value": 6.6,
-      "low": 2.3,
-      "high": 9.9,
-      "spread": 7.6000000000000005,
+    "tmax": {
+      "value": 18.2,
+      "low": 17.2,
+      "high": 19.6,
+      "spread": 2.400000000000002,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +72,27 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 85
+      "score": 76
+    },
+    "wind_kmh": {
+      "value": 13.0,
+      "low": 7.7,
+      "high": 13.7,
+      "spread": 5.999999999999999,
+      "n": 3,
+      "confidence": "alta",
+      "disagree": false,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 88
     },
     "uv": {
-      "value": 8.15,
-      "low": 8.15,
-      "high": 8.15,
+      "value": 6.6,
+      "low": 6.6,
+      "high": 6.6,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,24 +104,10 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 64.5,
+        "value": 42.0,
         "low": 30.0,
-        "high": 99.0,
-        "spread": 69.0,
-        "n": 2,
-        "confidence": "baja",
-        "disagree": true,
-        "sources": [
-          "Open-Meteo/ECMWF",
-          "Open-Meteo/GFS"
-        ],
-        "score": 50
-      },
-      "tarde": {
-        "value": 99.5,
-        "low": 99.0,
-        "high": 100.0,
-        "spread": 1.0,
+        "high": 54.0,
+        "spread": 24.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -129,9 +115,9 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 98
+        "score": 71
       },
-      "noche": {
+      "tarde": {
         "value": 99.0,
         "low": 98.0,
         "high": 100.0,
@@ -144,10 +130,24 @@
           "Open-Meteo/GFS"
         ],
         "score": 98
+      },
+      "noche": {
+        "value": 84.0,
+        "low": 79.0,
+        "high": 89.0,
+        "spread": 10.0,
+        "n": 2,
+        "confidence": "media",
+        "disagree": false,
+        "sources": [
+          "Open-Meteo/ECMWF",
+          "Open-Meteo/GFS"
+        ],
+        "score": 88
       }
     },
     "rain_peak_hour": 14,
-    "rain_peak_pct": 99.5,
+    "rain_peak_pct": 99.0,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
@@ -159,27 +159,27 @@
       "Open-Meteo/GFS"
     ],
     "rain_confidence": "baja",
-    "rain_note": "lluvia probable, aunque un modelo no la ve",
+    "rain_note": "lluvia probable, aunque 2 modelos no la ven",
     "feels_periods": {
       "mañana": {
-        "low": 9.7,
-        "high": 19.2,
+        "low": 8.6,
+        "high": 17.7,
         "n": 3
       },
       "tarde": {
-        "low": 15.3,
-        "high": 18.6,
+        "low": 14.4,
+        "high": 17.1,
         "n": 3
       },
       "noche": {
-        "low": 10.4,
-        "high": 14.6,
+        "low": 10.2,
+        "high": 13.8,
         "n": 3
       }
     },
-    "score": 68,
-    "rain_score": 72,
-    "now_hour": 12,
+    "score": 55,
+    "rain_score": 66,
+    "now_hour": 13,
     "period_hours": {
       "mañana": [
         6,
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 59.0,
+    "aqi": 60.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -210,11 +210,11 @@
     "previous": 3166.91,
     "change_abs": null,
     "change_pct": null,
-    "avg30": 3198.62,
-    "vs_avg30_pct": -0.48864822954899645,
+    "avg30": 3193.1809523809525,
+    "vs_avg30_pct": -0.3191473497095098,
     "is_min30": false,
     "is_max30": false,
-    "backup_value": 3164.0729,
+    "backup_value": 3164.299882,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
@@ -226,19 +226,29 @@
   },
   "news": [
     {
-      "title": "Metro de Bogotá respondió a la protesta que bloqueó TransMilenio: esto dijo sobre el pago a los trabajadores",
-      "link": "https://www.semana.com/nacion/bogota/articulo/metro-de-bogota-respondio-a-la-protesta-que-bloqueo-transmilenio-esto-dijo-sobre-el-pago-a-los-trabajadores/202601/",
-      "source": "Semana - Bogotá"
+      "title": "¿Cómo funcionan las restricciones de movilidad en Bogotá este festivo? Pico y placa regional y horarios para ingresar a la ciudad este 2 de noviembre",
+      "link": "https://www.eltiempo.com/bogota/como-funcionan-las-restricciones-de-movilidad-en-bogota-este-festivo-pico-y-placa-regional-y-horarios-para-ingresar-a-la-ciudad-este-2-de-noviembre-3597795",
+      "source": "El Tiempo - Bogotá"
     },
     {
-      "title": "Tras la crisis de racionamiento, Bogotá blindará sus fuentes de agua con inversión internacional",
-      "link": "https://www.infobae.com/colombia/2026/10/31/tras-la-crisis-de-racionamiento-bogota-blindara-sus-fuentes-de-agua-con-inversion-internacional/",
+      "title": "Metro de Bogotá cancela el cierre de la estación temporal Calle 57 previsto para este 1 de noviembre: continuará funcionando",
+      "link": "https://www.eltiempo.com/bogota/metro-de-bogota-cancela-el-cierre-de-la-estacion-temporal-calle-57-previsto-para-este-1-de-noviembre-continuara-funcionando-3597820",
+      "source": "El Tiempo - Bogotá"
+    },
+    {
+      "title": "Voy y vuelvo | Las críticas de Briceño",
+      "link": "https://www.eltiempo.com/bogota/voy-y-vuelvo-las-criticas-de-briceno-3597761",
+      "source": "El Tiempo - Bogotá"
+    },
+    {
+      "title": "Contraloría pidió explicaciones al Acueducto de Bogotá por presuntas irregularidades en plan de renovación de los medidores de la ciudad",
+      "link": "https://www.infobae.com/colombia/2026/10/31/contraloria-pidio-explicaciones-al-acueducto-de-bogota-por-presuntas-irregularidades-en-plan-de-renovacion-de-los-medidores-de-la-ciudad/",
       "source": "Infobae Colombia"
     }
   ],
   "quote": {
-    "text": "Confieso que he vivido.",
-    "author": "Pablo Neruda",
+    "text": "Defender la alegría como una trinchera.",
+    "author": "Mario Benedetti",
     "origin": "local"
   }
 }
