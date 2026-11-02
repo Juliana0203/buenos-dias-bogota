@@ -1,24 +1,24 @@
 {
-  "date": "2026-11-01",
+  "date": "2026-11-02",
   "name": "Juli",
-  "greeting": "¡Buenos días, Juli! Que hoy te rinda el día. Dato: mañana es festivo (Día de Todos los Santos (observado)). Parece que hoy Bogotá se pone romántica con la lluvia.",
+  "greeting": "Arriba, Juli, es lunes. Semana nueva, oportunidades nuevas. Hoy es festivo (Día de Todos los Santos (observado)): a disfrutar el descanso. Parece que hoy Bogotá se pone romántica con la lluvia.",
   "summary": {
-    "date": "2026-11-01",
+    "date": "2026-11-02",
     "sent": "1",
-    "temp_min": "9.7",
-    "temp_max": "18.2",
-    "rain_prob": "99",
-    "aqi": "60",
+    "temp_min": "9.6",
+    "temp_max": "19.9",
+    "rain_prob": "100",
+    "aqi": "68",
     "trm": "3182.99",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 18.2,
-      "low": 17.2,
-      "high": 19.5,
-      "spread": 2.3000000000000007,
+      "value": 18.1,
+      "low": 17.4,
+      "high": 18.3,
+      "spread": 0.9000000000000021,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -27,28 +27,28 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 69
+      "score": 83
     },
     "feels_like": {
-      "value": 17.1,
-      "low": 14.8,
-      "high": 19.5,
-      "spread": 4.699999999999999,
+      "value": 16.9,
+      "low": 14.6,
+      "high": 17.1,
+      "spread": 2.5000000000000018,
       "n": 3,
-      "confidence": "media",
-      "disagree": true,
+      "confidence": "alta",
+      "disagree": false,
       "sources": [
         "Open-Meteo/ECMWF",
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 53
+      "score": 75
     },
     "tmin": {
-      "value": 9.7,
-      "low": 8.4,
-      "high": 12.9,
-      "spread": 4.5,
+      "value": 9.6,
+      "low": 7.7,
+      "high": 11.3,
+      "spread": 3.6000000000000005,
       "n": 3,
       "confidence": "media",
       "disagree": true,
@@ -57,13 +57,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 55
+      "score": 64
     },
     "tmax": {
-      "value": 18.2,
-      "low": 17.2,
-      "high": 19.6,
-      "spread": 2.400000000000002,
+      "value": 19.9,
+      "low": 18.3,
+      "high": 20.8,
+      "spread": 2.5,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -72,13 +72,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 76
+      "score": 75
     },
     "wind_kmh": {
-      "value": 13.0,
-      "low": 7.7,
-      "high": 13.7,
-      "spread": 5.999999999999999,
+      "value": 9.3,
+      "low": 7.6,
+      "high": 15.1,
+      "spread": 7.5,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +87,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 88
+      "score": 85
     },
     "uv": {
-      "value": 6.6,
-      "low": 6.6,
-      "high": 6.6,
+      "value": 7.2,
+      "low": 7.2,
+      "high": 7.2,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,24 +104,24 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 42.0,
-        "low": 30.0,
-        "high": 54.0,
-        "spread": 24.0,
+        "value": 52.5,
+        "low": 27.0,
+        "high": 78.0,
+        "spread": 51.0,
         "n": 2,
-        "confidence": "media",
-        "disagree": false,
+        "confidence": "baja",
+        "disagree": true,
         "sources": [
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 71
+        "score": 50
       },
       "tarde": {
-        "value": 99.0,
-        "low": 98.0,
+        "value": 99.5,
+        "low": 99.0,
         "high": 100.0,
-        "spread": 2.0,
+        "spread": 1.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -132,22 +132,22 @@
         "score": 98
       },
       "noche": {
-        "value": 84.0,
-        "low": 79.0,
-        "high": 89.0,
-        "spread": 10.0,
+        "value": 75.0,
+        "low": 55.0,
+        "high": 95.0,
+        "spread": 40.0,
         "n": 2,
-        "confidence": "media",
-        "disagree": false,
+        "confidence": "baja",
+        "disagree": true,
         "sources": [
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 88
+        "score": 52
       }
     },
-    "rain_peak_hour": 14,
-    "rain_peak_pct": 99.0,
+    "rain_peak_hour": 16,
+    "rain_peak_pct": 94.0,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
@@ -162,24 +162,24 @@
     "rain_note": "lluvia probable, aunque 2 modelos no la ven",
     "feels_periods": {
       "mañana": {
-        "low": 8.6,
-        "high": 17.7,
+        "low": 8.8,
+        "high": 19.4,
         "n": 3
       },
       "tarde": {
-        "low": 14.4,
-        "high": 17.1,
+        "low": 15.9,
+        "high": 19.2,
         "n": 3
       },
       "noche": {
-        "low": 10.2,
-        "high": 13.8,
+        "low": 10.3,
+        "high": 13.5,
         "n": 3
       }
     },
-    "score": 55,
-    "rain_score": 66,
-    "now_hour": 13,
+    "score": 64,
+    "rain_score": 47,
+    "now_hour": 16,
     "period_hours": {
       "mañana": [
         6,
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 60.0,
+    "aqi": 68.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -210,44 +210,44 @@
     "previous": 3166.91,
     "change_abs": null,
     "change_pct": null,
-    "avg30": 3193.1809523809525,
-    "vs_avg30_pct": -0.3191473497095098,
+    "avg30": 3187.4535,
+    "vs_avg30_pct": -0.14003341538944158,
     "is_min30": false,
     "is_max30": false,
-    "backup_value": 3164.299882,
+    "backup_value": 3192.232311,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
     ],
     "confidence": "alta",
-    "score": 88,
+    "score": 94,
     "valid_until": "2026-11-03",
     "is_weekend_or_holiday": true
   },
   "news": [
     {
-      "title": "¿Cómo funcionan las restricciones de movilidad en Bogotá este festivo? Pico y placa regional y horarios para ingresar a la ciudad este 2 de noviembre",
-      "link": "https://www.eltiempo.com/bogota/como-funcionan-las-restricciones-de-movilidad-en-bogota-este-festivo-pico-y-placa-regional-y-horarios-para-ingresar-a-la-ciudad-este-2-de-noviembre-3597795",
+      "title": "Así funcionará el pico y placa regional este lunes festivo: estos son los carros que podrán ingresar a Bogotá y la multa por incumplir la medida",
+      "link": "https://www.eltiempo.com/bogota/asi-funcionara-el-pico-y-placa-regional-este-lunes-festivo-estos-son-los-carros-que-podran-ingresar-a-bogota-y-la-multa-por-incumplir-la-medida-3597920",
       "source": "El Tiempo - Bogotá"
     },
     {
-      "title": "Metro de Bogotá cancela el cierre de la estación temporal Calle 57 previsto para este 1 de noviembre: continuará funcionando",
-      "link": "https://www.eltiempo.com/bogota/metro-de-bogota-cancela-el-cierre-de-la-estacion-temporal-calle-57-previsto-para-este-1-de-noviembre-continuara-funcionando-3597820",
+      "title": "Pico y placa regional del lunes 2 de noviembre: ¿los carros híbridos y eléctricos pueden ingresar a cualquier hora a Bogotá? Esto dice la norma",
+      "link": "https://www.eltiempo.com/bogota/pico-y-placa-regional-del-lunes-2-de-noviembre-los-carros-hibridos-y-electricos-pueden-ingresar-a-cualquier-hora-a-bogota-esto-dice-la-norma-3597902",
       "source": "El Tiempo - Bogotá"
     },
     {
-      "title": "Voy y vuelvo | Las críticas de Briceño",
-      "link": "https://www.eltiempo.com/bogota/voy-y-vuelvo-las-criticas-de-briceno-3597761",
-      "source": "El Tiempo - Bogotá"
-    },
-    {
-      "title": "Contraloría pidió explicaciones al Acueducto de Bogotá por presuntas irregularidades en plan de renovación de los medidores de la ciudad",
-      "link": "https://www.infobae.com/colombia/2026/10/31/contraloria-pidio-explicaciones-al-acueducto-de-bogota-por-presuntas-irregularidades-en-plan-de-renovacion-de-los-medidores-de-la-ciudad/",
+      "title": "Pico y placa regional: Bogotá tendrá controles por placa, reversibles, restricciones para motos y multas de $633.200 para el lunes festivo",
+      "link": "https://www.infobae.com/colombia/2026/11/01/pico-y-placa-regional-bogota-tendra-controles-por-placa-reversibles-restricciones-para-motos-y-multas-de-633200-para-el-lunes-festivo/",
       "source": "Infobae Colombia"
+    },
+    {
+      "title": "Así funciona el Pico y Placa en Bogotá en noviembre de 2026: restricciones, alternativas y sanciones",
+      "link": "https://caracol.com.co/2026/11/02/asi-funciona-el-pico-y-placa-en-bogota-en-noviembre-de-2026-restricciones-alternativas-y-sanciones/",
+      "source": "Caracol Radio"
     }
   ],
   "quote": {
-    "text": "Defender la alegría como una trinchera.",
+    "text": "Cuando creíamos que teníamos todas las respuestas, de pronto cambiaron todas las preguntas.",
     "author": "Mario Benedetti",
     "origin": "local"
   }
