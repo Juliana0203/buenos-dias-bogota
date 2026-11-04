@@ -1,24 +1,39 @@
 {
-  "date": "2026-11-03",
+  "date": "2026-11-04",
   "name": "Juli",
-  "greeting": "Buenos días, Juli ☀️ Espero que hayas dormido muy bien. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
+  "greeting": "Hola, Juli. Un día nuevo para hacerlo con ganas y con calma. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
   "summary": {
-    "date": "2026-11-03",
+    "date": "2026-11-04",
     "sent": "1",
-    "temp_min": "10.0",
-    "temp_max": "20.4",
+    "temp_min": "9.7",
+    "temp_max": "19.3",
     "rain_prob": "100",
     "aqi": "76",
-    "trm": "3182.99",
+    "trm": "3235.59",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 19.0,
-      "low": 16.9,
-      "high": 20.4,
-      "spread": 3.5,
+      "value": 18.3,
+      "low": 18.3,
+      "high": 19.3,
+      "spread": 1.0,
+      "n": 3,
+      "confidence": "alta",
+      "disagree": false,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 82
+    },
+    "feels_like": {
+      "value": 17.2,
+      "low": 16.5,
+      "high": 19.9,
+      "spread": 3.3999999999999986,
       "n": 3,
       "confidence": "media",
       "disagree": true,
@@ -27,13 +42,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 57
+      "score": 66
     },
-    "feels_like": {
-      "value": 17.9,
-      "low": 14.8,
-      "high": 20.3,
-      "spread": 5.5,
+    "tmin": {
+      "value": 9.7,
+      "low": 6.3,
+      "high": 11.7,
+      "spread": 5.3999999999999995,
       "n": 3,
       "confidence": "media",
       "disagree": true,
@@ -44,41 +59,11 @@
       ],
       "score": 50
     },
-    "tmin": {
-      "value": 10.0,
-      "low": 7.1,
-      "high": 11.3,
-      "spread": 4.200000000000001,
-      "n": 3,
-      "confidence": "media",
-      "disagree": true,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 58
-    },
     "tmax": {
-      "value": 20.4,
-      "low": 16.9,
-      "high": 21.4,
-      "spread": 4.5,
-      "n": 3,
-      "confidence": "media",
-      "disagree": true,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 55
-    },
-    "wind_kmh": {
-      "value": 8.6,
-      "low": 7.7,
-      "high": 11.5,
-      "spread": 3.8,
+      "value": 19.3,
+      "low": 18.3,
+      "high": 20.0,
+      "spread": 1.6999999999999993,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +72,27 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 92
+      "score": 83
+    },
+    "wind_kmh": {
+      "value": 7.1,
+      "low": 1.8,
+      "high": 9.6,
+      "spread": 7.8,
+      "n": 3,
+      "confidence": "alta",
+      "disagree": false,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 84
     },
     "uv": {
-      "value": 7.05,
-      "low": 7.05,
-      "high": 7.05,
+      "value": 7.65,
+      "low": 7.65,
+      "high": 7.65,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,10 +104,10 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 54.5,
-        "low": 29.0,
-        "high": 80.0,
-        "spread": 51.0,
+        "value": 49.0,
+        "low": 34.0,
+        "high": 64.0,
+        "spread": 30.0,
         "n": 2,
         "confidence": "baja",
         "disagree": true,
@@ -115,13 +115,13 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 50
+        "score": 64
       },
       "tarde": {
-        "value": 100.0,
-        "low": 100.0,
+        "value": 99.5,
+        "low": 99.0,
         "high": 100.0,
-        "spread": 0.0,
+        "spread": 1.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -133,9 +133,9 @@
       },
       "noche": {
         "value": 92.5,
-        "low": 85.0,
-        "high": 100.0,
-        "spread": 15.0,
+        "low": 86.0,
+        "high": 99.0,
+        "spread": 13.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -143,11 +143,11 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 82
+        "score": 84
       }
     },
-    "rain_peak_hour": 14,
-    "rain_peak_pct": 100.0,
+    "rain_peak_hour": 15,
+    "rain_peak_pct": 97.5,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
@@ -162,23 +162,23 @@
     "rain_note": "lluvia probable, aunque un modelo no la ve",
     "feels_periods": {
       "mañana": {
-        "low": 10.3,
-        "high": 20.1,
+        "low": 8.1,
+        "high": 17.3,
         "n": 3
       },
       "tarde": {
-        "low": 16.1,
-        "high": 21.1,
+        "low": 14.2,
+        "high": 20.2,
         "n": 3
       },
       "noche": {
-        "low": 9.9,
-        "high": 13.5,
+        "low": 12.0,
+        "high": 13.2,
         "n": 3
       }
     },
-    "score": 55,
-    "rain_score": 67,
+    "score": 50,
+    "rain_score": 72,
     "now_hour": 14,
     "period_hours": {
       "mañana": [
@@ -205,34 +205,49 @@
     "confidence": "baja"
   },
   "trm": {
-    "value": 3182.99,
-    "valid_from": "2026-10-31",
-    "previous": 3166.91,
-    "change_abs": 16.079999999999927,
-    "change_pct": 0.5077504570701387,
-    "avg30": 3182.9252631578947,
-    "vs_avg30_pct": 0.0020338787986753093,
+    "value": 3235.59,
+    "valid_from": "2026-11-04",
+    "previous": 3182.99,
+    "change_abs": 52.600000000000364,
+    "change_pct": 1.6525342523853472,
+    "avg30": 3185.5585,
+    "vs_avg30_pct": 1.5705723187943352,
     "is_min30": false,
     "is_max30": false,
-    "backup_value": 3197.305165,
+    "backup_value": 3221.311219,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
     ],
     "confidence": "alta",
     "score": 91,
-    "valid_until": "2026-11-03",
+    "valid_until": "2026-11-04",
     "is_weekend_or_holiday": false
   },
   "news": [
     {
-      "title": "Marchas en Bogotá, plantones y ‘besatón’: programación del 3 al 7 de noviembre",
-      "link": "https://www.elespectador.com/bogota/marchas-en-bogota-plantones-y-besaton-programacion-del-3-al-7-de-noviembre/",
-      "source": "El Espectador"
+      "title": "Programaron seis manifestaciones para esta semana en Bogotá: Fechas, horarios y ubicaciones de los bloqueos",
+      "link": "https://www.semana.com/nacion/bogota/articulo/programaron-seis-manifestaciones-para-esta-semana-en-bogota-fechas-horarios-y-ubicaciones-de-los-bloqueos/202611/",
+      "source": "Semana - Bogotá"
+    },
+    {
+      "title": "Monumental trancón en importante vía de Bogotá por TransMilenio varado: estos son los detalles",
+      "link": "https://www.semana.com/vehiculos/articulo/monumental-trancon-en-importante-via-de-bogota-por-transmilenio-varado-estos-son-los-detalles/202612/",
+      "source": "Semana - Bogotá"
+    },
+    {
+      "title": "Ángela Benedetti aseguró que Gustavo Petro le hizo pagar una millonaria multa en un hotel de Bogotá durante la campaña presidencial: “Hasta olía a drogas”",
+      "link": "https://www.infobae.com/colombia/2026/11/04/angela-benedetti-aseguro-que-gustavo-petro-le-hizo-pagar-una-millonaria-multa-en-un-hotel-de-bogota-durante-la-campana-presidencial-hasta-olia-a-drogas/",
+      "source": "Infobae Colombia"
+    },
+    {
+      "title": "Cortes de agua en Bogotá el 4 y 5 de noviembre: estas son las localidades, los barrios afectados y los horarios de suspensión del servicio",
+      "link": "https://www.eltiempo.com/bogota/cortes-de-agua-en-bogota-el-4-y-5-de-noviembre-estas-son-las-localidades-los-barrios-afectados-y-los-horarios-de-suspension-del-servicio-3598295",
+      "source": "El Tiempo - Bogotá"
     }
   ],
   "quote": {
-    "text": "Dondequiera que haya un ser humano, hay una oportunidad para la bondad.",
+    "text": "No es que tengamos poco tiempo, sino que perdemos mucho.",
     "author": "Séneca",
     "origin": "local"
   }
