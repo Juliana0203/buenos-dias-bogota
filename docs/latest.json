@@ -1,39 +1,39 @@
 {
-  "date": "2026-11-04",
+  "date": "2026-11-05",
   "name": "Juli",
-  "greeting": "Hola, Juli. Un día nuevo para hacerlo con ganas y con calma. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
+  "greeting": "¡Buenos días, Juli! Que hoy te rinda el día. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
   "summary": {
-    "date": "2026-11-04",
+    "date": "2026-11-05",
     "sent": "1",
-    "temp_min": "9.7",
-    "temp_max": "19.3",
+    "temp_min": "10.0",
+    "temp_max": "19.0",
     "rain_prob": "100",
-    "aqi": "76",
-    "trm": "3235.59",
+    "aqi": "79",
+    "trm": "3221.19",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 18.3,
-      "low": 18.3,
-      "high": 19.3,
-      "spread": 1.0,
+      "value": 15.8,
+      "low": 14.9,
+      "high": 18.1,
+      "spread": 3.200000000000001,
       "n": 3,
-      "confidence": "alta",
-      "disagree": false,
+      "confidence": "media",
+      "disagree": true,
       "sources": [
         "Open-Meteo/ECMWF",
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 82
+      "score": 60
     },
     "feels_like": {
-      "value": 17.2,
-      "low": 16.5,
-      "high": 19.9,
-      "spread": 3.3999999999999986,
+      "value": 16.1,
+      "low": 13.6,
+      "high": 17.7,
+      "spread": 4.1,
       "n": 3,
       "confidence": "media",
       "disagree": true,
@@ -42,28 +42,28 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 66
+      "score": 59
     },
     "tmin": {
-      "value": 9.7,
-      "low": 6.3,
-      "high": 11.7,
-      "spread": 5.3999999999999995,
+      "value": 10.0,
+      "low": 8.1,
+      "high": 10.5,
+      "spread": 2.4000000000000004,
       "n": 3,
-      "confidence": "media",
-      "disagree": true,
+      "confidence": "alta",
+      "disagree": false,
       "sources": [
         "Open-Meteo/ECMWF",
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 50
+      "score": 76
     },
     "tmax": {
-      "value": 19.3,
-      "low": 18.3,
-      "high": 20.0,
-      "spread": 1.6999999999999993,
+      "value": 19.0,
+      "low": 17.9,
+      "high": 20.7,
+      "spread": 2.8000000000000007,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -72,13 +72,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 83
+      "score": 72
     },
     "wind_kmh": {
-      "value": 7.1,
-      "low": 1.8,
-      "high": 9.6,
-      "spread": 7.8,
+      "value": 6.0,
+      "low": 5.6,
+      "high": 12.2,
+      "spread": 6.6,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +87,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 84
+      "score": 87
     },
     "uv": {
-      "value": 7.65,
-      "low": 7.65,
-      "high": 7.65,
+      "value": 8.0,
+      "low": 8.0,
+      "high": 8.0,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,24 +104,24 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 49.0,
-        "low": 34.0,
-        "high": 64.0,
-        "spread": 30.0,
+        "value": 70.5,
+        "low": 66.0,
+        "high": 75.0,
+        "spread": 9.0,
         "n": 2,
-        "confidence": "baja",
-        "disagree": true,
+        "confidence": "media",
+        "disagree": false,
         "sources": [
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 64
+        "score": 89
       },
       "tarde": {
-        "value": 99.5,
-        "low": 99.0,
+        "value": 100.0,
+        "low": 100.0,
         "high": 100.0,
-        "spread": 1.0,
+        "spread": 0.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -132,10 +132,10 @@
         "score": 98
       },
       "noche": {
-        "value": 92.5,
-        "low": 86.0,
-        "high": 99.0,
-        "spread": 13.0,
+        "value": 100.0,
+        "low": 100.0,
+        "high": 100.0,
+        "spread": 0.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -143,43 +143,43 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 84
+        "score": 98
       }
     },
     "rain_peak_hour": 15,
-    "rain_peak_pct": 97.5,
+    "rain_peak_pct": 100.0,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
       "Open-Meteo/ICON"
     ],
-    "confidence": "baja",
+    "confidence": "media",
     "rain_sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS"
     ],
-    "rain_confidence": "baja",
-    "rain_note": "lluvia probable, aunque un modelo no la ve",
+    "rain_confidence": "alta",
+    "rain_note": null,
     "feels_periods": {
       "mañana": {
-        "low": 8.1,
-        "high": 17.3,
+        "low": 10.0,
+        "high": 20.7,
         "n": 3
       },
       "tarde": {
-        "low": 14.2,
-        "high": 20.2,
+        "low": 15.2,
+        "high": 20.3,
         "n": 3
       },
       "noche": {
-        "low": 12.0,
-        "high": 13.2,
+        "low": 12.1,
+        "high": 14.0,
         "n": 3
       }
     },
-    "score": 50,
-    "rain_score": 72,
-    "now_hour": 14,
+    "score": 60,
+    "rain_score": 95,
+    "now_hour": 15,
     "period_hours": {
       "mañana": [
         6,
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 76.0,
+    "aqi": 79.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -205,49 +205,49 @@
     "confidence": "baja"
   },
   "trm": {
-    "value": 3235.59,
-    "valid_from": "2026-11-04",
-    "previous": 3182.99,
-    "change_abs": 52.600000000000364,
-    "change_pct": 1.6525342523853472,
-    "avg30": 3185.5585,
-    "vs_avg30_pct": 1.5705723187943352,
+    "value": 3221.19,
+    "valid_from": "2026-11-05",
+    "previous": 3235.59,
+    "change_abs": -14.400000000000091,
+    "change_pct": -0.4450502072265055,
+    "avg30": 3187.255238095238,
+    "vs_avg30_pct": 1.064701737694599,
     "is_min30": false,
     "is_max30": false,
-    "backup_value": 3221.311219,
+    "backup_value": 3245.015848,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
     ],
     "confidence": "alta",
-    "score": 91,
-    "valid_until": "2026-11-04",
+    "score": 85,
+    "valid_until": "2026-11-05",
     "is_weekend_or_holiday": false
   },
   "news": [
     {
-      "title": "Programaron seis manifestaciones para esta semana en Bogotá: Fechas, horarios y ubicaciones de los bloqueos",
-      "link": "https://www.semana.com/nacion/bogota/articulo/programaron-seis-manifestaciones-para-esta-semana-en-bogota-fechas-horarios-y-ubicaciones-de-los-bloqueos/202611/",
+      "title": "Accidente entre dos articulados de TransMilenio en la calle 80 con carrera 27 obligó al cierre temporal de la estación Polo y generó trancón",
+      "link": "https://www.eltiempo.com/bogota/accidente-entre-dos-articulados-de-transmilenio-en-la-calle-80-con-carrera-27-obligo-al-cierre-temporal-de-la-estacion-polo-y-genero-trancon-3598729",
+      "source": "El Tiempo - Bogotá"
+    },
+    {
+      "title": "Manifestaciones alteran la movilidad en Bogotá: estos son los puntos más afectados",
+      "link": "https://www.semana.com/nacion/bogota/articulo/manifestaciones-alteran-la-movilidad-en-bogota-estos-son-los-puntos-mas-afectados/202608/",
       "source": "Semana - Bogotá"
     },
     {
-      "title": "Monumental trancón en importante vía de Bogotá por TransMilenio varado: estos son los detalles",
-      "link": "https://www.semana.com/vehiculos/articulo/monumental-trancon-en-importante-via-de-bogota-por-transmilenio-varado-estos-son-los-detalles/202612/",
-      "source": "Semana - Bogotá"
-    },
-    {
-      "title": "Ángela Benedetti aseguró que Gustavo Petro le hizo pagar una millonaria multa en un hotel de Bogotá durante la campaña presidencial: “Hasta olía a drogas”",
-      "link": "https://www.infobae.com/colombia/2026/11/04/angela-benedetti-aseguro-que-gustavo-petro-le-hizo-pagar-una-millonaria-multa-en-un-hotel-de-bogota-durante-la-campana-presidencial-hasta-olia-a-drogas/",
+      "title": "Plataforma de Pico y Placa Solidario en Bogotá sufrió un ciberataque que pondría en peligro el dinero de los usuarios: esto dijo la Secretaría de Movilidad",
+      "link": "https://www.infobae.com/colombia/2026/11/05/plataforma-de-pico-y-placa-solidario-en-bogota-sufrio-un-ciberataque-que-pondria-en-peligro-el-dinero-de-los-usuarios-esto-dijo-la-secretaria-de-movilidad/",
       "source": "Infobae Colombia"
     },
     {
-      "title": "Cortes de agua en Bogotá el 4 y 5 de noviembre: estas son las localidades, los barrios afectados y los horarios de suspensión del servicio",
-      "link": "https://www.eltiempo.com/bogota/cortes-de-agua-en-bogota-el-4-y-5-de-noviembre-estas-son-las-localidades-los-barrios-afectados-y-los-horarios-de-suspension-del-servicio-3598295",
+      "title": "Bomberos de Bogotá entregan adhesivos para salvar mascotas en emergencias: así puede reclamar el distintivo para su vivienda",
+      "link": "https://www.eltiempo.com/bogota/bomberos-de-bogota-entregan-adhesivos-para-salvar-mascotas-en-emergencias-asi-puede-reclamar-el-distintivo-para-su-vivienda-3598694",
       "source": "El Tiempo - Bogotá"
     }
   ],
   "quote": {
-    "text": "No es que tengamos poco tiempo, sino que perdemos mucho.",
+    "text": "Mientras vivimos, sigamos aprendiendo a vivir.",
     "author": "Séneca",
     "origin": "local"
   }
