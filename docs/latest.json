@@ -1,39 +1,39 @@
 {
-  "date": "2026-11-05",
+  "date": "2026-11-06",
   "name": "Juli",
-  "greeting": "¡Buenos días, Juli! Que hoy te rinda el día. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
+  "greeting": "¡Feliz viernes, Juli! Ya casi llegamos al fin de semana. Parece que hoy Bogotá se pone romántica con la lluvia.",
   "summary": {
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "sent": "1",
-    "temp_min": "10.0",
-    "temp_max": "19.0",
+    "temp_min": "10.5",
+    "temp_max": "17.9",
     "rain_prob": "100",
-    "aqi": "79",
-    "trm": "3221.19",
+    "aqi": "56",
+    "trm": "3228.26",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 15.8,
-      "low": 14.9,
-      "high": 18.1,
-      "spread": 3.200000000000001,
+      "value": 17.0,
+      "low": 16.1,
+      "high": 17.7,
+      "spread": 1.5999999999999979,
       "n": 3,
-      "confidence": "media",
-      "disagree": true,
+      "confidence": "alta",
+      "disagree": false,
       "sources": [
         "Open-Meteo/ECMWF",
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 60
+      "score": 76
     },
     "feels_like": {
-      "value": 16.1,
-      "low": 13.6,
-      "high": 17.7,
-      "spread": 4.1,
+      "value": 16.8,
+      "low": 15.2,
+      "high": 19.3,
+      "spread": 4.100000000000001,
       "n": 3,
       "confidence": "media",
       "disagree": true,
@@ -45,10 +45,10 @@
       "score": 59
     },
     "tmin": {
-      "value": 10.0,
-      "low": 8.1,
-      "high": 10.5,
-      "spread": 2.4000000000000004,
+      "value": 10.5,
+      "low": 10.4,
+      "high": 11.5,
+      "spread": 1.0999999999999996,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -57,13 +57,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 76
+      "score": 89
     },
     "tmax": {
-      "value": 19.0,
-      "low": 17.9,
-      "high": 20.7,
-      "spread": 2.8000000000000007,
+      "value": 17.9,
+      "low": 16.5,
+      "high": 19.2,
+      "spread": 2.6999999999999993,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -72,13 +72,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 72
+      "score": 73
     },
     "wind_kmh": {
-      "value": 6.0,
-      "low": 5.6,
-      "high": 12.2,
-      "spread": 6.6,
+      "value": 7.6,
+      "low": 5.5,
+      "high": 10.8,
+      "spread": 5.300000000000001,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +87,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 87
+      "score": 89
     },
     "uv": {
-      "value": 8.0,
-      "low": 8.0,
-      "high": 8.0,
+      "value": 7.75,
+      "low": 7.75,
+      "high": 7.75,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,18 +104,18 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 70.5,
-        "low": 66.0,
-        "high": 75.0,
-        "spread": 9.0,
+        "value": 71.0,
+        "low": 42.0,
+        "high": 100.0,
+        "spread": 58.0,
         "n": 2,
-        "confidence": "media",
-        "disagree": false,
+        "confidence": "baja",
+        "disagree": true,
         "sources": [
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 89
+        "score": 50
       },
       "tarde": {
         "value": 100.0,
@@ -132,10 +132,10 @@
         "score": 98
       },
       "noche": {
-        "value": 100.0,
-        "low": 100.0,
+        "value": 98.0,
+        "low": 96.0,
         "high": 100.0,
-        "spread": 0.0,
+        "spread": 4.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -143,43 +143,43 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 98
+        "score": 95
       }
     },
-    "rain_peak_hour": 15,
+    "rain_peak_hour": 14,
     "rain_peak_pct": 100.0,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
       "Open-Meteo/ICON"
     ],
-    "confidence": "media",
+    "confidence": "baja",
     "rain_sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS"
     ],
-    "rain_confidence": "alta",
+    "rain_confidence": "baja",
     "rain_note": null,
     "feels_periods": {
       "mañana": {
-        "low": 10.0,
-        "high": 20.7,
+        "low": 12.1,
+        "high": 20.0,
         "n": 3
       },
       "tarde": {
-        "low": 15.2,
-        "high": 20.3,
+        "low": 14.9,
+        "high": 18.5,
         "n": 3
       },
       "noche": {
-        "low": 12.1,
-        "high": 14.0,
+        "low": 10.1,
+        "high": 13.2,
         "n": 3
       }
     },
-    "score": 60,
-    "rain_score": 95,
-    "now_hour": 15,
+    "score": 73,
+    "rain_score": 81,
+    "now_hour": 14,
     "period_hours": {
       "mañana": [
         6,
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 79.0,
+    "aqi": 56.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -205,49 +205,39 @@
     "confidence": "baja"
   },
   "trm": {
-    "value": 3221.19,
-    "valid_from": "2026-11-05",
-    "previous": 3235.59,
-    "change_abs": -14.400000000000091,
-    "change_pct": -0.4450502072265055,
-    "avg30": 3187.255238095238,
-    "vs_avg30_pct": 1.064701737694599,
+    "value": 3228.26,
+    "valid_from": "2026-11-06",
+    "previous": 3221.19,
+    "change_abs": 7.070000000000164,
+    "change_pct": 0.2194841037008113,
+    "avg30": 3188.135238095238,
+    "vs_avg30_pct": 1.2585652398087999,
     "is_min30": false,
     "is_max30": false,
-    "backup_value": 3245.015848,
+    "backup_value": 3236.818587,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
     ],
     "confidence": "alta",
-    "score": 85,
-    "valid_until": "2026-11-05",
+    "score": 95,
+    "valid_until": "2026-11-06",
     "is_weekend_or_holiday": false
   },
   "news": [
     {
-      "title": "Accidente entre dos articulados de TransMilenio en la calle 80 con carrera 27 obligó al cierre temporal de la estación Polo y generó trancón",
-      "link": "https://www.eltiempo.com/bogota/accidente-entre-dos-articulados-de-transmilenio-en-la-calle-80-con-carrera-27-obligo-al-cierre-temporal-de-la-estacion-polo-y-genero-trancon-3598729",
-      "source": "El Tiempo - Bogotá"
-    },
-    {
-      "title": "Manifestaciones alteran la movilidad en Bogotá: estos son los puntos más afectados",
-      "link": "https://www.semana.com/nacion/bogota/articulo/manifestaciones-alteran-la-movilidad-en-bogota-estos-son-los-puntos-mas-afectados/202608/",
+      "title": "Fuertes lluvias de este jueves provocan caos e inundaciones en las avenidas de Bogotá",
+      "link": "https://www.semana.com/nacion/bogota/articulo/fuertes-lluvias-de-este-jueves-provocan-caos-e-inundaciones-en-las-avenidas-de-bogota/202614/",
       "source": "Semana - Bogotá"
     },
     {
-      "title": "Plataforma de Pico y Placa Solidario en Bogotá sufrió un ciberataque que pondría en peligro el dinero de los usuarios: esto dijo la Secretaría de Movilidad",
-      "link": "https://www.infobae.com/colombia/2026/11/05/plataforma-de-pico-y-placa-solidario-en-bogota-sufrio-un-ciberataque-que-pondria-en-peligro-el-dinero-de-los-usuarios-esto-dijo-la-secretaria-de-movilidad/",
+      "title": "Pico y Placa en Bogotá: restricciones vehiculares para evitar multas este viernes 6 de noviembre",
+      "link": "https://www.infobae.com/colombia/2026/11/06/pico-y-placa-en-bogota-restricciones-vehiculares-para-evitar-multas-este-viernes-6-de-noviembre/",
       "source": "Infobae Colombia"
-    },
-    {
-      "title": "Bomberos de Bogotá entregan adhesivos para salvar mascotas en emergencias: así puede reclamar el distintivo para su vivienda",
-      "link": "https://www.eltiempo.com/bogota/bomberos-de-bogota-entregan-adhesivos-para-salvar-mascotas-en-emergencias-asi-puede-reclamar-el-distintivo-para-su-vivienda-3598694",
-      "source": "El Tiempo - Bogotá"
     }
   ],
   "quote": {
-    "text": "Mientras vivimos, sigamos aprendiendo a vivir.",
+    "text": "No hay viento favorable para el que no sabe adónde va.",
     "author": "Séneca",
     "origin": "local"
   }
