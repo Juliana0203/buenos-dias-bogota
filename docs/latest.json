@@ -1,54 +1,54 @@
 {
-  "date": "2026-11-07",
+  "date": "2026-11-08",
   "name": "Juli",
-  "greeting": "Buen día, Juli. Que la buena energía te acompañe hoy. Parece que hoy Bogotá se pone romántica con la lluvia.",
+  "greeting": "Hola, Juli. Un día nuevo para hacerlo con ganas y con calma. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
   "summary": {
-    "date": "2026-11-07",
+    "date": "2026-11-08",
     "sent": "1",
-    "temp_min": "9.6",
-    "temp_max": "18.3",
-    "rain_prob": "98",
-    "aqi": "60",
+    "temp_min": "9.9",
+    "temp_max": "18.8",
+    "rain_prob": "92",
+    "aqi": "55",
     "trm": "3237.83",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 16.6,
-      "low": 14.4,
-      "high": 18.7,
-      "spread": 4.299999999999999,
+      "value": 18.5,
+      "low": 18.0,
+      "high": 19.3,
+      "spread": 1.3000000000000007,
       "n": 3,
-      "confidence": "media",
-      "disagree": true,
+      "confidence": "alta",
+      "disagree": false,
       "sources": [
         "Open-Meteo/ECMWF",
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 49
+      "score": 79
     },
     "feels_like": {
-      "value": 15.2,
-      "low": 13.0,
-      "high": 19.1,
-      "spread": 6.100000000000001,
+      "value": 18.1,
+      "low": 17.0,
+      "high": 18.4,
+      "spread": 1.3999999999999986,
       "n": 3,
-      "confidence": "media",
-      "disagree": true,
+      "confidence": "alta",
+      "disagree": false,
       "sources": [
         "Open-Meteo/ECMWF",
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 50
+      "score": 86
     },
     "tmin": {
-      "value": 9.6,
-      "low": 9.5,
+      "value": 9.9,
+      "low": 9.7,
       "high": 11.3,
-      "spread": 1.8000000000000007,
+      "spread": 1.6000000000000014,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -57,13 +57,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 82
+      "score": 84
     },
     "tmax": {
-      "value": 18.3,
-      "low": 17.1,
-      "high": 18.8,
-      "spread": 1.6999999999999993,
+      "value": 18.8,
+      "low": 18.0,
+      "high": 19.9,
+      "spread": 1.8999999999999986,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -72,13 +72,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 83
+      "score": 81
     },
     "wind_kmh": {
-      "value": 8.0,
-      "low": 7.6,
-      "high": 9.4,
-      "spread": 1.8000000000000007,
+      "value": 11.6,
+      "low": 3.6,
+      "high": 13.3,
+      "spread": 9.700000000000001,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +87,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 96
+      "score": 81
     },
     "uv": {
-      "value": 6.75,
-      "low": 6.75,
-      "high": 6.75,
+      "value": 9.3,
+      "low": 9.3,
+      "high": 9.3,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,9 +104,23 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 64.5,
-        "low": 57.0,
-        "high": 72.0,
+        "value": 65.0,
+        "low": 46.0,
+        "high": 84.0,
+        "spread": 38.0,
+        "n": 2,
+        "confidence": "baja",
+        "disagree": true,
+        "sources": [
+          "Open-Meteo/ECMWF",
+          "Open-Meteo/GFS"
+        ],
+        "score": 54
+      },
+      "tarde": {
+        "value": 92.5,
+        "low": 85.0,
+        "high": 100.0,
         "spread": 15.0,
         "n": 2,
         "confidence": "media",
@@ -117,25 +131,11 @@
         ],
         "score": 82
       },
-      "tarde": {
-        "value": 98.5,
-        "low": 97.0,
-        "high": 100.0,
-        "spread": 3.0,
-        "n": 2,
-        "confidence": "media",
-        "disagree": false,
-        "sources": [
-          "Open-Meteo/ECMWF",
-          "Open-Meteo/GFS"
-        ],
-        "score": 96
-      },
       "noche": {
-        "value": 76.5,
-        "low": 72.0,
-        "high": 81.0,
-        "spread": 9.0,
+        "value": 53.0,
+        "low": 44.0,
+        "high": 62.0,
+        "spread": 18.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -143,11 +143,11 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 89
+        "score": 78
       }
     },
-    "rain_peak_hour": 14,
-    "rain_peak_pct": 98.5,
+    "rain_peak_hour": 13,
+    "rain_peak_pct": 92.0,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
@@ -159,27 +159,27 @@
       "Open-Meteo/GFS"
     ],
     "rain_confidence": "baja",
-    "rain_note": "lluvia probable, aunque 2 modelos no la ven",
+    "rain_note": "lluvia probable, aunque un modelo no la ve",
     "feels_periods": {
       "mañana": {
-        "low": 8.7,
-        "high": 18.9,
+        "low": 9.0,
+        "high": 17.5,
         "n": 3
       },
       "tarde": {
-        "low": 13.5,
-        "high": 15.7,
+        "low": 14.5,
+        "high": 18.6,
         "n": 3
       },
       "noche": {
-        "low": 10.0,
-        "high": 12.7,
+        "low": 9.2,
+        "high": 12.8,
         "n": 3
       }
     },
-    "score": 49,
-    "rain_score": 69,
-    "now_hour": 12,
+    "score": 79,
+    "rain_score": 61,
+    "now_hour": 13,
     "period_hours": {
       "mañana": [
         6,
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 60.0,
+    "aqi": 55.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -210,11 +210,11 @@
     "previous": 3228.26,
     "change_abs": null,
     "change_pct": null,
-    "avg30": 3189.174285714286,
-    "vs_avg30_pct": 1.525652408012458,
+    "avg30": 3186.689,
+    "vs_avg30_pct": 1.604831848981814,
     "is_min30": false,
-    "is_max30": false,
-    "backup_value": 3240.081987,
+    "is_max30": true,
+    "backup_value": 3239.854719,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
@@ -226,13 +226,13 @@
   },
   "news": [
     {
-      "title": "Denuncian paso irregular de motociclistas por el separador de la avenida Boyacá en Bogotá para evadir trancones: “Los cogieron de trocha”",
-      "link": "https://www.infobae.com/colombia/2026/11/07/denuncian-paso-irregular-de-motociclistas-por-el-separador-de-la-avenida-boyaca-en-bogota-para-evadir-trancones-los-cogieron-de-trocha/",
-      "source": "Infobae Colombia"
+      "title": "Incendio de vehículo en Bogotá: emergencia en la avenida NQS con calle 92 generó congestión y complicaciones en la movilidad",
+      "link": "https://www.eltiempo.com/bogota/incendio-de-vehiculo-en-bogota-emergencia-en-la-autopista-norte-sorprendio-a-conductores-y-afecto-la-movilidad-3599329",
+      "source": "El Tiempo - Bogotá"
     }
   ],
   "quote": {
-    "text": "Todo lo que escuchamos es una opinión, no un hecho. Todo lo que vemos es una perspectiva, no la verdad.",
+    "text": "Lo que no es útil para la colmena no es útil para la abeja.",
     "author": "Marco Aurelio",
     "origin": "local"
   }
