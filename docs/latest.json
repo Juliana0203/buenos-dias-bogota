@@ -1,24 +1,24 @@
 {
-  "date": "2026-11-08",
+  "date": "2026-11-09",
   "name": "Juli",
-  "greeting": "Hola, Juli. Un día nuevo para hacerlo con ganas y con calma. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
+  "greeting": "Hola, Juli, buen día. Aquí va tu resumen para salir tranquila a la calle.",
   "summary": {
-    "date": "2026-11-08",
+    "date": "2026-11-09",
     "sent": "1",
-    "temp_min": "9.9",
-    "temp_max": "18.8",
-    "rain_prob": "92",
-    "aqi": "55",
+    "temp_min": "8.7",
+    "temp_max": "20.3",
+    "rain_prob": "38",
+    "aqi": "56",
     "trm": "3237.83",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 18.5,
-      "low": 18.0,
-      "high": 19.3,
-      "spread": 1.3000000000000007,
+      "value": 15.9,
+      "low": 14.9,
+      "high": 16.9,
+      "spread": 1.9999999999999982,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -27,13 +27,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 79
+      "score": 72
     },
     "feels_like": {
-      "value": 18.1,
-      "low": 17.0,
-      "high": 18.4,
-      "spread": 1.3999999999999986,
+      "value": 13.1,
+      "low": 12.7,
+      "high": 15.4,
+      "spread": 2.700000000000001,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -42,13 +42,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 86
+      "score": 73
     },
     "tmin": {
-      "value": 9.9,
-      "low": 9.7,
-      "high": 11.3,
-      "spread": 1.6000000000000014,
+      "value": 8.7,
+      "low": 8.4,
+      "high": 8.9,
+      "spread": 0.5,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -57,13 +57,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 84
+      "score": 95
     },
     "tmax": {
-      "value": 18.8,
-      "low": 18.0,
-      "high": 19.9,
-      "spread": 1.8999999999999986,
+      "value": 20.3,
+      "low": 18.7,
+      "high": 21.1,
+      "spread": 2.400000000000002,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -72,13 +72,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 81
+      "score": 76
     },
     "wind_kmh": {
-      "value": 11.6,
-      "low": 3.6,
-      "high": 13.3,
-      "spread": 9.700000000000001,
+      "value": 12.5,
+      "low": 8.7,
+      "high": 13.9,
+      "spread": 5.200000000000001,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +87,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 81
+      "score": 90
     },
     "uv": {
-      "value": 9.3,
-      "low": 9.3,
-      "high": 9.3,
+      "value": 8.65,
+      "low": 8.65,
+      "high": 8.65,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,24 +104,24 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 65.0,
-        "low": 46.0,
-        "high": 84.0,
-        "spread": 38.0,
+        "value": 8.5,
+        "low": 4.0,
+        "high": 13.0,
+        "spread": 9.0,
         "n": 2,
-        "confidence": "baja",
-        "disagree": true,
+        "confidence": "media",
+        "disagree": false,
         "sources": [
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 54
+        "score": 89
       },
       "tarde": {
-        "value": 92.5,
-        "low": 85.0,
-        "high": 100.0,
-        "spread": 15.0,
+        "value": 38.5,
+        "low": 35.0,
+        "high": 42.0,
+        "spread": 7.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -129,13 +129,13 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 82
+        "score": 92
       },
       "noche": {
-        "value": 53.0,
-        "low": 44.0,
-        "high": 62.0,
-        "spread": 18.0,
+        "value": 7.0,
+        "low": 1.0,
+        "high": 13.0,
+        "spread": 12.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -143,43 +143,43 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 78
+        "score": 86
       }
     },
-    "rain_peak_hour": 13,
-    "rain_peak_pct": 92.0,
+    "rain_peak_hour": 17,
+    "rain_peak_pct": 17.5,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
       "Open-Meteo/ICON"
     ],
-    "confidence": "baja",
+    "confidence": "alta",
     "rain_sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS"
     ],
-    "rain_confidence": "baja",
-    "rain_note": "lluvia probable, aunque un modelo no la ve",
+    "rain_confidence": "alta",
+    "rain_note": null,
     "feels_periods": {
       "mañana": {
-        "low": 9.0,
-        "high": 17.5,
+        "low": 6.9,
+        "high": 19.6,
         "n": 3
       },
       "tarde": {
-        "low": 14.5,
-        "high": 18.6,
+        "low": 13.1,
+        "high": 18.8,
         "n": 3
       },
       "noche": {
-        "low": 9.2,
-        "high": 12.8,
+        "low": 8.6,
+        "high": 12.1,
         "n": 3
       }
     },
-    "score": 79,
-    "rain_score": 61,
-    "now_hour": 13,
+    "score": 72,
+    "rain_score": 89,
+    "now_hour": 17,
     "period_hours": {
       "mañana": [
         6,
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 55.0,
+    "aqi": 56.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -208,32 +208,47 @@
     "value": 3237.83,
     "valid_from": "2026-11-07",
     "previous": 3228.26,
-    "change_abs": null,
-    "change_pct": null,
-    "avg30": 3186.689,
-    "vs_avg30_pct": 1.604831848981814,
+    "change_abs": 9.569999999999709,
+    "change_pct": 0.29644452429481233,
+    "avg30": 3185.001578947368,
+    "vs_avg30_pct": 1.6586623190965988,
     "is_min30": false,
     "is_max30": true,
-    "backup_value": 3239.854719,
+    "backup_value": 3243.549,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
     ],
     "confidence": "alta",
-    "score": 98,
+    "score": 96,
     "valid_until": "2026-11-09",
-    "is_weekend_or_holiday": true
+    "is_weekend_or_holiday": false
   },
   "news": [
     {
-      "title": "Incendio de vehículo en Bogotá: emergencia en la avenida NQS con calle 92 generó congestión y complicaciones en la movilidad",
-      "link": "https://www.eltiempo.com/bogota/incendio-de-vehiculo-en-bogota-emergencia-en-la-autopista-norte-sorprendio-a-conductores-y-afecto-la-movilidad-3599329",
+      "title": "Video | Bus del Sitp se incendió tras fuerte choque contra un taxi en San Cristóbal, en el sur de Bogotá: emergencia provocó el cierre de la vía",
+      "link": "https://www.eltiempo.com/bogota/reportan-incendio-tras-choque-entre-bus-de-sitp-y-taxi-en-la-localidad-de-san-cristobal-bogota-ya-se-controlo-el-fuego-y-el-paso-esta-restringido-3599644",
       "source": "El Tiempo - Bogotá"
+    },
+    {
+      "title": "Pico y placa en Bogotá para el martes 10 de noviembre de 2026: conozca qué carros y taxis no pueden circular",
+      "link": "https://www.eltiempo.com/bogota/pico-y-placa-en-bogota-para-el-martes-10-de-noviembre-de-2026-conozca-que-carros-y-taxis-no-pueden-circular-3599510",
+      "source": "El Tiempo - Bogotá"
+    },
+    {
+      "title": "¡Evite multas! Este es el pico y placa en Bogotá para la semana del 9 al 15 de noviembre de 2026",
+      "link": "https://caracol.com.co/2026/11/09/evite-multas-este-es-el-pico-y-placa-en-bogota-para-la-semana-del-9-al-15-de-noviembre-de-2026/",
+      "source": "Caracol Radio"
+    },
+    {
+      "title": "Pico y Placa: qué automóviles no circulan en Bogotá este 9 de noviembre",
+      "link": "https://www.infobae.com/colombia/2026/11/09/pico-y-placa-que-automoviles-no-circulan-en-bogota-este-9-de-noviembre/",
+      "source": "Infobae Colombia"
     }
   ],
   "quote": {
-    "text": "Lo que no es útil para la colmena no es útil para la abeja.",
-    "author": "Marco Aurelio",
+    "text": "No son las cosas las que nos perturban, sino la opinión que tenemos de ellas.",
+    "author": "Epicteto",
     "origin": "local"
   }
 }
