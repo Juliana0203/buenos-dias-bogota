@@ -1,24 +1,24 @@
 {
-  "date": "2026-11-09",
+  "date": "2026-11-10",
   "name": "Juli",
-  "greeting": "Hola, Juli, buen día. Aquí va tu resumen para salir tranquila a la calle.",
+  "greeting": "Buenos días, Juli ☀️ Espero que hayas dormido muy bien.",
   "summary": {
-    "date": "2026-11-09",
+    "date": "2026-11-10",
     "sent": "1",
-    "temp_min": "8.7",
-    "temp_max": "20.3",
-    "rain_prob": "38",
+    "temp_min": "7.8",
+    "temp_max": "21.0",
+    "rain_prob": "15",
     "aqi": "56",
-    "trm": "3237.83",
+    "trm": "3269.88",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 15.9,
-      "low": 14.9,
-      "high": 16.9,
-      "spread": 1.9999999999999982,
+      "value": 20.8,
+      "low": 19.5,
+      "high": 21.0,
+      "spread": 1.5,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -27,13 +27,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 72
+      "score": 77
     },
     "feels_like": {
-      "value": 13.1,
-      "low": 12.7,
-      "high": 15.4,
-      "spread": 2.700000000000001,
+      "value": 19.5,
+      "low": 17.6,
+      "high": 19.8,
+      "spread": 2.1999999999999993,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -42,13 +42,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 73
+      "score": 78
     },
     "tmin": {
-      "value": 8.7,
-      "low": 8.4,
-      "high": 8.9,
-      "spread": 0.5,
+      "value": 7.8,
+      "low": 7.5,
+      "high": 7.9,
+      "spread": 0.40000000000000036,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -57,13 +57,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 95
+      "score": 96
     },
     "tmax": {
-      "value": 20.3,
-      "low": 18.7,
-      "high": 21.1,
-      "spread": 2.400000000000002,
+      "value": 21.0,
+      "low": 19.7,
+      "high": 21.6,
+      "spread": 1.9000000000000021,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -72,13 +72,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 76
+      "score": 81
     },
     "wind_kmh": {
-      "value": 12.5,
-      "low": 8.7,
-      "high": 13.9,
-      "spread": 5.200000000000001,
+      "value": 14.5,
+      "low": 14.2,
+      "high": 18.9,
+      "spread": 4.699999999999999,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +87,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 90
+      "score": 91
     },
     "uv": {
-      "value": 8.65,
-      "low": 8.65,
-      "high": 8.65,
+      "value": 9.35,
+      "low": 9.35,
+      "high": 9.35,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,10 +104,10 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 8.5,
-        "low": 4.0,
-        "high": 13.0,
-        "spread": 9.0,
+        "value": 1.0,
+        "low": 0.0,
+        "high": 2.0,
+        "spread": 2.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -115,13 +115,13 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 89
+        "score": 98
       },
       "tarde": {
-        "value": 38.5,
-        "low": 35.0,
-        "high": 42.0,
-        "spread": 7.0,
+        "value": 15.0,
+        "low": 3.0,
+        "high": 27.0,
+        "spread": 24.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -129,13 +129,13 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 92
+        "score": 71
       },
       "noche": {
-        "value": 7.0,
+        "value": 6.0,
         "low": 1.0,
-        "high": 13.0,
-        "spread": 12.0,
+        "high": 11.0,
+        "spread": 10.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -143,11 +143,11 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 86
+        "score": 88
       }
     },
-    "rain_peak_hour": 17,
-    "rain_peak_pct": 17.5,
+    "rain_peak_hour": 16,
+    "rain_peak_pct": 15.0,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
@@ -162,24 +162,24 @@
     "rain_note": null,
     "feels_periods": {
       "mañana": {
-        "low": 6.9,
-        "high": 19.6,
+        "low": 5.8,
+        "high": 19.3,
         "n": 3
       },
       "tarde": {
-        "low": 13.1,
-        "high": 18.8,
+        "low": 13.9,
+        "high": 20.3,
         "n": 3
       },
       "noche": {
-        "low": 8.6,
-        "high": 12.1,
+        "low": 9.1,
+        "high": 12.6,
         "n": 3
       }
     },
-    "score": 72,
-    "rain_score": 89,
-    "now_hour": 17,
+    "score": 77,
+    "rain_score": 86,
+    "now_hour": 14,
     "period_hours": {
       "mañana": [
         6,
@@ -205,50 +205,40 @@
     "confidence": "baja"
   },
   "trm": {
-    "value": 3237.83,
-    "valid_from": "2026-11-07",
-    "previous": 3228.26,
-    "change_abs": 9.569999999999709,
-    "change_pct": 0.29644452429481233,
-    "avg30": 3185.001578947368,
-    "vs_avg30_pct": 1.6586623190965988,
+    "value": 3269.88,
+    "valid_from": "2026-11-10",
+    "previous": 3237.83,
+    "change_abs": 32.05000000000018,
+    "change_pct": 0.9898604929845045,
+    "avg30": 3188.972105263158,
+    "vs_avg30_pct": 2.537115160189382,
     "is_min30": false,
     "is_max30": true,
-    "backup_value": 3243.549,
+    "backup_value": 3242.125467,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
     ],
     "confidence": "alta",
-    "score": 96,
-    "valid_until": "2026-11-09",
+    "score": 83,
+    "valid_until": "2026-11-10",
     "is_weekend_or_holiday": false
   },
   "news": [
     {
-      "title": "Video | Bus del Sitp se incendió tras fuerte choque contra un taxi en San Cristóbal, en el sur de Bogotá: emergencia provocó el cierre de la vía",
-      "link": "https://www.eltiempo.com/bogota/reportan-incendio-tras-choque-entre-bus-de-sitp-y-taxi-en-la-localidad-de-san-cristobal-bogota-ya-se-controlo-el-fuego-y-el-paso-esta-restringido-3599644",
+      "title": "Manifestaciones en Bogotá del 10 al 15 de noviembre de 2026: horarios, puntos de encuentro y posibles afectaciones de movilidad por localidades",
+      "link": "https://www.eltiempo.com/bogota/manifestaciones-en-bogota-del-10-al-15-de-noviembre-de-2026-horarios-puntos-de-encuentro-y-posibles-afectaciones-de-movilidad-por-localidades-3599890",
       "source": "El Tiempo - Bogotá"
     },
     {
-      "title": "Pico y placa en Bogotá para el martes 10 de noviembre de 2026: conozca qué carros y taxis no pueden circular",
-      "link": "https://www.eltiempo.com/bogota/pico-y-placa-en-bogota-para-el-martes-10-de-noviembre-de-2026-conozca-que-carros-y-taxis-no-pueden-circular-3599510",
+      "title": "Ciudadanos en Bogotá crearon su propio acueducto y bajaron la tarifa del agua y energía: ‘Es asequible para la comunidad’",
+      "link": "https://www.eltiempo.com/bogota/ciudadanos-en-bogota-crearon-su-propio-acueducto-y-bajaron-la-tarifa-del-agua-y-energia-es-asequible-para-la-comunidad-3599865",
       "source": "El Tiempo - Bogotá"
-    },
-    {
-      "title": "¡Evite multas! Este es el pico y placa en Bogotá para la semana del 9 al 15 de noviembre de 2026",
-      "link": "https://caracol.com.co/2026/11/09/evite-multas-este-es-el-pico-y-placa-en-bogota-para-la-semana-del-9-al-15-de-noviembre-de-2026/",
-      "source": "Caracol Radio"
-    },
-    {
-      "title": "Pico y Placa: qué automóviles no circulan en Bogotá este 9 de noviembre",
-      "link": "https://www.infobae.com/colombia/2026/11/09/pico-y-placa-que-automoviles-no-circulan-en-bogota-este-9-de-noviembre/",
-      "source": "Infobae Colombia"
     }
   ],
   "quote": {
-    "text": "No son las cosas las que nos perturban, sino la opinión que tenemos de ellas.",
-    "author": "Epicteto",
+    "text": "Nadie se baña dos veces en el mismo río.",
+    "author": "Heráclito",
     "origin": "local"
   }
 }
