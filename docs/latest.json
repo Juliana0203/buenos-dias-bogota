@@ -1,13 +1,13 @@
 {
-  "date": "2026-11-11",
+  "date": "2026-11-12",
   "name": "Juli",
   "greeting": "Hola, Juli. Un día nuevo para hacerlo con ganas y con calma. Parece que hoy Bogotá se pone romántica con la lluvia.",
   "summary": {
-    "date": "2026-11-11",
+    "date": "2026-11-12",
     "sent": "1",
-    "temp_min": "8.8",
-    "temp_max": "19.9",
-    "rain_prob": "95",
+    "temp_min": "9.9",
+    "temp_max": "19.4",
+    "rain_prob": "98",
     "aqi": "59",
     "trm": "3297.07",
     "confidence": "baja",
@@ -15,10 +15,10 @@
   },
   "weather": {
     "temp": {
-      "value": 19.4,
-      "low": 18.1,
-      "high": 19.6,
-      "spread": 1.5,
+      "value": 19.3,
+      "low": 17.7,
+      "high": 19.4,
+      "spread": 1.6999999999999993,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -27,12 +27,42 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 77
+      "score": 75
     },
     "feels_like": {
-      "value": 18.0,
-      "low": 16.3,
-      "high": 18.8,
+      "value": 17.3,
+      "low": 15.1,
+      "high": 17.9,
+      "spread": 2.799999999999999,
+      "n": 3,
+      "confidence": "alta",
+      "disagree": false,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 72
+    },
+    "tmin": {
+      "value": 9.9,
+      "low": 8.1,
+      "high": 11.8,
+      "spread": 3.700000000000001,
+      "n": 3,
+      "confidence": "media",
+      "disagree": true,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 63
+    },
+    "tmax": {
+      "value": 19.4,
+      "low": 17.7,
+      "high": 20.2,
       "spread": 2.5,
       "n": 3,
       "confidence": "alta",
@@ -44,41 +74,11 @@
       ],
       "score": 75
     },
-    "tmin": {
-      "value": 8.8,
-      "low": 8.5,
-      "high": 11.4,
-      "spread": 2.9000000000000004,
-      "n": 3,
-      "confidence": "alta",
-      "disagree": false,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 71
-    },
-    "tmax": {
-      "value": 19.9,
-      "low": 18.1,
-      "high": 20.1,
-      "spread": 2.0,
-      "n": 3,
-      "confidence": "alta",
-      "disagree": false,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 80
-    },
     "wind_kmh": {
-      "value": 14.8,
-      "low": 10.7,
-      "high": 15.8,
-      "spread": 5.100000000000001,
+      "value": 15.4,
+      "low": 10.4,
+      "high": 16.0,
+      "spread": 5.6,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +87,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 90
+      "score": 89
     },
     "uv": {
-      "value": 8.7,
-      "low": 8.7,
-      "high": 8.7,
+      "value": 7.75,
+      "low": 7.75,
+      "high": 7.75,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,10 +104,10 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 34.0,
-        "low": 9.0,
-        "high": 59.0,
-        "spread": 50.0,
+        "value": 44.0,
+        "low": 22.0,
+        "high": 66.0,
+        "spread": 44.0,
         "n": 2,
         "confidence": "baja",
         "disagree": true,
@@ -118,9 +118,9 @@
         "score": 50
       },
       "tarde": {
-        "value": 95.0,
-        "low": 93.0,
-        "high": 97.0,
+        "value": 98.0,
+        "low": 96.0,
+        "high": 100.0,
         "spread": 4.0,
         "n": 2,
         "confidence": "media",
@@ -132,22 +132,22 @@
         "score": 95
       },
       "noche": {
-        "value": 46.5,
-        "low": 29.0,
-        "high": 64.0,
-        "spread": 35.0,
+        "value": 66.0,
+        "low": 66.0,
+        "high": 66.0,
+        "spread": 0.0,
         "n": 2,
-        "confidence": "baja",
-        "disagree": true,
+        "confidence": "media",
+        "disagree": false,
         "sources": [
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 58
+        "score": 98
       }
     },
     "rain_peak_hour": 15,
-    "rain_peak_pct": 86.0,
+    "rain_peak_pct": 95.0,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
@@ -159,27 +159,27 @@
       "Open-Meteo/GFS"
     ],
     "rain_confidence": "baja",
-    "rain_note": "lluvia probable, aunque 2 modelos no la ven",
+    "rain_note": "alta probabilidad de lluvia, pero ningún modelo de precipitación la confirma",
     "feels_periods": {
       "mañana": {
-        "low": 7.2,
-        "high": 16.6,
+        "low": 9.0,
+        "high": 18.6,
         "n": 3
       },
       "tarde": {
-        "low": 13.5,
-        "high": 19.5,
+        "low": 14.2,
+        "high": 18.6,
         "n": 3
       },
       "noche": {
-        "low": 9.1,
-        "high": 12.4,
+        "low": 10.7,
+        "high": 12.5,
         "n": 3
       }
     },
-    "score": 71,
-    "rain_score": 48,
-    "now_hour": 14,
+    "score": 63,
+    "rain_score": 51,
+    "now_hour": 15,
     "period_hours": {
       "mañana": [
         6,
@@ -214,26 +214,26 @@
     "vs_avg30_pct": 3.2148052656277013,
     "is_min30": false,
     "is_max30": true,
-    "backup_value": 3276.876985,
+    "backup_value": 3301.604364,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
     ],
     "confidence": "alta",
-    "score": 88,
+    "score": 97,
     "valid_until": "2026-11-12",
     "is_weekend_or_holiday": false
   },
   "news": [
     {
-      "title": "Reportan fuerte trancón en la autopista Sur en Bogotá por vehículo particular varado cerca de la estación Madelena: TransMilenio reporta retrasos",
-      "link": "https://www.eltiempo.com/bogota/reportan-fuerte-trancon-en-la-autopista-sur-en-bogota-por-vehiculo-particular-varado-cerca-de-la-estacion-madelena-transmilenio-reporta-retrasos-3600118",
-      "source": "El Tiempo - Bogotá"
+      "title": "Metro de Bogotá: Contraloría General alerta por falta de 1.500 trabajadores y retrasos en estaciones y obras de espacio público",
+      "link": "https://www.semana.com/nacion/bogota/articulo/metro-de-bogota-contraloria-general-alerta-por-falta-de-1500-trabajadores-y-retrasos-en-estaciones-y-obras-de-espacio-publico/202606/",
+      "source": "Semana - Bogotá"
     }
   ],
   "quote": {
-    "text": "Somos lo que hacemos repetidamente. La excelencia, entonces, no es un acto sino un hábito.",
-    "author": "Will Durant",
+    "text": "El que mueve montañas empieza por llevar piedras pequeñas.",
+    "author": "Confucio",
     "origin": "local"
   }
 }
