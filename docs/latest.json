@@ -1,24 +1,24 @@
 {
-  "date": "2026-11-13",
+  "date": "2026-11-14",
   "name": "Juli",
-  "greeting": "Arriba, Juli, hoy es viernes. Parece que hoy Bogotá se pone romántica con la lluvia.",
+  "greeting": "¡Buenos días, Juli! Que hoy te rinda el día. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
   "summary": {
-    "date": "2026-11-13",
+    "date": "2026-11-14",
     "sent": "1",
-    "temp_min": "10.9",
-    "temp_max": "18.0",
-    "rain_prob": "86",
-    "aqi": "65",
-    "trm": "3301.91",
+    "temp_min": "9.1",
+    "temp_max": "20.1",
+    "rain_prob": "98",
+    "aqi": "60",
+    "trm": "3316.70",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 17.8,
-      "low": 17.6,
-      "high": 19.7,
-      "spread": 2.099999999999998,
+      "value": 19.0,
+      "low": 18.4,
+      "high": 20.0,
+      "spread": 1.6000000000000014,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -27,13 +27,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 71
+      "score": 76
     },
     "feels_like": {
-      "value": 16.9,
-      "low": 15.7,
-      "high": 19.4,
-      "spread": 3.6999999999999993,
+      "value": 17.8,
+      "low": 16.8,
+      "high": 20.4,
+      "spread": 3.599999999999998,
       "n": 3,
       "confidence": "media",
       "disagree": true,
@@ -42,13 +42,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 63
+      "score": 64
     },
     "tmin": {
-      "value": 10.9,
-      "low": 9.4,
-      "high": 12.1,
-      "spread": 2.6999999999999993,
+      "value": 9.1,
+      "low": 7.9,
+      "high": 10.9,
+      "spread": 3.0,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -57,12 +57,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 73
+      "score": 70
     },
     "tmax": {
-      "value": 18.0,
-      "low": 17.8,
-      "high": 19.7,
+      "value": 20.1,
+      "low": 19.1,
+      "high": 21.0,
       "spread": 1.8999999999999986,
       "n": 3,
       "confidence": "alta",
@@ -75,10 +75,10 @@
       "score": 81
     },
     "wind_kmh": {
-      "value": 13.4,
-      "low": 9.0,
-      "high": 14.8,
-      "spread": 5.800000000000001,
+      "value": 9.1,
+      "low": 8.6,
+      "high": 11.0,
+      "spread": 2.4000000000000004,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +87,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 88
+      "score": 95
     },
     "uv": {
-      "value": 7.3,
-      "low": 7.3,
-      "high": 7.3,
+      "value": 7.6,
+      "low": 7.6,
+      "high": 7.6,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,10 +104,10 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 54.0,
-        "low": 39.0,
-        "high": 69.0,
-        "spread": 30.0,
+        "value": 44.0,
+        "low": 20.0,
+        "high": 68.0,
+        "spread": 48.0,
         "n": 2,
         "confidence": "baja",
         "disagree": true,
@@ -115,27 +115,27 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 64
+        "score": 50
       },
       "tarde": {
-        "value": 86.5,
-        "low": 73.0,
+        "value": 98.0,
+        "low": 96.0,
         "high": 100.0,
-        "spread": 27.0,
+        "spread": 4.0,
         "n": 2,
-        "confidence": "baja",
-        "disagree": true,
+        "confidence": "media",
+        "disagree": false,
         "sources": [
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 68
+        "score": 95
       },
       "noche": {
-        "value": 49.5,
-        "low": 35.0,
-        "high": 64.0,
-        "spread": 29.0,
+        "value": 75.5,
+        "low": 51.0,
+        "high": 100.0,
+        "spread": 49.0,
         "n": 2,
         "confidence": "baja",
         "disagree": true,
@@ -143,11 +143,11 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 65
+        "score": 50
       }
     },
-    "rain_peak_hour": 14,
-    "rain_peak_pct": 86.0,
+    "rain_peak_hour": 15,
+    "rain_peak_pct": 94.5,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
@@ -162,24 +162,24 @@
     "rain_note": "lluvia probable, aunque 2 modelos no la ven",
     "feels_periods": {
       "mañana": {
-        "low": 11.8,
-        "high": 16.3,
+        "low": 7.2,
+        "high": 21.0,
         "n": 3
       },
       "tarde": {
-        "low": 14.4,
-        "high": 17.4,
+        "low": 15.7,
+        "high": 18.1,
         "n": 3
       },
       "noche": {
-        "low": 9.8,
-        "high": 13.0,
+        "low": 10.3,
+        "high": 13.9,
         "n": 3
       }
     },
-    "score": 71,
-    "rain_score": 46,
-    "now_hour": 14,
+    "score": 70,
+    "rain_score": 45,
+    "now_hour": 13,
     "period_hours": {
       "mañana": [
         6,
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 65.0,
+    "aqi": 60.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -205,50 +205,40 @@
     "confidence": "baja"
   },
   "trm": {
-    "value": 3301.91,
-    "valid_from": "2026-11-13",
-    "previous": 3297.07,
-    "change_abs": 4.839999999999691,
-    "change_pct": 0.14679700461317746,
-    "avg30": 3199.497619047619,
-    "vs_avg30_pct": 3.2008894253487656,
+    "value": 3316.7,
+    "valid_from": "2026-11-14",
+    "previous": 3301.91,
+    "change_abs": null,
+    "change_pct": null,
+    "avg30": 3205.924285714286,
+    "vs_avg30_pct": 3.4553440572297536,
     "is_min30": false,
     "is_max30": true,
-    "backup_value": 3288.648844,
+    "backup_value": 3286.103569,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
     ],
     "confidence": "alta",
-    "score": 92,
-    "valid_until": "2026-11-13",
-    "is_weekend_or_holiday": false
+    "score": 82,
+    "valid_until": "2026-11-17",
+    "is_weekend_or_holiday": true
   },
   "news": [
     {
-      "title": "Manifestaciones en Bogotá este 13 de noviembre: recicladores, ambientalistas y reservistas se concentran en La Candelaria, Santa Fe y Chapinero",
-      "link": "https://www.eltiempo.com/bogota/manifestaciones-en-bogota-este-13-de-noviembre-recicladores-ambientalistas-y-reservistas-se-concentran-en-la-candelaria-santa-fe-y-chapinero-3600819",
-      "source": "El Tiempo - Bogotá"
+      "title": "Línea 1 del metro de Bogotá alcanza un 84% de avance, pero su entrega enfrenta retrasos",
+      "link": "https://www.infobae.com/colombia/2026/11/14/linea-1-del-metro-de-bogota-alcanza-un-84-de-avance-pero-su-entrega-enfrenta-retrasos/",
+      "source": "Infobae Colombia"
     },
     {
-      "title": "Confirmadas tres manifestaciones en Bogotá este viernes 13 de noviembre: Los puntos de mayor afectación",
-      "link": "https://www.semana.com/nacion/bogota/articulo/planton-de-recicladores-en-el-centro-de-bogota-obliga-a-cierres-viales-preventivos-los-puntos-afectados/202645/",
-      "source": "Semana - Bogotá"
-    },
-    {
-      "title": "Puente festivo: horarios y medidas de movilidad para salir y regresar a Bogotá",
-      "link": "https://www.elespectador.com/bogota/puente-festivo-horarios-y-medidas-de-movilidad-para-salir-y-regresar-a-bogota/",
-      "source": "El Espectador"
-    },
-    {
-      "title": "Caos y tragedia en Medellín: dos personas murieron tras un violento choque provocado por un camión que se habría quedado sin frenos",
-      "link": "https://www.eltiempo.com/colombia/medellin/caos-y-tragedia-en-medellin-dos-personas-murieron-tras-un-violento-choque-provocado-por-un-camion-que-se-habria-quedado-sin-frenos-3600856",
-      "source": "El Tiempo - Colombia"
+      "title": "Jueces de Bogotá respaldaron el paro judicial del 19 de noviembre: denuncian sobrecarga laboral, falta de presupuesto y posibles recortes salariales",
+      "link": "https://www.infobae.com/colombia/2026/11/13/jueces-de-bogota-respaldaron-el-paro-judicial-del-19-de-noviembre-denuncian-sobrecarga-laboral-falta-de-presupuesto-y-posibles-recortes-salariales/",
+      "source": "Infobae Colombia"
     }
   ],
   "quote": {
-    "text": "No importa lo despacio que vayas, siempre y cuando no te detengas.",
-    "author": "Confucio",
+    "text": "Un viaje de mil millas comienza con un solo paso.",
+    "author": "Lao Tse",
     "origin": "local"
   }
 }
