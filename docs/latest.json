@@ -1,39 +1,69 @@
 {
-  "date": "2026-11-14",
+  "date": "2026-11-15",
   "name": "Juli",
-  "greeting": "¡Buenos días, Juli! Que hoy te rinda el día. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
+  "greeting": "Arriba, Juli, hoy es domingo. Dato: mañana es festivo (Independencia de Cartagena (observado)). Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
   "summary": {
-    "date": "2026-11-14",
+    "date": "2026-11-15",
     "sent": "1",
-    "temp_min": "9.1",
-    "temp_max": "20.1",
-    "rain_prob": "98",
-    "aqi": "60",
+    "temp_min": "9.8",
+    "temp_max": "22.3",
+    "rain_prob": "88",
+    "aqi": "73",
     "trm": "3316.70",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 19.0,
-      "low": 18.4,
-      "high": 20.0,
-      "spread": 1.6000000000000014,
+      "value": 19.9,
+      "low": 17.1,
+      "high": 21.4,
+      "spread": 4.299999999999997,
       "n": 3,
-      "confidence": "alta",
-      "disagree": false,
+      "confidence": "media",
+      "disagree": true,
       "sources": [
         "Open-Meteo/ECMWF",
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 76
+      "score": 49
     },
     "feels_like": {
-      "value": 17.8,
-      "low": 16.8,
-      "high": 20.4,
-      "spread": 3.599999999999998,
+      "value": 18.8,
+      "low": 16.0,
+      "high": 22.2,
+      "spread": 6.199999999999999,
+      "n": 3,
+      "confidence": "media",
+      "disagree": true,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 50
+    },
+    "tmin": {
+      "value": 9.8,
+      "low": 6.1,
+      "high": 10.0,
+      "spread": 3.9000000000000004,
+      "n": 3,
+      "confidence": "media",
+      "disagree": true,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 61
+    },
+    "tmax": {
+      "value": 22.3,
+      "low": 19.9,
+      "high": 23.5,
+      "spread": 3.6000000000000014,
       "n": 3,
       "confidence": "media",
       "disagree": true,
@@ -44,41 +74,11 @@
       ],
       "score": 64
     },
-    "tmin": {
-      "value": 9.1,
-      "low": 7.9,
-      "high": 10.9,
-      "spread": 3.0,
-      "n": 3,
-      "confidence": "alta",
-      "disagree": false,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 70
-    },
-    "tmax": {
-      "value": 20.1,
-      "low": 19.1,
-      "high": 21.0,
-      "spread": 1.8999999999999986,
-      "n": 3,
-      "confidence": "alta",
-      "disagree": false,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 81
-    },
     "wind_kmh": {
-      "value": 9.1,
-      "low": 8.6,
-      "high": 11.0,
-      "spread": 2.4000000000000004,
+      "value": 4.0,
+      "low": 3.9,
+      "high": 14.2,
+      "spread": 10.299999999999999,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +87,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 95
+      "score": 79
     },
     "uv": {
-      "value": 7.6,
-      "low": 7.6,
-      "high": 7.6,
+      "value": 8.75,
+      "low": 8.75,
+      "high": 8.75,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,24 +104,10 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 44.0,
-        "low": 20.0,
-        "high": 68.0,
-        "spread": 48.0,
-        "n": 2,
-        "confidence": "baja",
-        "disagree": true,
-        "sources": [
-          "Open-Meteo/ECMWF",
-          "Open-Meteo/GFS"
-        ],
-        "score": 50
-      },
-      "tarde": {
-        "value": 98.0,
-        "low": 96.0,
-        "high": 100.0,
-        "spread": 4.0,
+        "value": 27.5,
+        "low": 23.0,
+        "high": 32.0,
+        "spread": 9.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -129,57 +115,71 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 95
+        "score": 89
       },
-      "noche": {
-        "value": 75.5,
-        "low": 51.0,
+      "tarde": {
+        "value": 88.5,
+        "low": 77.0,
         "high": 100.0,
-        "spread": 49.0,
+        "spread": 23.0,
         "n": 2,
-        "confidence": "baja",
-        "disagree": true,
+        "confidence": "media",
+        "disagree": false,
         "sources": [
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 50
+        "score": 72
+      },
+      "noche": {
+        "value": 88.0,
+        "low": 76.0,
+        "high": 100.0,
+        "spread": 24.0,
+        "n": 2,
+        "confidence": "media",
+        "disagree": false,
+        "sources": [
+          "Open-Meteo/ECMWF",
+          "Open-Meteo/GFS"
+        ],
+        "score": 71
       }
     },
-    "rain_peak_hour": 15,
-    "rain_peak_pct": 94.5,
+    "rain_peak_hour": 17,
+    "rain_peak_pct": 88.5,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
       "Open-Meteo/ICON"
     ],
-    "confidence": "baja",
+    "confidence": "media",
     "rain_sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS"
     ],
-    "rain_confidence": "baja",
-    "rain_note": "lluvia probable, aunque 2 modelos no la ven",
+    "rain_confidence": "alta",
+    "rain_note": "lluvia probable, aunque un modelo no la ve",
     "feels_periods": {
       "mañana": {
-        "low": 7.2,
-        "high": 21.0,
+        "low": 7.9,
+        "high": 23.5,
         "n": 3
       },
       "tarde": {
-        "low": 15.7,
-        "high": 18.1,
+        "low": 16.0,
+        "high": 23.6,
         "n": 3
       },
       "noche": {
-        "low": 10.3,
-        "high": 13.9,
+        "low": 11.1,
+        "high": 14.3,
         "n": 3
       }
     },
-    "score": 70,
-    "rain_score": 45,
-    "now_hour": 13,
+    "score": 49,
+    "rain_score": 67,
+    "now_hour": 14,
     "period_hours": {
       "mañana": [
         6,
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 60.0,
+    "aqi": 73.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -210,34 +210,39 @@
     "previous": 3301.91,
     "change_abs": null,
     "change_pct": null,
-    "avg30": 3205.924285714286,
-    "vs_avg30_pct": 3.4553440572297536,
+    "avg30": 3206.338,
+    "vs_avg30_pct": 3.4419951982604333,
     "is_min30": false,
     "is_max30": true,
-    "backup_value": 3286.103569,
+    "backup_value": 3285.261046,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
     ],
     "confidence": "alta",
-    "score": 82,
+    "score": 81,
     "valid_until": "2026-11-17",
     "is_weekend_or_holiday": true
   },
   "news": [
     {
-      "title": "Línea 1 del metro de Bogotá alcanza un 84% de avance, pero su entrega enfrenta retrasos",
-      "link": "https://www.infobae.com/colombia/2026/11/14/linea-1-del-metro-de-bogota-alcanza-un-84-de-avance-pero-su-entrega-enfrenta-retrasos/",
+      "title": "Colapso en la movilidad en Bogotá; TransMilenio reporta afectación en sus servicios alimentadores",
+      "link": "https://www.semana.com/nacion/bogota/articulo/colapso-en-la-movilidad-en-bogota-transmilenio-reporta-afectacion-en-sus-servicios-alimentadores/202605/",
+      "source": "Semana - Bogotá"
+    },
+    {
+      "title": "Claudia López se refirió a retrasos en las obras del metro de Bogotá revelados por Galán: el exministro Rodrigo Lara la cuestionó",
+      "link": "https://www.infobae.com/colombia/2026/11/15/claudia-lopez-se-refirio-a-retrasos-en-las-obras-del-metro-de-bogota-revelados-por-galan-el-exministro-rodrigo-lara-la-cuestiono/",
       "source": "Infobae Colombia"
     },
     {
-      "title": "Jueces de Bogotá respaldaron el paro judicial del 19 de noviembre: denuncian sobrecarga laboral, falta de presupuesto y posibles recortes salariales",
-      "link": "https://www.infobae.com/colombia/2026/11/13/jueces-de-bogota-respaldaron-el-paro-judicial-del-19-de-noviembre-denuncian-sobrecarga-laboral-falta-de-presupuesto-y-posibles-recortes-salariales/",
+      "title": "Dos delincuentes armados robaron desde la cicloruta a un conductor atrapado en un trancón en el norte de Bogotá: todo quedó en video",
+      "link": "https://www.infobae.com/colombia/2026/11/15/dos-delincuentes-armados-robaron-desde-la-cicloruta-a-un-conductor-atrapado-en-un-trancon-en-el-norte-de-bogota-todo-quedo-en-video/",
       "source": "Infobae Colombia"
     }
   ],
   "quote": {
-    "text": "Un viaje de mil millas comienza con un solo paso.",
+    "text": "Quien conoce a los demás es sabio; quien se conoce a sí mismo es iluminado.",
     "author": "Lao Tse",
     "origin": "local"
   }
