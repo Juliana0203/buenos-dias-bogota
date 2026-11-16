@@ -1,39 +1,54 @@
 {
-  "date": "2026-11-15",
+  "date": "2026-11-16",
   "name": "Juli",
-  "greeting": "Arriba, Juli, hoy es domingo. Dato: mañana es festivo (Independencia de Cartagena (observado)). Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
+  "greeting": "¡Buenos días, Juli! Que hoy te rinda el día. Hoy es festivo (Independencia de Cartagena (observado)): a disfrutar el descanso. Parece que hoy Bogotá se pone romántica con la lluvia.",
   "summary": {
-    "date": "2026-11-15",
+    "date": "2026-11-16",
     "sent": "1",
-    "temp_min": "9.8",
-    "temp_max": "22.3",
-    "rain_prob": "88",
-    "aqi": "73",
+    "temp_min": "9.9",
+    "temp_max": "22.5",
+    "rain_prob": "99",
+    "aqi": "65",
     "trm": "3316.70",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 19.9,
-      "low": 17.1,
-      "high": 21.4,
-      "spread": 4.299999999999997,
+      "value": 15.7,
+      "low": 14.8,
+      "high": 17.3,
+      "spread": 2.5,
       "n": 3,
-      "confidence": "media",
-      "disagree": true,
+      "confidence": "alta",
+      "disagree": false,
       "sources": [
         "Open-Meteo/ECMWF",
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 49
+      "score": 67
     },
     "feels_like": {
-      "value": 18.8,
-      "low": 16.0,
-      "high": 22.2,
-      "spread": 6.199999999999999,
+      "value": 16.4,
+      "low": 14.0,
+      "high": 16.4,
+      "spread": 2.3999999999999986,
+      "n": 3,
+      "confidence": "alta",
+      "disagree": false,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 76
+    },
+    "tmin": {
+      "value": 9.9,
+      "low": 5.1,
+      "high": 11.3,
+      "spread": 6.200000000000001,
       "n": 3,
       "confidence": "media",
       "disagree": true,
@@ -44,26 +59,11 @@
       ],
       "score": 50
     },
-    "tmin": {
-      "value": 9.8,
-      "low": 6.1,
-      "high": 10.0,
-      "spread": 3.9000000000000004,
-      "n": 3,
-      "confidence": "media",
-      "disagree": true,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 61
-    },
     "tmax": {
-      "value": 22.3,
-      "low": 19.9,
-      "high": 23.5,
-      "spread": 3.6000000000000014,
+      "value": 22.5,
+      "low": 19.8,
+      "high": 23.0,
+      "spread": 3.1999999999999993,
       "n": 3,
       "confidence": "media",
       "disagree": true,
@@ -72,13 +72,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 64
+      "score": 68
     },
     "wind_kmh": {
-      "value": 4.0,
-      "low": 3.9,
-      "high": 14.2,
-      "spread": 10.299999999999999,
+      "value": 9.8,
+      "low": 4.0,
+      "high": 10.4,
+      "spread": 6.4,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +87,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 79
+      "score": 87
     },
     "uv": {
-      "value": 8.75,
-      "low": 8.75,
-      "high": 8.75,
+      "value": 9.1,
+      "low": 9.1,
+      "high": 9.1,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,10 +104,10 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 27.5,
-        "low": 23.0,
-        "high": 32.0,
-        "spread": 9.0,
+        "value": 36.5,
+        "low": 29.0,
+        "high": 44.0,
+        "spread": 15.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -115,13 +115,13 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 89
+        "score": 82
       },
       "tarde": {
-        "value": 88.5,
-        "low": 77.0,
+        "value": 99.0,
+        "low": 98.0,
         "high": 100.0,
-        "spread": 23.0,
+        "spread": 2.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -129,13 +129,13 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 72
+        "score": 98
       },
       "noche": {
-        "value": 88.0,
-        "low": 76.0,
+        "value": 87.5,
+        "low": 75.0,
         "high": 100.0,
-        "spread": 24.0,
+        "spread": 25.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -143,11 +143,11 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 71
+        "score": 70
       }
     },
     "rain_peak_hour": 17,
-    "rain_peak_pct": 88.5,
+    "rain_peak_pct": 93.0,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
@@ -159,27 +159,27 @@
       "Open-Meteo/GFS"
     ],
     "rain_confidence": "alta",
-    "rain_note": "lluvia probable, aunque un modelo no la ve",
+    "rain_note": null,
     "feels_periods": {
       "mañana": {
-        "low": 7.9,
-        "high": 23.5,
+        "low": 8.9,
+        "high": 23.1,
         "n": 3
       },
       "tarde": {
-        "low": 16.0,
-        "high": 23.6,
+        "low": 16.4,
+        "high": 23.9,
         "n": 3
       },
       "noche": {
-        "low": 11.1,
-        "high": 14.3,
+        "low": 14.1,
+        "high": 15.1,
         "n": 3
       }
     },
-    "score": 49,
-    "rain_score": 67,
-    "now_hour": 14,
+    "score": 50,
+    "rain_score": 83,
+    "now_hour": 17,
     "period_hours": {
       "mañana": [
         6,
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 73.0,
+    "aqi": 65.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -210,40 +210,40 @@
     "previous": 3301.91,
     "change_abs": null,
     "change_pct": null,
-    "avg30": 3206.338,
-    "vs_avg30_pct": 3.4419951982604333,
+    "avg30": 3208.226315789474,
+    "vs_avg30_pct": 3.381110730146006,
     "is_min30": false,
     "is_max30": true,
-    "backup_value": 3285.261046,
+    "backup_value": 3316.635822,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
     ],
     "confidence": "alta",
-    "score": 81,
+    "score": 98,
     "valid_until": "2026-11-17",
     "is_weekend_or_holiday": true
   },
   "news": [
     {
-      "title": "Colapso en la movilidad en Bogotá; TransMilenio reporta afectación en sus servicios alimentadores",
-      "link": "https://www.semana.com/nacion/bogota/articulo/colapso-en-la-movilidad-en-bogota-transmilenio-reporta-afectacion-en-sus-servicios-alimentadores/202605/",
-      "source": "Semana - Bogotá"
+      "title": "EN VIVO | Tráfico fluido en las principales vías de Bogotá durante el Plan Éxodo: habilitan reversible en la carrera Séptima para agilizar ingreso",
+      "link": "https://www.eltiempo.com/bogota/reversible-de-la-septima-en-usaquen-y-plan-retorno-en-vivo-asi-operan-los-ingresos-a-bogota-y-el-pico-y-placa-regional-este-lunes-festivo-3601403",
+      "source": "El Tiempo - Bogotá"
     },
     {
-      "title": "Claudia López se refirió a retrasos en las obras del metro de Bogotá revelados por Galán: el exministro Rodrigo Lara la cuestionó",
-      "link": "https://www.infobae.com/colombia/2026/11/15/claudia-lopez-se-refirio-a-retrasos-en-las-obras-del-metro-de-bogota-revelados-por-galan-el-exministro-rodrigo-lara-la-cuestiono/",
+      "title": "Pilas: Así rotará el pico y placa en Bogotá este 16 de noviembre",
+      "link": "https://www.infobae.com/colombia/2026/11/16/pilas-asi-rotara-el-pico-y-placa-en-bogota-este-16-de-noviembre/",
       "source": "Infobae Colombia"
     },
     {
-      "title": "Dos delincuentes armados robaron desde la cicloruta a un conductor atrapado en un trancón en el norte de Bogotá: todo quedó en video",
-      "link": "https://www.infobae.com/colombia/2026/11/15/dos-delincuentes-armados-robaron-desde-la-cicloruta-a-un-conductor-atrapado-en-un-trancon-en-el-norte-de-bogota-todo-quedo-en-video/",
-      "source": "Infobae Colombia"
+      "title": "Prográmese: estos son los barrios de Bogotá y Soacha que tendrán cortes de agua del 17 al 19 de noviembre",
+      "link": "https://www.eltiempo.com/bogota/programese-estos-son-los-barrios-de-bogota-y-soacha-que-tendran-cortes-de-agua-del-17-al-19-de-noviembre-3601424",
+      "source": "El Tiempo - Bogotá"
     }
   ],
   "quote": {
-    "text": "Quien conoce a los demás es sabio; quien se conoce a sí mismo es iluminado.",
-    "author": "Lao Tse",
+    "text": "Conocerse a uno mismo es el principio de la sabiduría.",
+    "author": "Sócrates",
     "origin": "local"
   }
 }
