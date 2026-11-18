@@ -1,24 +1,24 @@
 {
-  "date": "2026-11-17",
+  "date": "2026-11-18",
   "name": "Juli",
-  "greeting": "Arriba, Juli, hoy es martes. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
+  "greeting": "Hola, Juli, buen día. Aquí va tu resumen para salir tranquila a la calle. Parece que hoy Bogotá se pone romántica con la lluvia.",
   "summary": {
-    "date": "2026-11-17",
+    "date": "2026-11-18",
     "sent": "1",
-    "temp_min": "11.7",
-    "temp_max": "20.2",
-    "rain_prob": "100",
-    "aqi": "80",
-    "trm": "3316.70",
+    "temp_min": "11.1",
+    "temp_max": "22.8",
+    "rain_prob": "81",
+    "aqi": "68",
+    "trm": "3309.55",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 17.2,
-      "low": 16.8,
-      "high": 18.2,
-      "spread": 1.3999999999999986,
+      "value": 18.6,
+      "low": 18.5,
+      "high": 21.1,
+      "spread": 2.6000000000000014,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -27,28 +27,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 78
+      "score": 66
     },
     "feels_like": {
-      "value": 17.9,
-      "low": 15.7,
-      "high": 18.0,
-      "spread": 2.3000000000000007,
-      "n": 3,
-      "confidence": "alta",
-      "disagree": false,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 77
-    },
-    "tmin": {
-      "value": 11.7,
-      "low": 7.6,
-      "high": 13.7,
-      "spread": 6.1,
+      "value": 18.0,
+      "low": 17.2,
+      "high": 20.5,
+      "spread": 3.3000000000000007,
       "n": 3,
       "confidence": "media",
       "disagree": true,
@@ -57,28 +42,43 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 50
+      "score": 67
+    },
+    "tmin": {
+      "value": 11.1,
+      "low": 10.0,
+      "high": 13.9,
+      "spread": 3.9000000000000004,
+      "n": 3,
+      "confidence": "media",
+      "disagree": true,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 61
     },
     "tmax": {
-      "value": 20.2,
-      "low": 20.0,
-      "high": 22.1,
-      "spread": 2.1000000000000014,
+      "value": 22.8,
+      "low": 19.1,
+      "high": 23.0,
+      "spread": 3.8999999999999986,
       "n": 3,
-      "confidence": "alta",
-      "disagree": false,
+      "confidence": "media",
+      "disagree": true,
       "sources": [
         "Open-Meteo/ECMWF",
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 79
+      "score": 61
     },
     "wind_kmh": {
-      "value": 9.4,
-      "low": 4.1,
-      "high": 12.1,
-      "spread": 8.0,
+      "value": 10.8,
+      "low": 9.4,
+      "high": 11.2,
+      "spread": 1.799999999999999,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +87,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 84
+      "score": 96
     },
     "uv": {
-      "value": 6.95,
-      "low": 6.95,
-      "high": 6.95,
+      "value": 9.15,
+      "low": 9.15,
+      "high": 9.15,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,10 +104,10 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 73.0,
-        "low": 72.0,
-        "high": 74.0,
-        "spread": 2.0,
+        "value": 10.5,
+        "low": 2.0,
+        "high": 19.0,
+        "spread": 17.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -115,27 +115,13 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 98
+        "score": 80
       },
       "tarde": {
-        "value": 100.0,
-        "low": 100.0,
+        "value": 81.0,
+        "low": 62.0,
         "high": 100.0,
-        "spread": 0.0,
-        "n": 2,
-        "confidence": "media",
-        "disagree": false,
-        "sources": [
-          "Open-Meteo/ECMWF",
-          "Open-Meteo/GFS"
-        ],
-        "score": 98
-      },
-      "noche": {
-        "value": 86.5,
-        "low": 73.0,
-        "high": 100.0,
-        "spread": 27.0,
+        "spread": 38.0,
         "n": 2,
         "confidence": "baja",
         "disagree": true,
@@ -143,11 +129,25 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 68
+        "score": 54
+      },
+      "noche": {
+        "value": 80.5,
+        "low": 61.0,
+        "high": 100.0,
+        "spread": 39.0,
+        "n": 2,
+        "confidence": "baja",
+        "disagree": true,
+        "sources": [
+          "Open-Meteo/ECMWF",
+          "Open-Meteo/GFS"
+        ],
+        "score": 53
       }
     },
-    "rain_peak_hour": 16,
-    "rain_peak_pct": 98.0,
+    "rain_peak_hour": 17,
+    "rain_peak_pct": 81.0,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
@@ -162,24 +162,24 @@
     "rain_note": "lluvia probable, aunque un modelo no la ve",
     "feels_periods": {
       "mañana": {
-        "low": 11.8,
-        "high": 21.9,
+        "low": 10.5,
+        "high": 22.0,
         "n": 3
       },
       "tarde": {
-        "low": 16.8,
-        "high": 20.8,
+        "low": 16.3,
+        "high": 24.4,
         "n": 3
       },
       "noche": {
-        "low": 14.4,
-        "high": 16.0,
+        "low": 14.0,
+        "high": 15.0,
         "n": 3
       }
     },
-    "score": 50,
-    "rain_score": 78,
-    "now_hour": 16,
+    "score": 61,
+    "rain_score": 52,
+    "now_hour": 15,
     "period_hours": {
       "mañana": [
         6,
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 80.0,
+    "aqi": 68.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -205,50 +205,50 @@
     "confidence": "baja"
   },
   "trm": {
-    "value": 3316.7,
-    "valid_from": "2026-11-14",
-    "previous": 3301.91,
-    "change_abs": 14.789999999999964,
-    "change_pct": 0.44792256602996344,
-    "avg30": 3210.0905555555555,
-    "vs_avg30_pct": 3.321072804626656,
+    "value": 3309.55,
+    "valid_from": "2026-11-18",
+    "previous": 3316.7,
+    "change_abs": -7.149999999999636,
+    "change_pct": -0.21557572285704577,
+    "avg30": 3215.325263157895,
+    "vs_avg30_pct": 2.9304884927742463,
     "is_min30": false,
-    "is_max30": true,
-    "backup_value": 3315.703306,
+    "is_max30": false,
+    "backup_value": 3320.186806,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
     ],
     "confidence": "alta",
-    "score": 98,
-    "valid_until": "2026-11-17",
+    "score": 94,
+    "valid_until": "2026-11-18",
     "is_weekend_or_holiday": false
   },
   "news": [
     {
-      "title": "Manifestación en el sur de Bogotá se dispersó tras generar bloqueos y retrasos en TransMilenio",
-      "link": "https://www.semana.com/vehiculos/articulo/manifestacion-en-el-sur-de-bogota-genera-bloqueos-y-retrasos-en-transmilenio-alcaldia-comparte-los-mas-recientes-detalles/202629/",
+      "title": "Fuertes lluvias en Bogotá provocaron inundaciones en punto clave de la movilidad: Las imágenes",
+      "link": "https://www.semana.com/nacion/articulo/fuertes-lluvias-en-bogota-provocaron-inundaciones-en-punto-clave-de-la-movilidad-las-imagenes/202624/",
       "source": "Semana - Bogotá"
     },
     {
-      "title": "Paro nacional en Bogotá este jueves 19 de noviembre: puntos y corredores que se verían afectados por movilizaciones programadas para la jornada",
-      "link": "https://www.eltiempo.com/bogota/paro-nacional-en-bogota-este-jueves-19-de-noviembre-de-2026-conozca-los-horarios-lugares-y-tipos-de-movilizaciones-programadas-para-la-jornada-3601619",
-      "source": "El Tiempo - Bogotá"
-    },
-    {
-      "title": "Marchas en Bogotá: Paro Nacional y otras movilizaciones previstas del 17 al 22 de noviembre",
-      "link": "https://www.elespectador.com/bogota/marchas-en-bogota-paro-nacional-y-otras-movilizaciones-previstas-del-17-al-22-de-noviembre/",
-      "source": "El Espectador"
-    },
-    {
-      "title": "Residentes de conjunto residencial en Bogotá denunciaron a una pareja que habrían hecho ruido por presuntas actividades íntimas: esto dijo la Administración",
-      "link": "https://www.infobae.com/colombia/2026/11/17/residentes-de-conjunto-residencial-en-bogota-denunciaron-a-una-pareja-que-habrian-hecho-ruido-por-presuntas-actividades-intimas-esto-dijo-la-administracion/",
+      "title": "Marchas y protestas este jueves 19 de noviembre en contra de la reforma tributaria de Abelardo de la Espriella: estos serían los recorridos y los lugares de concentración en Bogotá",
+      "link": "https://www.infobae.com/colombia/2026/11/18/marchas-y-protestas-este-jueves-19-de-noviembre-en-contra-de-la-reforma-tributaria-de-abelardo-de-la-espriella-estos-serian-los-recorridos-y-los-lugares-de-concentracion-en-bogota/",
       "source": "Infobae Colombia"
+    },
+    {
+      "title": "Alcaldía anunció cierre en la avenida Boyacá por obras del Acueducto: En dónde y por cuánto tiempo",
+      "link": "https://caracol.com.co/2026/11/18/alcaldia-anuncio-cierre-en-la-avenida-boyaca-por-obras-del-acueducto-en-donde-y-por-cuanto-tiempo/",
+      "source": "Caracol Radio"
+    },
+    {
+      "title": "Bogotá estaría en riesgo de racionamiento de agua y energía: Galán hace llamado a cuidar consumo",
+      "link": "https://caracol.com.co/2026/11/18/bogota-estaria-en-riesgo-de-racionamiento-de-agua-y-energia-galan-hace-llamado-a-cuidar-consumo/",
+      "source": "Caracol Radio"
     }
   ],
   "quote": {
-    "text": "Solo sé que no sé nada.",
-    "author": "Sócrates",
+    "text": "Quien tiene un porqué para vivir encontrará casi siempre el cómo.",
+    "author": "Friedrich Nietzsche",
     "origin": "local"
   }
 }
