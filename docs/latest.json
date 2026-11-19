@@ -1,24 +1,24 @@
 {
-  "date": "2026-11-18",
+  "date": "2026-11-19",
   "name": "Juli",
-  "greeting": "Hola, Juli, buen día. Aquí va tu resumen para salir tranquila a la calle. Parece que hoy Bogotá se pone romántica con la lluvia.",
+  "greeting": "Hola, Juli. Un día nuevo para hacerlo con ganas y con calma. Parece que hoy Bogotá se pone romántica con la lluvia.",
   "summary": {
-    "date": "2026-11-18",
+    "date": "2026-11-19",
     "sent": "1",
-    "temp_min": "11.1",
-    "temp_max": "22.8",
-    "rain_prob": "81",
-    "aqi": "68",
-    "trm": "3309.55",
+    "temp_min": "12.4",
+    "temp_max": "20.6",
+    "rain_prob": "94",
+    "aqi": "79",
+    "trm": "3326.96",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
       "value": 18.6,
-      "low": 18.5,
-      "high": 21.1,
-      "spread": 2.6000000000000014,
+      "low": 17.7,
+      "high": 19.3,
+      "spread": 1.6000000000000014,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -27,58 +27,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 66
+      "score": 76
     },
     "feels_like": {
-      "value": 18.0,
-      "low": 17.2,
-      "high": 20.5,
-      "spread": 3.3000000000000007,
-      "n": 3,
-      "confidence": "media",
-      "disagree": true,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 67
-    },
-    "tmin": {
-      "value": 11.1,
-      "low": 10.0,
-      "high": 13.9,
-      "spread": 3.9000000000000004,
-      "n": 3,
-      "confidence": "media",
-      "disagree": true,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 61
-    },
-    "tmax": {
-      "value": 22.8,
-      "low": 19.1,
-      "high": 23.0,
-      "spread": 3.8999999999999986,
-      "n": 3,
-      "confidence": "media",
-      "disagree": true,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 61
-    },
-    "wind_kmh": {
-      "value": 10.8,
-      "low": 9.4,
-      "high": 11.2,
-      "spread": 1.799999999999999,
+      "value": 17.4,
+      "low": 17.3,
+      "high": 18.5,
+      "spread": 1.1999999999999993,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +42,57 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 96
+      "score": 88
+    },
+    "tmin": {
+      "value": 12.4,
+      "low": 9.8,
+      "high": 13.5,
+      "spread": 3.6999999999999993,
+      "n": 3,
+      "confidence": "media",
+      "disagree": true,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 63
+    },
+    "tmax": {
+      "value": 20.6,
+      "low": 20.0,
+      "high": 22.1,
+      "spread": 2.1000000000000014,
+      "n": 3,
+      "confidence": "alta",
+      "disagree": false,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 79
+    },
+    "wind_kmh": {
+      "value": 10.9,
+      "low": 5.5,
+      "high": 12.0,
+      "spread": 6.5,
+      "n": 3,
+      "confidence": "alta",
+      "disagree": false,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 87
     },
     "uv": {
-      "value": 9.15,
-      "low": 9.15,
-      "high": 9.15,
+      "value": 8.95,
+      "low": 8.95,
+      "high": 8.95,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,10 +104,10 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 10.5,
-        "low": 2.0,
-        "high": 19.0,
-        "spread": 17.0,
+        "value": 76.0,
+        "low": 67.0,
+        "high": 85.0,
+        "spread": 18.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -115,27 +115,27 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 80
+        "score": 78
       },
       "tarde": {
-        "value": 81.0,
-        "low": 62.0,
+        "value": 94.0,
+        "low": 88.0,
         "high": 100.0,
-        "spread": 38.0,
+        "spread": 12.0,
         "n": 2,
-        "confidence": "baja",
-        "disagree": true,
+        "confidence": "media",
+        "disagree": false,
         "sources": [
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 54
+        "score": 86
       },
       "noche": {
-        "value": 80.5,
-        "low": 61.0,
+        "value": 75.0,
+        "low": 50.0,
         "high": 100.0,
-        "spread": 39.0,
+        "spread": 50.0,
         "n": 2,
         "confidence": "baja",
         "disagree": true,
@@ -143,11 +143,11 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 53
+        "score": 50
       }
     },
-    "rain_peak_hour": 17,
-    "rain_peak_pct": 81.0,
+    "rain_peak_hour": 15,
+    "rain_peak_pct": 92.5,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
@@ -162,23 +162,23 @@
     "rain_note": "lluvia probable, aunque un modelo no la ve",
     "feels_periods": {
       "mañana": {
-        "low": 10.5,
-        "high": 22.0,
+        "low": 13.2,
+        "high": 21.6,
         "n": 3
       },
       "tarde": {
-        "low": 16.3,
-        "high": 24.4,
+        "low": 16.2,
+        "high": 21.9,
         "n": 3
       },
       "noche": {
-        "low": 14.0,
-        "high": 15.0,
+        "low": 14.4,
+        "high": 15.1,
         "n": 3
       }
     },
-    "score": 61,
-    "rain_score": 52,
+    "score": 63,
+    "rain_score": 61,
     "now_hour": 15,
     "period_hours": {
       "mañana": [
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 68.0,
+    "aqi": 79.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -205,49 +205,49 @@
     "confidence": "baja"
   },
   "trm": {
-    "value": 3309.55,
-    "valid_from": "2026-11-18",
-    "previous": 3316.7,
-    "change_abs": -7.149999999999636,
-    "change_pct": -0.21557572285704577,
-    "avg30": 3215.325263157895,
-    "vs_avg30_pct": 2.9304884927742463,
+    "value": 3326.96,
+    "valid_from": "2026-11-19",
+    "previous": 3309.55,
+    "change_abs": 17.409999999999854,
+    "change_pct": 0.5260533909443837,
+    "avg30": 3220.907,
+    "vs_avg30_pct": 3.292643966435538,
     "is_min30": false,
-    "is_max30": false,
-    "backup_value": 3320.186806,
+    "is_max30": true,
+    "backup_value": 3308.13231,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
     ],
     "confidence": "alta",
-    "score": 94,
-    "valid_until": "2026-11-18",
+    "score": 89,
+    "valid_until": "2026-11-19",
     "is_weekend_or_holiday": false
   },
   "news": [
     {
-      "title": "Fuertes lluvias en Bogotá provocaron inundaciones en punto clave de la movilidad: Las imágenes",
-      "link": "https://www.semana.com/nacion/articulo/fuertes-lluvias-en-bogota-provocaron-inundaciones-en-punto-clave-de-la-movilidad-las-imagenes/202624/",
-      "source": "Semana - Bogotá"
-    },
-    {
-      "title": "Marchas y protestas este jueves 19 de noviembre en contra de la reforma tributaria de Abelardo de la Espriella: estos serían los recorridos y los lugares de concentración en Bogotá",
-      "link": "https://www.infobae.com/colombia/2026/11/18/marchas-y-protestas-este-jueves-19-de-noviembre-en-contra-de-la-reforma-tributaria-de-abelardo-de-la-espriella-estos-serian-los-recorridos-y-los-lugares-de-concentracion-en-bogota/",
+      "title": "Paro nacional del 19 de noviembre, Abelardo de la Espriella recorrió Bogotá y advirtió que saldrá “toda la fuerza del Estado” si hay bloqueos: “La violencia no es un derecho”",
+      "link": "https://www.infobae.com/colombia/2026/11/19/paro-nacional-del-19-de-noviembre-abelardo-de-la-espriella-recorrio-bogota-y-adivirtio-que-saldra-toda-la-fuerza-del-estado-si-hay-bloqueos-la-violencia-no-es-un-derecho/",
       "source": "Infobae Colombia"
     },
     {
-      "title": "Alcaldía anunció cierre en la avenida Boyacá por obras del Acueducto: En dónde y por cuánto tiempo",
-      "link": "https://caracol.com.co/2026/11/18/alcaldia-anuncio-cierre-en-la-avenida-boyaca-por-obras-del-acueducto-en-donde-y-por-cuanto-tiempo/",
-      "source": "Caracol Radio"
+      "title": "Manifestaciones del 19-N en Bogotá: reportan disturbios en las afueras de la U. Nacional",
+      "link": "https://www.elespectador.com/bogota/movilidad-19-de-noviembre-pico-y-placa-protestas-y-estado-de-las-vias-en-bogota/",
+      "source": "El Espectador"
     },
     {
-      "title": "Bogotá estaría en riesgo de racionamiento de agua y energía: Galán hace llamado a cuidar consumo",
-      "link": "https://caracol.com.co/2026/11/18/bogota-estaria-en-riesgo-de-racionamiento-de-agua-y-energia-galan-hace-llamado-a-cuidar-consumo/",
-      "source": "Caracol Radio"
+      "title": "Antidisturbios disipan manifestantes de la carrera Séptima tras desmanes durante las marchas: también en la carrera 30",
+      "link": "https://www.semana.com/nacion/bogota/articulo/antidisturbios-disipan-manifestantes-de-la-carrera-septima-tras-desmanes-durante-las-marchas-tambien-en-la-carrera-30/202621/",
+      "source": "Semana - Bogotá"
+    },
+    {
+      "title": "Se presentan disturbios en la Universidad Nacional por protestas del petrismo en Bogotá",
+      "link": "https://www.semana.com/nacion/bogota/articulo/se-presentan-disturbios-en-la-universidad-nacional-por-protestas-del-petrismo-en-bogota/202659/",
+      "source": "Semana - Bogotá"
     }
   ],
   "quote": {
-    "text": "Quien tiene un porqué para vivir encontrará casi siempre el cómo.",
+    "text": "Hay que tener un caos dentro de sí para poder dar a luz una estrella danzante.",
     "author": "Friedrich Nietzsche",
     "origin": "local"
   }

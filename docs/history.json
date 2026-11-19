@@ -284,5 +284,16 @@
   "trm": "3309.55",
   "confidence": "baja",
   "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+ },
+ {
+  "date": "2026-11-19",
+  "sent": "1",
+  "temp_min": "12.4",
+  "temp_max": "20.6",
+  "rain_prob": "94",
+  "aqi": "79",
+  "trm": "3326.96",
+  "confidence": "baja",
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
  }
 ]
