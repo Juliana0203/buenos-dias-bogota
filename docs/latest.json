@@ -1,24 +1,24 @@
 {
-  "date": "2026-11-19",
+  "date": "2026-11-20",
   "name": "Juli",
-  "greeting": "Hola, Juli. Un día nuevo para hacerlo con ganas y con calma. Parece que hoy Bogotá se pone romántica con la lluvia.",
+  "greeting": "Arriba, Juli, hoy es viernes. Parece que hoy Bogotá se pone romántica con la lluvia.",
   "summary": {
-    "date": "2026-11-19",
+    "date": "2026-11-20",
     "sent": "1",
-    "temp_min": "12.4",
-    "temp_max": "20.6",
-    "rain_prob": "94",
-    "aqi": "79",
-    "trm": "3326.96",
+    "temp_min": "12.3",
+    "temp_max": "19.6",
+    "rain_prob": "100",
+    "aqi": "64",
+    "trm": "3415.10",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 18.6,
-      "low": 17.7,
-      "high": 19.3,
-      "spread": 1.6000000000000014,
+      "value": 17.9,
+      "low": 17.1,
+      "high": 18.1,
+      "spread": 1.0,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -27,13 +27,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 76
+      "score": 82
     },
     "feels_like": {
-      "value": 17.4,
-      "low": 17.3,
+      "value": 18.4,
+      "low": 15.8,
       "high": 18.5,
-      "spread": 1.1999999999999993,
+      "spread": 2.6999999999999993,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -42,28 +42,28 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 88
+      "score": 73
     },
     "tmin": {
-      "value": 12.4,
-      "low": 9.8,
-      "high": 13.5,
-      "spread": 3.6999999999999993,
+      "value": 12.3,
+      "low": 11.3,
+      "high": 13.1,
+      "spread": 1.799999999999999,
       "n": 3,
-      "confidence": "media",
-      "disagree": true,
+      "confidence": "alta",
+      "disagree": false,
       "sources": [
         "Open-Meteo/ECMWF",
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 63
+      "score": 82
     },
     "tmax": {
-      "value": 20.6,
-      "low": 20.0,
-      "high": 22.1,
-      "spread": 2.1000000000000014,
+      "value": 19.6,
+      "low": 17.9,
+      "high": 20.8,
+      "spread": 2.900000000000002,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -72,13 +72,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 79
+      "score": 71
     },
     "wind_kmh": {
-      "value": 10.9,
-      "low": 5.5,
-      "high": 12.0,
-      "spread": 6.5,
+      "value": 9.4,
+      "low": 3.6,
+      "high": 10.9,
+      "spread": 7.300000000000001,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +87,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 87
+      "score": 85
     },
     "uv": {
-      "value": 8.95,
-      "low": 8.95,
-      "high": 8.95,
+      "value": 8.4,
+      "low": 8.4,
+      "high": 8.4,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,9 +104,37 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 76.0,
-        "low": 67.0,
-        "high": 85.0,
+        "value": 80.5,
+        "low": 61.0,
+        "high": 100.0,
+        "spread": 39.0,
+        "n": 2,
+        "confidence": "baja",
+        "disagree": true,
+        "sources": [
+          "Open-Meteo/ECMWF",
+          "Open-Meteo/GFS"
+        ],
+        "score": 53
+      },
+      "tarde": {
+        "value": 100.0,
+        "low": 100.0,
+        "high": 100.0,
+        "spread": 0.0,
+        "n": 2,
+        "confidence": "media",
+        "disagree": false,
+        "sources": [
+          "Open-Meteo/ECMWF",
+          "Open-Meteo/GFS"
+        ],
+        "score": 98
+      },
+      "noche": {
+        "value": 91.0,
+        "low": 82.0,
+        "high": 100.0,
         "spread": 18.0,
         "n": 2,
         "confidence": "media",
@@ -116,38 +144,10 @@
           "Open-Meteo/GFS"
         ],
         "score": 78
-      },
-      "tarde": {
-        "value": 94.0,
-        "low": 88.0,
-        "high": 100.0,
-        "spread": 12.0,
-        "n": 2,
-        "confidence": "media",
-        "disagree": false,
-        "sources": [
-          "Open-Meteo/ECMWF",
-          "Open-Meteo/GFS"
-        ],
-        "score": 86
-      },
-      "noche": {
-        "value": 75.0,
-        "low": 50.0,
-        "high": 100.0,
-        "spread": 50.0,
-        "n": 2,
-        "confidence": "baja",
-        "disagree": true,
-        "sources": [
-          "Open-Meteo/ECMWF",
-          "Open-Meteo/GFS"
-        ],
-        "score": 50
       }
     },
     "rain_peak_hour": 15,
-    "rain_peak_pct": 92.5,
+    "rain_peak_pct": 100.0,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
@@ -162,23 +162,23 @@
     "rain_note": "lluvia probable, aunque un modelo no la ve",
     "feels_periods": {
       "mañana": {
-        "low": 13.2,
-        "high": 21.6,
+        "low": 14.2,
+        "high": 22.1,
         "n": 3
       },
       "tarde": {
-        "low": 16.2,
-        "high": 21.9,
+        "low": 15.6,
+        "high": 20.6,
         "n": 3
       },
       "noche": {
-        "low": 14.4,
-        "high": 15.1,
+        "low": 12.4,
+        "high": 14.4,
         "n": 3
       }
     },
-    "score": 63,
-    "rain_score": 61,
+    "score": 71,
+    "rain_score": 66,
     "now_hour": 15,
     "period_hours": {
       "mañana": [
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 79.0,
+    "aqi": 64.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -205,49 +205,49 @@
     "confidence": "baja"
   },
   "trm": {
-    "value": 3326.96,
-    "valid_from": "2026-11-19",
-    "previous": 3309.55,
-    "change_abs": 17.409999999999854,
-    "change_pct": 0.5260533909443837,
-    "avg30": 3220.907,
-    "vs_avg30_pct": 3.292643966435538,
+    "value": 3415.1,
+    "valid_from": "2026-11-20",
+    "previous": 3326.96,
+    "change_abs": 88.13999999999987,
+    "change_pct": 2.64926539543607,
+    "avg30": 3233.846,
+    "vs_avg30_pct": 5.6049051191677,
     "is_min30": false,
     "is_max30": true,
-    "backup_value": 3308.13231,
+    "backup_value": 3345.392865,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
     ],
-    "confidence": "alta",
-    "score": 89,
-    "valid_until": "2026-11-19",
+    "confidence": "media",
+    "score": 59,
+    "valid_until": "2026-11-20",
     "is_weekend_or_holiday": false
   },
   "news": [
     {
-      "title": "Paro nacional del 19 de noviembre, Abelardo de la Espriella recorrió Bogotá y advirtió que saldrá “toda la fuerza del Estado” si hay bloqueos: “La violencia no es un derecho”",
-      "link": "https://www.infobae.com/colombia/2026/11/19/paro-nacional-del-19-de-noviembre-abelardo-de-la-espriella-recorrio-bogota-y-adivirtio-que-saldra-toda-la-fuerza-del-estado-si-hay-bloqueos-la-violencia-no-es-un-derecho/",
+      "title": "Explosiones y vandalismo en la carrera Séptima durante las marchas de este jueves 19 de noviembre",
+      "link": "https://www.semana.com/nacion/bogota/articulo/explosiones-y-vandalismo-en-la-carrera-septima-durante-las-marchas-de-este-jueves-19-de-noviembre/202605/",
+      "source": "Semana - Bogotá"
+    },
+    {
+      "title": "Abelardo de la Espriella y Carlos Fernando Galán inauguraron las obras de ampliación de la Autopista Norte en Bogotá con pullas a Petro y a Claudia López: “Durante cuatro años se bloqueó esta obra”",
+      "link": "https://www.infobae.com/colombia/2026/11/20/abelardo-de-la-espriella-y-carlos-fernando-galan-inauguraron-las-obras-de-ampliacion-de-la-autopista-norte-en-bogota-con-pullas-a-petro-y-a-claudia-lopez/",
       "source": "Infobae Colombia"
     },
     {
-      "title": "Manifestaciones del 19-N en Bogotá: reportan disturbios en las afueras de la U. Nacional",
-      "link": "https://www.elespectador.com/bogota/movilidad-19-de-noviembre-pico-y-placa-protestas-y-estado-de-las-vias-en-bogota/",
-      "source": "El Espectador"
-    },
-    {
-      "title": "Antidisturbios disipan manifestantes de la carrera Séptima tras desmanes durante las marchas: también en la carrera 30",
-      "link": "https://www.semana.com/nacion/bogota/articulo/antidisturbios-disipan-manifestantes-de-la-carrera-septima-tras-desmanes-durante-las-marchas-tambien-en-la-carrera-30/202621/",
+      "title": "Hay problemas en el aeropuerto El Dorado de Bogotá: neblina genera cierres en la pista y retrasos en los vuelos",
+      "link": "https://www.semana.com/nacion/bogota/articulo/hay-problemas-en-el-aeropuerto-el-dorado-de-bogota-neblina-genera-cierres-en-la-pista-y-retrasos-en-los-vuelos/202630/",
       "source": "Semana - Bogotá"
     },
     {
-      "title": "Se presentan disturbios en la Universidad Nacional por protestas del petrismo en Bogotá",
-      "link": "https://www.semana.com/nacion/bogota/articulo/se-presentan-disturbios-en-la-universidad-nacional-por-protestas-del-petrismo-en-bogota/202659/",
-      "source": "Semana - Bogotá"
+      "title": "Pico y Placa en Bogotá: restricciones vehiculares para evitar multas este 20 de noviembre",
+      "link": "https://www.infobae.com/colombia/2026/11/20/pico-y-placa-en-bogota-restricciones-vehiculares-para-evitar-multas-este-20-de-noviembre/",
+      "source": "Infobae Colombia"
     }
   ],
   "quote": {
-    "text": "Hay que tener un caos dentro de sí para poder dar a luz una estrella danzante.",
+    "text": "Sin música, la vida sería un error.",
     "author": "Friedrich Nietzsche",
     "origin": "local"
   }
