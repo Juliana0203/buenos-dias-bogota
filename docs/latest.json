@@ -1,23 +1,38 @@
 {
-  "date": "2026-11-20",
+  "date": "2026-11-21",
   "name": "Juli",
-  "greeting": "Arriba, Juli, hoy es viernes. Parece que hoy Bogotá se pone romántica con la lluvia.",
+  "greeting": "Hola, Juli, buen día. Aquí va tu resumen para salir tranquila a la calle. Parece que hoy Bogotá se pone romántica con la lluvia.",
   "summary": {
-    "date": "2026-11-20",
+    "date": "2026-11-21",
     "sent": "1",
-    "temp_min": "12.3",
-    "temp_max": "19.6",
+    "temp_min": "13.0",
+    "temp_max": "19.9",
     "rain_prob": "100",
-    "aqi": "64",
-    "trm": "3415.10",
+    "aqi": "52",
+    "trm": "3461.92",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 17.9,
+      "value": 18.0,
       "low": 17.1,
-      "high": 18.1,
+      "high": 18.9,
+      "spread": 1.7999999999999972,
+      "n": 3,
+      "confidence": "alta",
+      "disagree": false,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 74
+    },
+    "feels_like": {
+      "value": 18.3,
+      "low": 17.5,
+      "high": 18.5,
       "spread": 1.0,
       "n": 3,
       "confidence": "alta",
@@ -27,28 +42,43 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 82
-    },
-    "feels_like": {
-      "value": 18.4,
-      "low": 15.8,
-      "high": 18.5,
-      "spread": 2.6999999999999993,
-      "n": 3,
-      "confidence": "alta",
-      "disagree": false,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 73
+      "score": 90
     },
     "tmin": {
-      "value": 12.3,
-      "low": 11.3,
-      "high": 13.1,
-      "spread": 1.799999999999999,
+      "value": 13.0,
+      "low": 10.5,
+      "high": 13.3,
+      "spread": 2.8000000000000007,
+      "n": 3,
+      "confidence": "alta",
+      "disagree": false,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 72
+    },
+    "tmax": {
+      "value": 19.9,
+      "low": 19.0,
+      "high": 20.0,
+      "spread": 1.0,
+      "n": 3,
+      "confidence": "alta",
+      "disagree": false,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 90
+    },
+    "wind_kmh": {
+      "value": 8.3,
+      "low": 1.8,
+      "high": 10.6,
+      "spread": 8.799999999999999,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -59,40 +89,10 @@
       ],
       "score": 82
     },
-    "tmax": {
-      "value": 19.6,
-      "low": 17.9,
-      "high": 20.8,
-      "spread": 2.900000000000002,
-      "n": 3,
-      "confidence": "alta",
-      "disagree": false,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 71
-    },
-    "wind_kmh": {
-      "value": 9.4,
-      "low": 3.6,
-      "high": 10.9,
-      "spread": 7.300000000000001,
-      "n": 3,
-      "confidence": "alta",
-      "disagree": false,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 85
-    },
     "uv": {
-      "value": 8.4,
-      "low": 8.4,
-      "high": 8.4,
+      "value": 7.9,
+      "low": 7.9,
+      "high": 7.9,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,10 +104,10 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 80.5,
-        "low": 61.0,
-        "high": 100.0,
-        "spread": 39.0,
+        "value": 72.0,
+        "low": 47.0,
+        "high": 97.0,
+        "spread": 50.0,
         "n": 2,
         "confidence": "baja",
         "disagree": true,
@@ -115,7 +115,7 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 53
+        "score": 50
       },
       "tarde": {
         "value": 100.0,
@@ -132,10 +132,10 @@
         "score": 98
       },
       "noche": {
-        "value": 91.0,
-        "low": 82.0,
+        "value": 92.5,
+        "low": 85.0,
         "high": 100.0,
-        "spread": 18.0,
+        "spread": 15.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -143,10 +143,10 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 78
+        "score": 82
       }
     },
-    "rain_peak_hour": 15,
+    "rain_peak_hour": 14,
     "rain_peak_pct": 100.0,
     "sources": [
       "Open-Meteo/ECMWF",
@@ -159,27 +159,27 @@
       "Open-Meteo/GFS"
     ],
     "rain_confidence": "baja",
-    "rain_note": "lluvia probable, aunque un modelo no la ve",
+    "rain_note": null,
     "feels_periods": {
       "mañana": {
-        "low": 14.2,
-        "high": 22.1,
+        "low": 13.5,
+        "high": 19.1,
         "n": 3
       },
       "tarde": {
-        "low": 15.6,
-        "high": 20.6,
+        "low": 16.4,
+        "high": 20.2,
         "n": 3
       },
       "noche": {
-        "low": 12.4,
-        "high": 14.4,
+        "low": 14.0,
+        "high": 15.1,
         "n": 3
       }
     },
-    "score": 71,
-    "rain_score": 66,
-    "now_hour": 15,
+    "score": 72,
+    "rain_score": 77,
+    "now_hour": 14,
     "period_hours": {
       "mañana": [
         6,
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 64.0,
+    "aqi": 52.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -205,13 +205,13 @@
     "confidence": "baja"
   },
   "trm": {
-    "value": 3415.1,
-    "valid_from": "2026-11-20",
-    "previous": 3326.96,
-    "change_abs": 88.13999999999987,
-    "change_pct": 2.64926539543607,
-    "avg30": 3233.846,
-    "vs_avg30_pct": 5.6049051191677,
+    "value": 3461.92,
+    "valid_from": "2026-11-21",
+    "previous": 3415.1,
+    "change_abs": null,
+    "change_pct": null,
+    "avg30": 3248.754,
+    "vs_avg30_pct": 6.561469412580951,
     "is_min30": false,
     "is_max30": true,
     "backup_value": 3345.392865,
@@ -220,35 +220,25 @@
       "open.er-api.com"
     ],
     "confidence": "media",
-    "score": 59,
-    "valid_until": "2026-11-20",
-    "is_weekend_or_holiday": false
+    "score": 50,
+    "valid_until": "2026-11-23",
+    "is_weekend_or_holiday": true
   },
   "news": [
     {
-      "title": "Explosiones y vandalismo en la carrera Séptima durante las marchas de este jueves 19 de noviembre",
-      "link": "https://www.semana.com/nacion/bogota/articulo/explosiones-y-vandalismo-en-la-carrera-septima-durante-las-marchas-de-este-jueves-19-de-noviembre/202605/",
+      "title": "Cierres viales en Bogotá por carrera atlética el domingo: esto informó la Secretaría de Movilidad",
+      "link": "https://www.semana.com/nacion/bogota/articulo/cierres-viales-en-bogota-por-carrera-atletica-el-domingo-esto-informo-la-secretaria-de-movilidad/202649/",
       "source": "Semana - Bogotá"
     },
     {
-      "title": "Abelardo de la Espriella y Carlos Fernando Galán inauguraron las obras de ampliación de la Autopista Norte en Bogotá con pullas a Petro y a Claudia López: “Durante cuatro años se bloqueó esta obra”",
-      "link": "https://www.infobae.com/colombia/2026/11/20/abelardo-de-la-espriella-y-carlos-fernando-galan-inauguraron-las-obras-de-ampliacion-de-la-autopista-norte-en-bogota-con-pullas-a-petro-y-a-claudia-lopez/",
-      "source": "Infobae Colombia"
-    },
-    {
-      "title": "Hay problemas en el aeropuerto El Dorado de Bogotá: neblina genera cierres en la pista y retrasos en los vuelos",
-      "link": "https://www.semana.com/nacion/bogota/articulo/hay-problemas-en-el-aeropuerto-el-dorado-de-bogota-neblina-genera-cierres-en-la-pista-y-retrasos-en-los-vuelos/202630/",
-      "source": "Semana - Bogotá"
-    },
-    {
-      "title": "Pico y Placa en Bogotá: restricciones vehiculares para evitar multas este 20 de noviembre",
-      "link": "https://www.infobae.com/colombia/2026/11/20/pico-y-placa-en-bogota-restricciones-vehiculares-para-evitar-multas-este-20-de-noviembre/",
-      "source": "Infobae Colombia"
+      "title": "Bogotá tendrá cierres viales desde este sábado por carrera atlética: conozca las vías afectadas y los desvíos",
+      "link": "https://www.eltiempo.com/bogota/bogota-tendra-cierres-viales-desde-este-sabado-por-carrera-atletica-conozca-las-vias-afectadas-y-los-desvios-3602967",
+      "source": "El Tiempo - Bogotá"
     }
   ],
   "quote": {
-    "text": "Sin música, la vida sería un error.",
-    "author": "Friedrich Nietzsche",
+    "text": "Aun en los días más oscuros, hay algo que sigue brillando.",
+    "author": "Anónimo",
     "origin": "local"
   }
 }
