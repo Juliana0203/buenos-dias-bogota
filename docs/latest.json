@@ -1,14 +1,14 @@
 {
-  "date": "2026-11-21",
+  "date": "2026-11-22",
   "name": "Juli",
-  "greeting": "Hola, Juli, buen día. Aquí va tu resumen para salir tranquila a la calle. Parece que hoy Bogotá se pone romántica con la lluvia.",
+  "greeting": "Buenos días, Juli. Fin de semana: sin afanes, que hoy es domingo. Parece que hoy Bogotá se pone romántica con la lluvia.",
   "summary": {
-    "date": "2026-11-21",
+    "date": "2026-11-22",
     "sent": "1",
-    "temp_min": "13.0",
-    "temp_max": "19.9",
+    "temp_min": "13.2",
+    "temp_max": "18.7",
     "rain_prob": "100",
-    "aqi": "52",
+    "aqi": "63",
     "trm": "3461.92",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
@@ -16,9 +16,24 @@
   "weather": {
     "temp": {
       "value": 18.0,
-      "low": 17.1,
-      "high": 18.9,
-      "spread": 1.7999999999999972,
+      "low": 17.5,
+      "high": 18.2,
+      "spread": 0.6999999999999993,
+      "n": 3,
+      "confidence": "alta",
+      "disagree": false,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 85
+    },
+    "feels_like": {
+      "value": 18.2,
+      "low": 16.7,
+      "high": 19.3,
+      "spread": 2.6000000000000014,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -29,26 +44,11 @@
       ],
       "score": 74
     },
-    "feels_like": {
-      "value": 18.3,
-      "low": 17.5,
-      "high": 18.5,
-      "spread": 1.0,
-      "n": 3,
-      "confidence": "alta",
-      "disagree": false,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 90
-    },
     "tmin": {
-      "value": 13.0,
-      "low": 10.5,
-      "high": 13.3,
-      "spread": 2.8000000000000007,
+      "value": 13.2,
+      "low": 12.5,
+      "high": 13.8,
+      "spread": 1.3000000000000007,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -57,13 +57,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 72
+      "score": 87
     },
     "tmax": {
-      "value": 19.9,
-      "low": 19.0,
-      "high": 20.0,
-      "spread": 1.0,
+      "value": 18.7,
+      "low": 17.5,
+      "high": 19.6,
+      "spread": 2.1000000000000014,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -72,13 +72,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 90
+      "score": 79
     },
     "wind_kmh": {
-      "value": 8.3,
-      "low": 1.8,
-      "high": 10.6,
-      "spread": 8.799999999999999,
+      "value": 6.8,
+      "low": 4.8,
+      "high": 9.4,
+      "spread": 4.6000000000000005,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +87,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 82
+      "score": 91
     },
     "uv": {
-      "value": 7.9,
-      "low": 7.9,
-      "high": 7.9,
+      "value": 7.0,
+      "low": 7.0,
+      "high": 7.0,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,18 +104,18 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 72.0,
-        "low": 47.0,
-        "high": 97.0,
-        "spread": 50.0,
+        "value": 91.5,
+        "low": 83.0,
+        "high": 100.0,
+        "spread": 17.0,
         "n": 2,
-        "confidence": "baja",
-        "disagree": true,
+        "confidence": "media",
+        "disagree": false,
         "sources": [
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 50
+        "score": 80
       },
       "tarde": {
         "value": 100.0,
@@ -132,10 +132,10 @@
         "score": 98
       },
       "noche": {
-        "value": 92.5,
-        "low": 85.0,
+        "value": 100.0,
+        "low": 100.0,
         "high": 100.0,
-        "spread": 15.0,
+        "spread": 0.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -143,42 +143,42 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 82
+        "score": 98
       }
     },
-    "rain_peak_hour": 14,
+    "rain_peak_hour": 16,
     "rain_peak_pct": 100.0,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
       "Open-Meteo/ICON"
     ],
-    "confidence": "baja",
+    "confidence": "alta",
     "rain_sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS"
     ],
-    "rain_confidence": "baja",
-    "rain_note": null,
+    "rain_confidence": "alta",
+    "rain_note": "lluvia probable, aunque un modelo no la ve",
     "feels_periods": {
       "mañana": {
-        "low": 13.5,
-        "high": 19.1,
+        "low": 13.9,
+        "high": 19.8,
         "n": 3
       },
       "tarde": {
-        "low": 16.4,
-        "high": 20.2,
+        "low": 16.1,
+        "high": 20.4,
         "n": 3
       },
       "noche": {
-        "low": 14.0,
-        "high": 15.1,
+        "low": 13.9,
+        "high": 15.0,
         "n": 3
       }
     },
-    "score": 72,
-    "rain_score": 77,
+    "score": 79,
+    "rain_score": 82,
     "now_hour": 14,
     "period_hours": {
       "mañana": [
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 52.0,
+    "aqi": 63.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -210,11 +210,11 @@
     "previous": 3415.1,
     "change_abs": null,
     "change_pct": null,
-    "avg30": 3248.754,
-    "vs_avg30_pct": 6.561469412580951,
+    "avg30": 3251.768947368421,
+    "vs_avg30_pct": 6.462668659212378,
     "is_min30": false,
     "is_max30": true,
-    "backup_value": 3345.392865,
+    "backup_value": 3341.891148,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
@@ -226,19 +226,24 @@
   },
   "news": [
     {
-      "title": "Cierres viales en Bogotá por carrera atlética el domingo: esto informó la Secretaría de Movilidad",
-      "link": "https://www.semana.com/nacion/bogota/articulo/cierres-viales-en-bogota-por-carrera-atletica-el-domingo-esto-informo-la-secretaria-de-movilidad/202649/",
-      "source": "Semana - Bogotá"
+      "title": "Fuerte granizada en Cundinamarca: Chía y Cajicá reportan emergencias, calles blancas y afectaciones en la movilidad; Bogotá también registra lluvias",
+      "link": "https://www.eltiempo.com/bogota/fuerte-granizada-en-cundinamarca-chia-y-cajica-reportan-emergencias-calles-blancas-y-afectaciones-en-la-movilidad-bogota-tambien-registra-lluvias-3603080",
+      "source": "El Tiempo - Bogotá"
     },
     {
-      "title": "Bogotá tendrá cierres viales desde este sábado por carrera atlética: conozca las vías afectadas y los desvíos",
-      "link": "https://www.eltiempo.com/bogota/bogota-tendra-cierres-viales-desde-este-sabado-por-carrera-atletica-conozca-las-vias-afectadas-y-los-desvios-3602967",
+      "title": "La historia de los 24 paneles solares que les aliviaron el bolsillo a 7.800 habitantes de Mochuelo Bajo",
+      "link": "https://www.eltiempo.com/bogota/la-historia-de-los-24-paneles-solares-que-les-aliviaron-el-bolsillo-a-7-800-habitantes-de-mochuelo-bajo-3602784",
       "source": "El Tiempo - Bogotá"
+    },
+    {
+      "title": "Colombia vivirá sus alumbrados navideños y de Año Nuevo con modificaciones por el fenómeno de El Niño",
+      "link": "https://www.eltiempo.com/colombia/otras-ciudades/colombia-vivira-sus-alumbrados-navidenos-y-de-ano-nuevo-con-modificaciones-por-el-fenomeno-de-el-nino-3603153",
+      "source": "El Tiempo - Colombia"
     }
   ],
   "quote": {
-    "text": "Aun en los días más oscuros, hay algo que sigue brillando.",
-    "author": "Anónimo",
+    "text": "Pies, para qué los quiero, si tengo alas para volar.",
+    "author": "Frida Kahlo",
     "origin": "local"
   }
 }

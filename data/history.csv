@@ -28,3 +28,4 @@ date,sent,temp_min,temp_max,rain_prob,aqi,trm,confidence,sources
 2026-11-19,1,12.4,20.6,94,79,3326.96,baja,Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com
 2026-11-20,1,12.3,19.6,100,64,3415.10,baja,Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com
 2026-11-21,1,13.0,19.9,100,52,3461.92,baja,Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com
+2026-11-22,1,13.2,18.7,100,63,3461.92,baja,Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com
