@@ -1,24 +1,24 @@
 {
-  "date": "2026-11-23",
+  "date": "2026-11-24",
   "name": "Juli",
-  "greeting": "Hola, Juli, buen día. Aquí va tu resumen para salir tranquila a la calle. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
+  "greeting": "Buen día, Juli. Que la buena energía te acompañe hoy. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
   "summary": {
-    "date": "2026-11-23",
+    "date": "2026-11-24",
     "sent": "1",
-    "temp_min": "12.3",
-    "temp_max": "20.2",
-    "rain_prob": "100",
-    "aqi": "57",
-    "trm": "3461.92",
+    "temp_min": "12.6",
+    "temp_max": "20.9",
+    "rain_prob": "98",
+    "aqi": "69",
+    "trm": "3505.92",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 15.4,
-      "low": 13.5,
-      "high": 15.6,
-      "spread": 2.0999999999999996,
+      "value": 17.1,
+      "low": 16.9,
+      "high": 18.8,
+      "spread": 1.9000000000000021,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -27,43 +27,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 71
+      "score": 73
     },
     "feels_like": {
-      "value": 15.9,
-      "low": 13.5,
-      "high": 16.4,
-      "spread": 2.8999999999999986,
-      "n": 3,
-      "confidence": "alta",
-      "disagree": false,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 71
-    },
-    "tmin": {
-      "value": 12.3,
-      "low": 11.8,
-      "high": 13.3,
-      "spread": 1.5,
-      "n": 3,
-      "confidence": "alta",
-      "disagree": false,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 85
-    },
-    "tmax": {
-      "value": 20.2,
-      "low": 18.3,
-      "high": 22.0,
-      "spread": 3.6999999999999993,
+      "value": 16.6,
+      "low": 15.9,
+      "high": 19.4,
+      "spread": 3.4999999999999982,
       "n": 3,
       "confidence": "media",
       "disagree": true,
@@ -72,13 +42,28 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 63
+      "score": 65
     },
-    "wind_kmh": {
-      "value": 4.2,
-      "low": 2.5,
-      "high": 5.4,
-      "spread": 2.9000000000000004,
+    "tmin": {
+      "value": 12.6,
+      "low": 10.8,
+      "high": 14.0,
+      "spread": 3.1999999999999993,
+      "n": 3,
+      "confidence": "media",
+      "disagree": true,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 68
+    },
+    "tmax": {
+      "value": 20.9,
+      "low": 19.7,
+      "high": 22.0,
+      "spread": 2.3000000000000007,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +72,27 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 94
+      "score": 77
+    },
+    "wind_kmh": {
+      "value": 8.7,
+      "low": 4.9,
+      "high": 10.8,
+      "spread": 5.9,
+      "n": 3,
+      "confidence": "alta",
+      "disagree": false,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 88
     },
     "uv": {
-      "value": 8.1,
-      "low": 8.1,
-      "high": 8.1,
+      "value": 7.95,
+      "low": 7.95,
+      "high": 7.95,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,10 +104,10 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 88.5,
-        "low": 77.0,
-        "high": 100.0,
-        "spread": 23.0,
+        "value": 39.0,
+        "low": 29.0,
+        "high": 49.0,
+        "spread": 20.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -115,13 +115,13 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 72
+        "score": 76
       },
       "tarde": {
-        "value": 100.0,
-        "low": 100.0,
+        "value": 98.5,
+        "low": 97.0,
         "high": 100.0,
-        "spread": 0.0,
+        "spread": 3.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -129,25 +129,25 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 98
+        "score": 96
       },
       "noche": {
-        "value": 79.5,
-        "low": 65.0,
-        "high": 94.0,
-        "spread": 29.0,
+        "value": 98.0,
+        "low": 96.0,
+        "high": 100.0,
+        "spread": 4.0,
         "n": 2,
-        "confidence": "baja",
-        "disagree": true,
+        "confidence": "media",
+        "disagree": false,
         "sources": [
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 65
+        "score": 95
       }
     },
-    "rain_peak_hour": 19,
-    "rain_peak_pct": 66.5,
+    "rain_peak_hour": 18,
+    "rain_peak_pct": 98.0,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
@@ -159,27 +159,27 @@
       "Open-Meteo/GFS"
     ],
     "rain_confidence": "baja",
-    "rain_note": "lluvia probable, aunque un modelo no la ve",
+    "rain_note": "lluvia probable, aunque 2 modelos no la ven",
     "feels_periods": {
       "mañana": {
-        "low": 13.7,
-        "high": 21.4,
+        "low": 12.2,
+        "high": 20.2,
         "n": 3
       },
       "tarde": {
-        "low": 17.1,
-        "high": 21.8,
+        "low": 16.6,
+        "high": 21.2,
         "n": 3
       },
       "noche": {
-        "low": 13.7,
-        "high": 16.1,
+        "low": 13.6,
+        "high": 15.6,
         "n": 3
       }
     },
-    "score": 63,
-    "rain_score": 68,
-    "now_hour": 19,
+    "score": 68,
+    "rain_score": 69,
+    "now_hour": 17,
     "period_hours": {
       "mañana": [
         6,
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 57.0,
+    "aqi": 69.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -205,13 +205,13 @@
     "confidence": "baja"
   },
   "trm": {
-    "value": 3461.92,
-    "valid_from": "2026-11-21",
-    "previous": 3415.1,
-    "change_abs": 46.820000000000164,
-    "change_pct": 1.3709701033644746,
-    "avg30": 3255.4777777777776,
-    "vs_avg30_pct": 6.34138016949211,
+    "value": 3505.92,
+    "valid_from": "2026-11-24",
+    "previous": 3461.92,
+    "change_abs": 44.0,
+    "change_pct": 1.2709710218607015,
+    "avg30": 3274.7827777777775,
+    "vs_avg30_pct": 7.05809325096882,
     "is_min30": false,
     "is_max30": true,
     "backup_value": 3498.224647,
@@ -220,35 +220,25 @@
       "open.er-api.com"
     ],
     "confidence": "alta",
-    "score": 79,
-    "valid_until": "2026-11-23",
+    "score": 96,
+    "valid_until": "2026-11-24",
     "is_weekend_or_holiday": false
   },
   "news": [
     {
-      "title": "Manifestaciones en Bogotá del 23 al 29 de noviembre: programación de marchas en más de 7 localidades",
-      "link": "https://caracol.com.co/2026/11/23/manifestaciones-en-bogota-del-23-al-29-de-noviembre-programacion-de-marchas-en-mas-de-7-localidades/",
-      "source": "Caracol Radio"
+      "title": "Se descarta presencia de explosivos dentro de un bus del Sitp tras ser abandonado en la carrera 9 con calle 134, en el norte de Bogotá: esto se sabe",
+      "link": "https://www.eltiempo.com/bogota/cierre-vial-entre-las-calles-134-y-140-en-el-norte-de-bogota-por-bus-del-sitp-abandonado-policia-antiexplosivos-inspecciona-el-vehiculo-3603909",
+      "source": "El Tiempo - Bogotá"
     },
     {
-      "title": "Movilidad en Bogotá del lunes 23 de noviembre: manifestaciones en la calle 72 y fuertes lluvias generaron congestión en la capital",
-      "link": "https://www.infobae.com/colombia/2026/11/23/en-vivo-problemas-de-movilidad-en-bogota-protesta-genera-afectaciones-y-conductores-convocaron-manifestaciones-en-la-tarde-de-este-lunes-23-de-noviembre/",
-      "source": "Infobae Colombia"
-    },
-    {
-      "title": "Manifestación de transportadores afecta la movilidad en Bogotá y deja más de 20.000 usuarios de TransMilenio perjudicados",
-      "link": "https://www.semana.com/vehiculos/articulo/manifestacion-de-transportadores-afecta-la-movilidad-en-bogota-y-deja-mas-de-20000-usuarios-de-transmilenio-perjudicados/202659/",
-      "source": "Semana - Bogotá"
-    },
-    {
-      "title": "Prográmese: marchas, plantones y eventos culturales en Bogotá del 23 al 29 de noviembre",
-      "link": "https://www.semana.com/nacion/bogota/articulo/programese-marchas-plantones-y-eventos-culturales-en-bogota-del-23-al-29-de-noviembre/202631/",
+      "title": "Locales comerciales de exclusivo barrio de Bogotá quedaron inundados por las lluvias; Acueducto respondió",
+      "link": "https://www.semana.com/nacion/bogota/articulo/locales-comerciales-de-exclusivo-barrio-de-bogota-quedaron-inundados-por-las-lluvias-acueducto-respondio/202635/",
       "source": "Semana - Bogotá"
     }
   ],
   "quote": {
-    "text": "En medio del invierno aprendí por fin que había en mí un verano invencible.",
-    "author": "Albert Camus",
+    "text": "Nada hay más fuerte que una idea a la que le ha llegado su tiempo.",
+    "author": "Víctor Hugo",
     "origin": "local"
   }
 }
