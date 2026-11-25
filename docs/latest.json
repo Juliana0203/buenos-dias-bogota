@@ -1,39 +1,24 @@
 {
-  "date": "2026-11-24",
+  "date": "2026-11-25",
   "name": "Juli",
-  "greeting": "Buen día, Juli. Que la buena energía te acompañe hoy. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
+  "greeting": "Hola, Juli. Un día nuevo para hacerlo con ganas y con calma. Ojo que hoy el cielo anda con ganas de llorar; mejor sal con paraguas.",
   "summary": {
-    "date": "2026-11-24",
+    "date": "2026-11-25",
     "sent": "1",
     "temp_min": "12.6",
-    "temp_max": "20.9",
-    "rain_prob": "98",
-    "aqi": "69",
-    "trm": "3505.92",
+    "temp_max": "20.5",
+    "rain_prob": "92",
+    "aqi": "63",
+    "trm": "3592.03",
     "confidence": "baja",
     "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
   },
   "weather": {
     "temp": {
-      "value": 17.1,
-      "low": 16.9,
-      "high": 18.8,
-      "spread": 1.9000000000000021,
-      "n": 3,
-      "confidence": "alta",
-      "disagree": false,
-      "sources": [
-        "Open-Meteo/ECMWF",
-        "Open-Meteo/GFS",
-        "Open-Meteo/ICON"
-      ],
-      "score": 73
-    },
-    "feels_like": {
-      "value": 16.6,
-      "low": 15.9,
-      "high": 19.4,
-      "spread": 3.4999999999999982,
+      "value": 18.7,
+      "low": 16.6,
+      "high": 21.6,
+      "spread": 5.0,
       "n": 3,
       "confidence": "media",
       "disagree": true,
@@ -42,28 +27,43 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 65
+      "score": 42
+    },
+    "feels_like": {
+      "value": 18.1,
+      "low": 16.4,
+      "high": 21.3,
+      "spread": 4.900000000000002,
+      "n": 3,
+      "confidence": "media",
+      "disagree": true,
+      "sources": [
+        "Open-Meteo/ECMWF",
+        "Open-Meteo/GFS",
+        "Open-Meteo/ICON"
+      ],
+      "score": 51
     },
     "tmin": {
       "value": 12.6,
-      "low": 10.8,
-      "high": 14.0,
-      "spread": 3.1999999999999993,
+      "low": 11.8,
+      "high": 14.2,
+      "spread": 2.3999999999999986,
       "n": 3,
-      "confidence": "media",
-      "disagree": true,
+      "confidence": "alta",
+      "disagree": false,
       "sources": [
         "Open-Meteo/ECMWF",
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 68
+      "score": 76
     },
     "tmax": {
-      "value": 20.9,
-      "low": 19.7,
-      "high": 22.0,
-      "spread": 2.3000000000000007,
+      "value": 20.5,
+      "low": 19.2,
+      "high": 22.1,
+      "spread": 2.900000000000002,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -72,13 +72,13 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 77
+      "score": 71
     },
     "wind_kmh": {
-      "value": 8.7,
-      "low": 4.9,
-      "high": 10.8,
-      "spread": 5.9,
+      "value": 3.8,
+      "low": 2.8,
+      "high": 9.2,
+      "spread": 6.3999999999999995,
       "n": 3,
       "confidence": "alta",
       "disagree": false,
@@ -87,12 +87,12 @@
         "Open-Meteo/GFS",
         "Open-Meteo/ICON"
       ],
-      "score": 88
+      "score": 87
     },
     "uv": {
-      "value": 7.95,
-      "low": 7.95,
-      "high": 7.95,
+      "value": 6.75,
+      "low": 6.75,
+      "high": 6.75,
       "spread": 0.0,
       "n": 1,
       "confidence": "baja",
@@ -104,10 +104,10 @@
     },
     "rain_periods": {
       "mañana": {
-        "value": 39.0,
-        "low": 29.0,
-        "high": 49.0,
-        "spread": 20.0,
+        "value": 65.5,
+        "low": 61.0,
+        "high": 70.0,
+        "spread": 9.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -115,13 +115,13 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 76
+        "score": 89
       },
       "tarde": {
-        "value": 98.5,
-        "low": 97.0,
+        "value": 92.5,
+        "low": 85.0,
         "high": 100.0,
-        "spread": 3.0,
+        "spread": 15.0,
         "n": 2,
         "confidence": "media",
         "disagree": false,
@@ -129,25 +129,25 @@
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 96
+        "score": 82
       },
       "noche": {
-        "value": 98.0,
-        "low": 96.0,
+        "value": 81.5,
+        "low": 63.0,
         "high": 100.0,
-        "spread": 4.0,
+        "spread": 37.0,
         "n": 2,
-        "confidence": "media",
-        "disagree": false,
+        "confidence": "baja",
+        "disagree": true,
         "sources": [
           "Open-Meteo/ECMWF",
           "Open-Meteo/GFS"
         ],
-        "score": 95
+        "score": 56
       }
     },
-    "rain_peak_hour": 18,
-    "rain_peak_pct": 98.0,
+    "rain_peak_hour": 16,
+    "rain_peak_pct": 88.0,
     "sources": [
       "Open-Meteo/ECMWF",
       "Open-Meteo/GFS",
@@ -159,27 +159,27 @@
       "Open-Meteo/GFS"
     ],
     "rain_confidence": "baja",
-    "rain_note": "lluvia probable, aunque 2 modelos no la ven",
+    "rain_note": "lluvia probable, aunque un modelo no la ve",
     "feels_periods": {
       "mañana": {
-        "low": 12.2,
-        "high": 20.2,
+        "low": 12.0,
+        "high": 21.6,
         "n": 3
       },
       "tarde": {
-        "low": 16.6,
-        "high": 21.2,
+        "low": 17.6,
+        "high": 19.4,
         "n": 3
       },
       "noche": {
-        "low": 13.6,
-        "high": 15.6,
+        "low": 13.3,
+        "high": 16.9,
         "n": 3
       }
     },
-    "score": 68,
-    "rain_score": 69,
-    "now_hour": 17,
+    "score": 42,
+    "rain_score": 66,
+    "now_hour": 16,
     "period_hours": {
       "mañana": [
         6,
@@ -196,7 +196,7 @@
     }
   },
   "air": {
-    "aqi": 69.0,
+    "aqi": 63.0,
     "level": "moderada",
     "pollutant": "PM2.5",
     "sources": [
@@ -205,40 +205,35 @@
     "confidence": "baja"
   },
   "trm": {
-    "value": 3505.92,
-    "valid_from": "2026-11-24",
-    "previous": 3461.92,
-    "change_abs": 44.0,
-    "change_pct": 1.2709710218607015,
-    "avg30": 3274.7827777777775,
-    "vs_avg30_pct": 7.05809325096882,
+    "value": 3592.03,
+    "valid_from": "2026-11-25",
+    "previous": 3505.92,
+    "change_abs": 86.11000000000013,
+    "change_pct": 2.456131343556046,
+    "avg30": 3291.48,
+    "vs_avg30_pct": 9.13115072854765,
     "is_min30": false,
     "is_max30": true,
-    "backup_value": 3498.224647,
+    "backup_value": 3516.051988,
     "sources": [
       "TRM Superfinanciera",
       "open.er-api.com"
     ],
-    "confidence": "alta",
-    "score": 96,
-    "valid_until": "2026-11-24",
+    "confidence": "media",
+    "score": 58,
+    "valid_until": "2026-11-25",
     "is_weekend_or_holiday": false
   },
   "news": [
     {
-      "title": "Se descarta presencia de explosivos dentro de un bus del Sitp tras ser abandonado en la carrera 9 con calle 134, en el norte de Bogotá: esto se sabe",
-      "link": "https://www.eltiempo.com/bogota/cierre-vial-entre-las-calles-134-y-140-en-el-norte-de-bogota-por-bus-del-sitp-abandonado-policia-antiexplosivos-inspecciona-el-vehiculo-3603909",
-      "source": "El Tiempo - Bogotá"
-    },
-    {
-      "title": "Locales comerciales de exclusivo barrio de Bogotá quedaron inundados por las lluvias; Acueducto respondió",
-      "link": "https://www.semana.com/nacion/bogota/articulo/locales-comerciales-de-exclusivo-barrio-de-bogota-quedaron-inundados-por-las-lluvias-acueducto-respondio/202635/",
-      "source": "Semana - Bogotá"
+      "title": "Ambulancias en Bogotá tardan más en atender paros cardíacos que siniestros de tránsito",
+      "link": "https://www.elespectador.com/bogota/ambulancias-en-bogota-tardan-mas-en-atender-paros-cardiacos-que-siniestros-de-transito/",
+      "source": "El Espectador"
     }
   ],
   "quote": {
-    "text": "Nada hay más fuerte que una idea a la que le ha llegado su tiempo.",
-    "author": "Víctor Hugo",
+    "text": "Cada niño que nace trae consigo el mensaje de que Dios aún no ha perdido la esperanza en los hombres.",
+    "author": "Rabindranath Tagore",
     "origin": "local"
   }
 }
