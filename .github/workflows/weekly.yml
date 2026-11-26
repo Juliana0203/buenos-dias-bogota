@@ -6,6 +6,11 @@ on:
     - cron: "30 23 * * 0" # Domingo 6:30 p.m. America/Bogota (UTC-5) — respaldo
   workflow_dispatch:
     inputs:
+      dry_run:
+        description: "Modo prueba (--dry-run): imprime el digest sin enviar a Telegram ni hacer commit"
+        required: false
+        default: false
+        type: boolean
       week:
         description: "Semana ISO opcional a regenerar (AAAA-Wnn)"
         required: false
@@ -20,7 +25,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: weekly-digest
+  group: brief-state
   cancel-in-progress: false
 
 jobs:
@@ -51,11 +56,16 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          S2_API_KEY: ${{ secrets.S2_API_KEY }}
+          INPUT_DRY_RUN: ${{ inputs.dry_run }}
           INPUT_WEEK: ${{ inputs.week }}
           INPUT_FORCE: ${{ inputs.force }}
         run: |
           git pull --rebase origin "${GITHUB_REF_NAME:-main}"
           ARGS=""
+          if [ "$INPUT_DRY_RUN" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
           if [ -n "$INPUT_WEEK" ]; then
             ARGS="$ARGS --week $INPUT_WEEK"
           fi
@@ -66,7 +76,7 @@ jobs:
 
       - name: Commit del digest semanal y biblioteca
         id: commit_digest
-        if: always()
+        if: always() && inputs.dry_run != true
         env:
           OWNER: ${{ github.repository_owner }}
           GH_TOKEN: ${{ github.token }}
@@ -74,7 +84,8 @@ jobs:
           USER_ID=$(curl -fsS -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/users/$OWNER" | jq -r .id)
           git config user.name "$OWNER"
           git config user.email "${USER_ID}+${OWNER}@users.noreply.github.com"
-          git add data docs digests biblioteca || true
+          git add data/sent.json data/feedback.json data/history.csv docs/ digests/ biblioteca/ 2>/dev/null || \
+            git add $(for p in data/sent.json data/feedback.json data/history.csv docs/ digests/ biblioteca/; do [ -e "$p" ] && echo "$p"; done)
           if git diff --cached --quiet; then
             echo "Sin cambios que guardar"
             exit 0
@@ -82,8 +93,16 @@ jobs:
           WEEK_NUM=$(TZ=America/Bogota date +%V)
           YEAR_NUM=$(TZ=America/Bogota date +%G)
           git commit -m "digest: semana ${WEEK_NUM} de ${YEAR_NUM}"
-          git pull --rebase origin "${GITHUB_REF_NAME:-main}"
-          git push
+          pushed=0
+          for attempt in 1 2 3; do
+            if git pull --rebase origin "${GITHUB_REF_NAME:-main}" && git push origin "HEAD:${GITHUB_REF_NAME:-main}"; then
+              pushed=1
+              break
+            fi
+            echo "Reintentando git pull --rebase + git push (intento $attempt/3)..."
+            sleep $((attempt * 3))
+          done
+          [ "$pushed" -eq 1 ]
 
       - name: Avisar por Telegram si el Radar semanal falló
         if: failure()

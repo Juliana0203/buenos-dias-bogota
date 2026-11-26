@@ -206,11 +206,14 @@ def test_excerpt_cleaning_strips_repeated_title_and_release_prefix_and_omits_emp
         source="Simon Willison",
         kind="tool",
         published=NOW,
-        abstract="Release: datasette-charts 0.2a0 I introduced this new charting plugin for Datasette yesterday .",
+        abstract=(
+            "Release: datasette-charts 0.2a0 I introduced this stateof-the-art and quantiza- tion "
+            "charting plugin for Datasette yesterday ."
+        ),
     )
     ext = _extractive_complete_summary(cand_with_prefix, max_words=25)
-    assert ext == "[EN] I introduced this new charting plugin for Datasette yesterday."
-    assert "Release:" not in ext and ".." not in ext
+    assert ext == "[EN] I introduced this state-of-the-art and quantization charting plugin for Datasette yesterday."
+    assert "Release:" not in ext and ".." not in ext and "stateof-the-art" not in ext
 
     # Si el candidato no tiene abstract (como un enlace directo en HN), se omite en vez de poner "Publicado en..."
     cand_empty = TechCandidate(
@@ -223,6 +226,40 @@ def test_excerpt_cleaning_strips_repeated_title_and_release_prefix_and_omits_emp
         votes=90,
     )
     assert _extractive_complete_summary(cand_empty, max_words=25) == ""
+
+
+def test_project_connection_requires_at_least_two_distinct_keywords_and_snippet_omits_reading_time(tmp_path):
+    from brief.weekly import _concrete_project_match, _reading_minutes
+
+    projects_cfg = WCFG["projects"]
+    # Un solo término ("table") NO basta para conectar con Table Master
+    one_kw = TechCandidate(
+        title="Fast Hash Table Lookup in C",
+        url="https://arxiv.org/abs/2611.99991",
+        source="arXiv",
+        kind="paper",
+        published=NOW,
+        abstract="We analyze hash table lookup latency in memory.",
+    )
+    assert _concrete_project_match(one_kw, projects_cfg) == ("", [], "")
+
+    # Dos términos distintos ("tabular" y "spreadsheets") sí conectan con Table Master
+    two_kws = _sample_candidates()[2]
+    proj, hits, line = _concrete_project_match(two_kws, projects_cfg)
+    assert proj == "Table Master" and len(hits) >= 2 and "Table Master" in line
+
+    # Snippet corto (< 180 palabras) omite tiempo de lectura (0 min); artículo largo (>= 180 palabras) sí lo muestra
+    short_news = _sample_candidates()[3]
+    assert _reading_minutes(short_news, "Noticia / Lanzamiento") == 0
+    long_news = TechCandidate(
+        title="Deep Technical Post",
+        url="https://example.org/long",
+        source="Blog",
+        kind="news",
+        published=NOW,
+        abstract=" ".join(["word"] * 360),
+    )
+    assert _reading_minutes(long_news, "Noticia / Lanzamiento") == 2
 
 
 def test_llamacpp_scores_high_in_radar_and_physics_is_rejected(tmp_path):
@@ -484,3 +521,19 @@ def test_archive_and_parsers_and_format_rotation(tmp_path):
     assert hn is not None and hn.kind == "tool"
     assert (ROOT / ".github" / "workflows" / "daily.yml").exists()
     assert (ROOT / ".github" / "workflows" / "weekly.yml").exists()
+
+    import yaml
+
+    daily_raw = (ROOT / ".github" / "workflows" / "daily.yml").read_text(encoding="utf-8")
+    weekly_raw = (ROOT / ".github" / "workflows" / "weekly.yml").read_text(encoding="utf-8")
+    daily_wf = yaml.safe_load(daily_raw)
+    weekly_wf = yaml.safe_load(weekly_raw)
+    assert daily_wf["concurrency"]["group"] == "brief-state"
+    assert weekly_wf["concurrency"]["group"] == "brief-state"
+    assert daily_wf["concurrency"]["cancel-in-progress"] is False
+    assert weekly_wf["concurrency"]["cancel-in-progress"] is False
+    expected_add = "git add data/sent.json data/feedback.json data/history.csv docs/ digests/ biblioteca/"
+    assert expected_add in daily_raw
+    assert expected_add in weekly_raw
+    w_triggers = weekly_wf.get("on") or weekly_wf.get(True)
+    assert "dry_run" in w_triggers["workflow_dispatch"]["inputs"]

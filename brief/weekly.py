@@ -566,22 +566,44 @@ def _detect_lang_tag(cand: TechCandidate) -> str:
     return "EN"
 
 
+_HYPHEN_COMPOUNDS: list[tuple[re.Pattern[str], str]] = [
+    (re.compile(r"\bstateof-the-art\b", re.IGNORECASE), "state-of-the-art"),
+    (re.compile(r"\bstate-of-theart\b", re.IGNORECASE), "state-of-the-art"),
+    (re.compile(r"\bendto-end\b", re.IGNORECASE), "end-to-end"),
+    (re.compile(r"\bend-toend\b", re.IGNORECASE), "end-to-end"),
+    (re.compile(r"\boutof-distribution\b", re.IGNORECASE), "out-of-distribution"),
+    (re.compile(r"\boutof-domain\b", re.IGNORECASE), "out-of-domain"),
+    (re.compile(r"\bindomain\b", re.IGNORECASE), "in-domain"),
+    (re.compile(r"\brealworld\b", re.IGNORECASE), "real-world"),
+    (re.compile(r"\blargescale\b", re.IGNORECASE), "large-scale"),
+    (re.compile(r"\blowresource\b", re.IGNORECASE), "low-resource"),
+    (re.compile(r"\bfinegrained\b", re.IGNORECASE), "fine-grained"),
+    (re.compile(r"\b(\w+)(of|to|in|on|by)-the-(\w+)\b", re.IGNORECASE), r"\1-\2-the-\3"),
+]
+
+
+def _repair_hyphenated_words(text: str) -> str:
+    """Corrige palabras cortadas por salto de línea PDF o compuestas con guion perdido (p. ej. 'stateof-the-art')."""
+    # Une guion seguido de espacio entre minúsculas ("quantiza- tion" -> "quantization")
+    out = re.sub(r"([a-zA-ZáéíóúñÁÉÍÓÚÑ]{2,})-\s+([a-zA-ZáéíóúñÁÉÍÓÚÑ]{2,})", r"\1\2", text)
+    for pattern, repl in _HYPHEN_COMPOUNDS:
+        out = pattern.sub(repl, out)
+    return out
+
+
 def _clean_raw_abstract(abstract: str, title: str) -> str:
-    """Quita el título repetido, prefijos como 'Release:'/'Show HN:', espacios antes de punto y '..'."""
-    text = strip_html(abstract or "").strip()
+    """Quita el título repetido, prefijos como 'Release:'/'Show HN:', repara guiones, espacios antes de punto y '..'."""
+    text = _repair_hyphenated_words(strip_html(abstract or "").strip())
     if not text:
         return ""
-    # Quita prefijos como "Release: <algo>" o "Show HN:" al inicio
     text = re.sub(r"^(?:release|show hn|ask hn|abstract|tl;dr)\s*:\s*", "", text, flags=re.IGNORECASE).strip()
     if title:
         t_clean = strip_html(title).strip()
         if text.lower().startswith(t_clean.lower()):
             text = text[len(t_clean) :].lstrip(" :-–—.,;|")
-        # También si el título empieza tras un prefijo de versión corto
         short_t = re.sub(r"^(?:release|show hn)\s*:\s*", "", t_clean, flags=re.IGNORECASE).strip()
         if short_t and text.lower().startswith(short_t.lower()):
             text = text[len(short_t) :].lstrip(" :-–—.,;|")
-    # Corrige espacios antes de signos de puntuación y puntos múltiples
     text = re.sub(r"\s+([.,;!?])", r"\1", text)
     text = re.sub(r"\.{2,}", ".", text)
     return text.strip()
@@ -653,7 +675,7 @@ def _extractive_complete_summary(cand: TechCandidate, max_words: int = 25) -> st
 
 
 def _concrete_project_match(cand: TechCandidate, projects_cfg: dict[str, Any]) -> tuple[str, list[str], str]:
-    """Devuelve (nombre_proyecto, keywords_coincidentes, linea_formateada) solo si hay coincidencia real."""
+    """Devuelve (nombre_proyecto, keywords_coincidentes, linea_formateada) SOLO si coinciden >= 2 términos distintos."""
     text = normalize(f"{cand.title} {cand.abstract}")
     best_proj = ""
     best_matches: list[str] = []
@@ -662,15 +684,15 @@ def _concrete_project_match(cand: TechCandidate, projects_cfg: dict[str, Any]) -
         if not isinstance(meta, dict):
             continue
         kws = meta.get("keywords") or []
-        hits = [kw for kw in kws if re.search(rf"\b{re.escape(normalize(kw))}", text)]
-        if len(hits) > len(best_matches):
+        hits = list(dict.fromkeys(kw for kw in kws if re.search(rf"\b{re.escape(normalize(kw))}", text)))
+        if len(hits) >= 2 and len(hits) > len(best_matches):
             best_matches = hits
             best_proj = proj_name
 
-    if not best_proj or not best_matches:
+    if not best_proj or len(best_matches) < 2:
         return "", [], ""
     angle = (projects_cfg.get(best_proj) or {}).get("angle", "aplicación directa")
-    matched_str = ", ".join(best_matches[:2])
+    matched_str = ", ".join(best_matches[:3])
     line = f"Conexión con {best_proj} (por {matched_str}): aplicable a {angle}."
     return best_proj, best_matches, line
 
@@ -709,11 +731,11 @@ def _concrete_reason_hook(
 
 
 def _reading_minutes(cand: TechCandidate, role: str) -> int:
-    """Para papers devuelve 0 (se elimina el tiempo estimado fijo); para otros lo calcula de la longitud real."""
+    """Omite el tiempo de lectura (devuelve 0) para papers o cuando el texto es solo un snippet (< 180 palabras)."""
     if cand.kind == "paper" or role in (ROLE_ACCESSIBLE, ROLE_DEEP, ROLE_APPLIED):
         return 0
-    words = len(strip_html(f"{cand.title} {cand.abstract}").split())
-    if words <= 0:
+    words = len(strip_html(cand.abstract or "").split())
+    if words < 180:
         return 0
     return max(1, round(words / 180))
 
