@@ -100,7 +100,13 @@ def build_brief(cfg: Config, as_of_hour: int | None = None) -> Brief:
     )
     rel_cfg = cfg.section("relevance")
     if rel_cfg.get("enabled", True):
-        brief.relevance = evaluate_relevance(brief, rel_cfg, cfg.section("alerts"))
+        last_ext = history.last_trm_extreme_alert_date()
+        brief.relevance = evaluate_relevance(
+            brief,
+            rel_cfg,
+            cfg.section("alerts"),
+            last_trm_extreme_date=last_ext,
+        )
         log.info(
             "Relevancia diaria: triggered=%s, silent=%s, alertas=%s",
             brief.relevance.triggered,
@@ -169,7 +175,12 @@ def main(argv: list[str] | None = None) -> int:
     if as_of_hour is not None and brief.weather is not None:
         brief.weather.now_hour = as_of_hour
         if brief.relevance is not None:
-            brief.relevance = evaluate_relevance(brief, cfg.section("relevance"), cfg.section("alerts"))
+            brief.relevance = evaluate_relevance(
+                brief,
+                cfg.section("relevance"),
+                cfg.section("alerts"),
+                last_trm_extreme_date=history.last_trm_extreme_alert_date(),
+            )
     messages = format_brief(brief, cfg.section("alerts"))
     silent = bool(brief.relevance and brief.relevance.silent)
 
@@ -188,7 +199,13 @@ def main(argv: list[str] | None = None) -> int:
     else:
         send_messages(cfg.secrets.telegram_token, cfg.secrets.telegram_chat_id, messages)  # type: ignore[arg-type]
 
-    # Se guarda history.csv y latest.json todos los días aunque sea el mensaje mínimo.
+    # Se guarda history.csv y latest.json todos los días aunque sea el mensaje mínimo (nunca en --dry-run).
+    if brief.trm and (brief.trm.is_min30 or brief.trm.is_max30) and brief.relevance:
+        if any(a.key == "trm_move" for a in brief.relevance.alerts):
+            try:
+                history.record_trm_extreme_alert(today)
+            except Exception:
+                log.warning("No se pudo registrar last_trm_extreme_date en data/sent.json")
     row = history.build_row(brief, sent=True)
     try:
         history.append_row(row)

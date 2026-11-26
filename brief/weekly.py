@@ -1,4 +1,4 @@
-"""Curaduría, enriquecimiento, formato rotativo y archivo público del Radar semanal de tecnología (Fases 2 y 3)."""
+"""Curaduría, enriquecimiento, formato rotativo y archivo público del Radar semanal de tecnología (Bloques B y C)."""
 
 from __future__ import annotations
 
@@ -16,6 +16,7 @@ from typing import Any
 
 from rapidfuzz import fuzz
 
+from brief import history
 from brief.config import ROOT, Config, load_config
 from brief.feedback import (
     FEEDBACK_JSON,
@@ -23,11 +24,11 @@ from brief.feedback import (
     effective_topic_weights,
     load_feedback,
     register_pieces_in_catalog,
-    save_feedback,
     sync_telegram_feedback,
 )
 from brief.formatter import MAX_LEN, esc
 from brief.http import make_session
+from brief.sources.good_news import looks_spanish
 from brief.sources.news import normalize, strip_html
 from brief.sources.tech_sources import TechCandidate, gather_tech_candidates
 from brief.telegram import send_messages, send_quiz_poll
@@ -36,6 +37,7 @@ log = logging.getLogger(__name__)
 
 DIGESTS_DIR = ROOT / "digests"
 DOCS_DIR = ROOT / "docs"
+SENT_JSON = history.SENT_JSON
 
 ROLE_ACCESSIBLE = "Paper accesible"
 ROLE_DEEP = "Paper profundo"
@@ -81,38 +83,22 @@ APPLIED_MARKERS = (
     "tabular",
 )
 
-EN_ES_TERMS: list[tuple[str, str]] = [
-    ("small language models", "modelos de lenguaje pequeños"),
-    ("small language model", "modelo de lenguaje pequeño"),
-    ("large language models", "modelos de lenguaje grandes"),
-    ("large language model", "modelo de lenguaje grande"),
-    ("language models", "modelos de lenguaje"),
-    ("language model", "modelo de lenguaje"),
-    ("reinforcement learning", "aprendizaje por refuerzo"),
-    ("machine learning", "aprendizaje automático"),
-    ("deep learning", "aprendizaje profundo"),
-    ("fine-tuning", "ajuste fino"),
-    ("quantization", "cuantización"),
-    ("distillation", "destilación"),
-    ("open-source", "código abierto"),
-    ("open source", "código abierto"),
-    ("on-device", "en dispositivo"),
-    ("benchmark", "evaluación comparativa"),
-    ("survey", "revisión"),
-    ("towards", "hacia"),
-    ("efficient", "eficiente"),
-    ("reasoning", "razonamiento"),
-    ("retrieval", "recuperación"),
-    ("optimization", "optimización"),
-    ("education", "educación"),
-    ("classroom", "aula"),
-    ("students", "estudiantes"),
-    ("tabular", "tabular"),
-]
+DEFAULT_OFF_TOPIC = (
+    "quantum gravity",
+    "null cone",
+    "astrophysics",
+    "cosmology",
+    "general relativity",
+    "particle physics",
+    "string theory",
+    "black hole",
+    "superconductor",
+    "hadron",
+)
 
 CONCEPT_GLOSSARY: list[dict[str, Any]] = [
     {
-        "triggers": ["quantization", "cuantizacion", "gguf", "bitnet", "int4", "int8", "slm", "edge"],
+        "triggers": ["quantization", "cuantizacion", "gguf", "bitnet", "int4", "int8", "slm", "on-device"],
         "term": "Cuantización de modelos (Quantization)",
         "explanation": (
             "Consiste en reducir la precisión numérica de los pesos de una red neuronal (por ejemplo, de 16 bits "
@@ -124,7 +110,7 @@ CONCEPT_GLOSSARY: list[dict[str, Any]] = [
         ),
     },
     {
-        "triggers": ["rag", "retrieval", "embedding", "vector", "search"],
+        "triggers": ["rag", "retrieval", "embedding", "vector", "corpus"],
         "term": "Generación aumentada por recuperación (RAG)",
         "explanation": (
             "Antes de responder, el modelo busca fragmentos relevantes en una base de documentos verificados "
@@ -136,15 +122,24 @@ CONCEPT_GLOSSARY: list[dict[str, Any]] = [
         ),
     },
     {
-        "triggers": ["bayesian", "stochastic", "markov", "monte carlo", "optimization", "convex", "variational"],
-        "term": "Optimización estocástica y búsqueda con incertidumbre",
+        "triggers": [
+            "bayesian",
+            "stochastic",
+            "markov",
+            "monte carlo",
+            "optimization",
+            "convex",
+            "variational",
+            "regime",
+        ],
+        "term": "Optimización estocástica y modelos de cambio de régimen",
         "explanation": (
-            "En vez de calcular el gradiente exacto con millones de datos en cada paso, estima la dirección "
-            "de mejora con muestras aleatorias pequeñas y controla la varianza."
+            "Modela procesos con incertidumbre o estados ocultos estimando la dirección de mejora o el estado "
+            "actual mediante muestras y ventanas deslizantes."
         ),
         "everyday_example": (
-            "Es como probar una cucharada de sopa para saber si le falta sal en lugar de tener que tomarse "
-            "toda la olla antes de decidir."
+            "Es como estimar el tráfico de una avenida mirando la velocidad de los últimos 5 minutos en vez "
+            "de esperar el promedio de todo el día."
         ),
     },
     {
@@ -159,26 +154,52 @@ CONCEPT_GLOSSARY: list[dict[str, Any]] = [
             "para que un aprendiz resuelva un caso concreto rápido."
         ),
     },
+    {
+        "triggers": ["context", "agent", "compaction", "memory", "transformer", "attention"],
+        "term": "Gestión y compactación de ventana de contexto",
+        "explanation": (
+            "Los modelos y agentes tienen un límite de tokens activos; compactar el contexto resume o descarta "
+            "pasos intermedios para mantener solo las señales útiles en tareas largas."
+        ),
+        "everyday_example": (
+            "Es como limpiar el escritorio al terminar un capítulo y dejar solo una ficha con las 3 conclusiones "
+            "clave antes de empezar el siguiente."
+        ),
+    },
+    {
+        "triggers": ["postgres", "sqlite", "tabular", "table", "sql", "database", "schema"],
+        "term": "Motores tabulares embebidos y esquemas tipados",
+        "explanation": (
+            "Ejecutan consultas analíticas o relacionales directamente dentro del proceso de la aplicación "
+            "o sobre un único ejecutable sin levantar un servidor externo."
+        ),
+        "everyday_example": (
+            "Es como llevar una navaja suiza en el bolsillo en lugar de transportar una caja de herramientas "
+            "industrial para ajustar un tornillo."
+        ),
+    },
 ]
 
 
 @dataclass
 class DigestPiece:
-    """Pieza curada y enriquecida lista para el Radar semanal."""
+    """Pieza curada lista para el Radar semanal (conserva el título original intacto)."""
 
     id: str
     role: str
     kind: str  # "paper" | "news" | "tool"
     topic: str
     topic_label: str
-    title_es: str
     original_title: str
+    title_es: str  # igual a original_title sin LLM; traducción al español si hubo LLM
     hook: str
     summary_es: str
     reading_minutes: int
     url: str
     source: str
     score: float
+    language_tag: str = "EN"
+    outside_radar: bool = False
     project_line: str = ""
 
 
@@ -199,7 +220,7 @@ class WeeklyDigest:
     format_name: str
     story_of_the_week: str
     pieces: list[DigestPiece]
-    concept: dict[str, str]
+    concept: dict[str, Any]
     challenge: str
     quiz: QuizSpec
     used_llm: bool = False
@@ -226,28 +247,43 @@ def parse_week_id(week_str: str) -> tuple[int, int, date]:
     return year, week, sunday
 
 
+def is_off_topic(cand: TechCandidate, off_topic_kws: list[str] | tuple[str, ...] = DEFAULT_OFF_TOPIC) -> bool:
+    """True si el candidato pertenece a física teórica, astrofísica u otro dominio fuera de alcance."""
+    text = normalize(f"{cand.title} {cand.abstract} {' '.join(cand.categories)}")
+    if any(re.search(rf"\b{re.escape(normalize(kw))}", text) for kw in off_topic_kws):
+        return True
+    # Si viene de arXiv y ninguna categoría es de computación, estadística o matemáticas de optimización
+    if cand.categories:
+        valid_prefixes = ("cs.", "stat.", "math.oc", "math.st", "math.pr", "eess.")
+        if not any(c.lower().startswith(valid_prefixes) for c in cand.categories):
+            return True
+    return False
+
+
 def match_interest_topic(
     cand: TechCandidate,
     interests_cfg: dict[str, Any],
     weights: dict[str, float],
-) -> tuple[str, float]:
-    """Detecta el tema más afín al candidato y calcula el puntaje de interés ponderado."""
+) -> tuple[str, float, list[str]]:
+    """Detecta el tema más afín por coincidencias reales de palabras clave (sin puntos gratis por default_topic)."""
     text = normalize(f"{cand.title} {cand.abstract} {' '.join(cand.categories)}")
     best_topic = cand.default_topic if cand.default_topic in interests_cfg else next(iter(interests_cfg), "ml_applied")
     best_score = 0.0
+    best_kws: list[str] = []
 
     for topic, meta in interests_cfg.items():
         kws = meta.get("keywords", []) if isinstance(meta, dict) else []
-        hits = sum(1 for kw in kws if re.search(rf"\b{re.escape(normalize(kw))}", text))
-        if topic == cand.default_topic:
-            hits += 1
+        matched = [kw for kw in kws if re.search(rf"\b{re.escape(normalize(kw))}", text)]
+        if not matched:
+            continue
         w = float(weights.get(topic, 1.0))
-        topic_score = hits * w
+        topic_score = len(matched) * w
         if topic_score > best_score:
             best_score = topic_score
             best_topic = topic
+            best_kws = matched
 
-    return best_topic, best_score
+    return best_topic, round(best_score, 3), best_kws
 
 
 def score_candidate(
@@ -256,17 +292,27 @@ def score_candidate(
     weights: dict[str, float],
     now: datetime,
     max_age_days: float = 7.0,
+    min_affinity: float = 2.0,
+    off_topic_kws: list[str] | tuple[str, ...] = DEFAULT_OFF_TOPIC,
 ) -> float:
-    """Puntúa un candidato por relevancia a intereses, novedad (últimos 7 días) y señales de calidad."""
+    """Puntúa un candidato por afinidad real, novedad y calidad.
+
+    Si está en dominios excluidos (p. ej. física de gravedad cuántica), devuelve 0.
+    Si su afinidad está por debajo de ``min_affinity``, se marca ``outside_radar = True``
+    (solo podrá competir como 'joya' fuera del radar habitual si tiene alta calidad).
+    """
     age_days = (now - cand.published).total_seconds() / 86400.0
     if age_days > max_age_days or age_days < -1.0:
         return 0.0
-    topic, interest_pts = match_interest_topic(cand, interests_cfg, weights)
-    cand.matched_topic = topic
-    if interest_pts <= 0:
+    if is_off_topic(cand, off_topic_kws):
         return 0.0
 
-    freshness = max(0.0, 1.0 - max(0.0, age_days) / max_age_days) * 2.5
+    topic, affinity_pts, matched_kws = match_interest_topic(cand, interests_cfg, weights)
+    cand.matched_topic = topic
+    cand.affinity_score = affinity_pts
+    cand.matched_keywords = matched_kws
+
+    freshness = max(0.0, 1.0 - max(0.0, age_days) / max_age_days) * 2.0
     quality = 0.0
     if cand.votes > 0:
         quality += min(4.0, math.log1p(cand.votes) * 0.8)
@@ -276,7 +322,17 @@ def score_candidate(
     if cand.source in trusted:
         quality += 1.0
 
-    cand.score = round(interest_pts + freshness + quality, 3)
+    if affinity_pts < min_affinity:
+        cand.outside_radar = True
+        # Solo es elegible como joya fuera del radar si tiene al menos 1 coincidencia o votos/fuente destacada
+        if affinity_pts <= 0 and cand.votes < 30:
+            cand.score = 0.0
+            return 0.0
+        cand.score = round(affinity_pts + freshness + quality, 3)
+        return cand.score
+
+    cand.outside_radar = False
+    cand.score = round(affinity_pts + freshness + quality, 3)
     return cand.score
 
 
@@ -314,31 +370,36 @@ def select_diverse_pieces(
     max_pieces: int = 7,
 ) -> list[tuple[str, TechCandidate]]:
     """Selecciona hasta 7 piezas con diversidad de tema:
-    - 3 papers (uno accesible, uno profundo y uno aplicado)
-    - 2 noticias o lanzamientos de alto impacto
-    - 1 herramienta o repo para probar
-    - 1 joya inesperada o poco conocida
+    - Las 6 primeras (3 papers, 2 noticias, 1 herramienta) deben cumplir el umbral de afinidad (not outside_radar).
+    - Solo la 'joya' (ROLE_GEM) puede estar fuera del radar habitual (outside_radar=True).
     """
     used_urls: set[str] = set()
     topic_counts: dict[str, int] = {}
     selected: list[tuple[str, TechCandidate]] = []
 
-    def pick_best(pool: list[TechCandidate], prefer_rare: bool = False) -> TechCandidate | None:
+    in_radar = [c for c in candidates if not c.outside_radar]
+
+    def pick_best(pool: list[TechCandidate], prefer_outside_or_rare: bool = False) -> TechCandidate | None:
         avail = [c for c in pool if c.url not in used_urls]
         if not avail:
             return None
 
         def adjusted(c: TechCandidate) -> float:
             diversity_penalty = topic_counts.get(c.matched_topic, 0) * 1.8
-            rare_bonus = (1.5 if c.votes < 30 and c.matched_topic not in topic_counts else 0.0) if prefer_rare else 0.0
-            return c.score - diversity_penalty + rare_bonus
+            bonus = 0.0
+            if prefer_outside_or_rare:
+                if c.outside_radar:
+                    bonus += 2.0
+                elif c.matched_topic not in topic_counts:
+                    bonus += 1.5
+            return c.score - diversity_penalty + bonus
 
         best = max(avail, key=adjusted)
         used_urls.add(best.url)
         topic_counts[best.matched_topic] = topic_counts.get(best.matched_topic, 0) + 1
         return best
 
-    papers = [c for c in candidates if c.kind == "paper"]
+    papers = [c for c in in_radar if c.kind == "paper"]
     accessible_pool = [c for c in papers if _paper_subrole(c) == ROLE_ACCESSIBLE] or papers
     deep_pool = [c for c in papers if _paper_subrole(c) == ROLE_DEEP] or papers
     applied_pool = [c for c in papers if _paper_subrole(c) == ROLE_APPLIED] or papers
@@ -352,103 +413,153 @@ def select_diverse_pieces(
         if p:
             selected.append((role, p))
 
-    news_pool = [c for c in candidates if c.kind == "news"]
+    news_pool = [c for c in in_radar if c.kind == "news"]
     for _ in range(2):
         n = pick_best(news_pool)
         if n:
             selected.append((ROLE_NEWS, n))
 
-    tools_pool = [c for c in candidates if c.kind == "tool"] or [c for c in candidates if c.url not in used_urls]
+    tools_pool = [c for c in in_radar if c.kind == "tool"] or [
+        c for c in candidates if c.kind == "tool" and c.url not in used_urls
+    ]
     t = pick_best(tools_pool)
     if t:
         selected.append((ROLE_TOOL, t))
 
+    # La joya puede venir tanto de fuera del radar habitual como de candidatos poco comunes dentro del radar
     gem_pool = [c for c in candidates if c.url not in used_urls]
-    g = pick_best(gem_pool, prefer_rare=True)
+    g = pick_best(gem_pool, prefer_outside_or_rare=True)
     if g:
         selected.append((ROLE_GEM, g))
 
     return selected[:max_pieces]
 
 
-def _spanish_title(title: str, topic_label: str) -> str:
-    """Adapta el título al español sin inventar datos (si ya está en español lo conserva)."""
-    out = title.strip()
-    lower = out.lower()
-    for en, es in EN_ES_TERMS:
-        if en in lower:
-            pattern = re.compile(re.escape(en), re.IGNORECASE)
-            out = pattern.sub(es, out)
-            lower = out.lower()
-    if out == title.strip() and not any(w in lower.split() for w in ("de", "la", "el", "en", "para", "con")):
-        return f"[{topic_label}] {out}"
+def _detect_lang_tag(cand: TechCandidate) -> str:
+    if cand.language.lower().startswith("es"):
+        return "ES"
+    if looks_spanish(f"{cand.title} {cand.abstract}", ["the", "and", "with", "for", "from", "that", "this"]):
+        return "ES"
+    return "EN"
+
+
+def _split_complete_sentences(text: str) -> list[str]:
+    cleaned = strip_html(text or "").strip()
+    if not cleaned:
+        return []
+    raw_parts = re.split(r"(?<=[.!?])\s+", cleaned)
+    out: list[str] = []
+    for part in raw_parts:
+        s = part.strip()
+        if not s:
+            continue
+        if s[-1] not in ".!?":
+            s += "."
+        out.append(s)
     return out
 
 
-def _own_summary_40w(cand: TechCandidate, topic_label: str, max_words: int = 40) -> str:
-    """Construye un resumen propio en español de máximo 40 palabras sin copiar literalmente el original."""
-    raw = strip_html(cand.abstract or "")
-    first = re.split(r"(?<=[.!?])\s+", raw, maxsplit=1)[0] if raw else ""
-    for en, es in EN_ES_TERMS:
-        if en in first.lower():
-            first = re.compile(re.escape(en), re.IGNORECASE).sub(es, first)
-    words = [w for w in first.split() if len(w) > 1]
-    core = " ".join(words[:18]).rstrip(".,;:")
-    if cand.kind == "paper":
-        author_hint = f" ({cand.authors[0]} et al.)" if cand.authors else ""
-        base = f" Trabajo en {topic_label.lower()}{author_hint} publicado en {cand.source}."
-        if core:
-            base += f" Analiza: {core}."
-    elif cand.kind == "tool":
-        base = f"Herramienta o repositorio destacado en {cand.source} para {topic_label.lower()}."
-        if core:
-            base += f" Propuesta central: {core}."
-    else:
-        base = f"Reporte de {cand.source} con impacto en {topic_label.lower()}."
-        if core:
-            base += f" Punto clave: {core}."
-    final_words = base.strip().split()
-    if len(final_words) > max_words:
-        return " ".join(final_words[:max_words]).rstrip(".,;:") + "."
-    return " ".join(final_words)
+def _extractive_complete_summary(cand: TechCandidate, max_words: int = 40) -> str:
+    """Resumen extractivo que siempre termina en una oración completa (<= max_words) y marca [EN] o [ES]."""
+    lang = _detect_lang_tag(cand)
+    prefix = f"[{lang}]"
+    budget = max_words - 1  # reserva 1 palabra para [EN]/[ES]
+    sentences = _split_complete_sentences(cand.abstract)
+
+    if not sentences:
+        meta: list[str] = [f"Publicado en {cand.source}"]
+        if cand.authors:
+            meta.append(f"por {cand.authors[0]}")
+        if cand.votes:
+            meta.append(f"({cand.votes} votos)")
+        return f"{prefix} {' '.join(meta)}."
+
+    # Busca una o más oraciones completas que quepan íntegras dentro del presupuesto
+    acc: list[str] = []
+    used = 0
+    for sent in sentences:
+        w_count = len(sent.split())
+        if used + w_count <= budget:
+            acc.append(sent)
+            used += w_count
+        elif not acc:
+            # Si la primera oración supera el presupuesto, busca otra oración del abstract que sí quepa completa
+            shorter = next((s for s in sentences[1:] if 5 <= len(s.split()) <= budget), None)
+            if shorter:
+                acc.append(shorter)
+            else:
+                # Si todas las oraciones superan budget, corta en una cláusula completa (; o ,) y cierra con punto
+                clauses = re.split(r"[;:]\s+|,\s+", sent)
+                clause_acc: list[str] = []
+                c_words = 0
+                for cl in clauses:
+                    cw = len(cl.split())
+                    if c_words + cw <= budget and cw > 0:
+                        clause_acc.append(cl.strip())
+                        c_words += cw
+                    else:
+                        break
+                fallback_cl = " ".join(sent.split()[:budget]).rstrip(".,;:")
+                text_cl = ", ".join(clause_acc).rstrip(".,;:") if clause_acc else fallback_cl
+                acc.append(text_cl + ".")
+            break
+        else:
+            break
+
+    return f"{prefix} {' '.join(acc)}"
 
 
-def _hook_for_piece(role: str, cand: TechCandidate, topic_label: str) -> str:
-    low = topic_label.lower()
-    if role == ROLE_ACCESSIBLE:
-        return f"Por qué importa: puerta de entrada clara para aplicar {low} sin infraestructura pesada."
-    if role == ROLE_DEEP:
-        return f"Por qué importa: formaliza las garantías teóricas y límites de {low}."
-    if role == ROLE_APPLIED:
-        return f"Por qué importa: resultados medibles listos para llevar a un prototipo real de {topic_label.lower()}."
-    if role == ROLE_TOOL:
-        return f"Por qué importa: ahorro directo de tiempo de desarrollo en {topic_label.lower()}."
-    if role == ROLE_GEM:
-        return f"Por qué importa: ángulo poco explorado en {topic_label.lower()} que conecta ideas de distintas áreas."
-    return f"Por qué importa: marca hacia dónde se mueve el ecosistema de {topic_label.lower()} esta semana."
+def _distinct_concrete_hook(role: str, cand: TechCandidate, topic_label: str) -> str:
+    """Construye un gancho específico apoyado en los datos concretos del candidato (sin plantillas repetidas)."""
+    sentences = _split_complete_sentences(cand.abstract)
+    # Si hay una segunda oración corta en el abstract (distinta de la primera), úsala como dato de gancho
+    if len(sentences) >= 2 and 5 <= len(sentences[1].split()) <= 24:
+        return sentences[1]
+
+    details: list[str] = []
+    if cand.matched_keywords:
+        kws = ", ".join(cand.matched_keywords[:3])
+        details.append(f"aborda {kws}")
+    if cand.categories:
+        details.append(f"categorías {', '.join(cand.categories[:2])}")
+    if cand.authors:
+        lead = cand.authors[0] + (" et al." if len(cand.authors) > 1 else "")
+        details.append(f"autores: {lead}")
+    if cand.votes > 0:
+        details.append(f"{cand.votes} puntos en {cand.source}")
+    if cand.citations > 0:
+        details.append(f"{cand.citations} citas en {cand.source}")
+
+    if not details:
+        details.append(f"publicación de {cand.source} del {cand.published.strftime('%Y-%m-%d')}")
+
+    if role == ROLE_GEM and cand.outside_radar:
+        return f"Hallazgo fuera de tu radar habitual ({ cand.source }): " + " · ".join(details) + "."
+    return f"{role} en {topic_label.lower()} ({cand.source}): " + " · ".join(details) + "."
 
 
-def _project_line_for_paper(cand: TechCandidate, projects_cfg: dict[str, Any]) -> str:
-    """Conecta un paper con Aula Ya, Table Master o PostMark según tema y palabras clave."""
-    text = f"{cand.title} {cand.abstract}".lower()
-    if any(k in text for k in ("educat", "tutor", "student", "classroom", "learn", "quiz", "feedback", "assess")):
-        proj = "Aula Ya"
-    elif any(k in text for k in ("table", "tabular", "document", "extract", "schema", "sql", "structured", "optim")):
-        proj = "Table Master"
-    elif any(k in text for k in ("watermark", "verify", "classif", "trace", "pipeline", "content", "detect", "text")):
-        proj = "PostMark"
-    else:
-        # Por afinidad de tema en config.yaml
-        proj = "Aula Ya"
-        for name, meta in projects_cfg.items():
-            if cand.matched_topic in (meta.get("topics") or []):
-                proj = name
-                break
-    angle = (projects_cfg.get(proj) or {}).get(
-        "angle",
-        "integrar la técnica en un flujo experimental acotado",
-    )
-    return f"En una línea para {proj}: útil para {angle}."
+def _concrete_project_line(cand: TechCandidate, projects_cfg: dict[str, Any]) -> str:
+    """Devuelve la conexión con un proyecto SOLO si hay coincidencia concreta de términos clave; si no, cadena vacía."""
+    if cand.kind != "paper":
+        return ""
+    text = normalize(f"{cand.title} {cand.abstract}")
+    best_proj = ""
+    best_matches: list[str] = []
+
+    for proj_name, meta in projects_cfg.items():
+        if not isinstance(meta, dict):
+            continue
+        kws = meta.get("keywords") or []
+        hits = [kw for kw in kws if re.search(rf"\b{re.escape(normalize(kw))}", text)]
+        if len(hits) > len(best_matches):
+            best_matches = hits
+            best_proj = proj_name
+
+    if not best_proj or not best_matches:
+        return ""
+    angle = (projects_cfg.get(best_proj) or {}).get("angle", "aplicación directa")
+    matched_str = ", ".join(best_matches[:2])
+    return f"Conexión con {best_proj} (por {matched_str}): aplicable a {angle}."
 
 
 def _reading_minutes(cand: TechCandidate) -> int:
@@ -460,92 +571,125 @@ def _reading_minutes(cand: TechCandidate) -> int:
     return max(3, min(8, 3 + words // 120))
 
 
-def _enrich_with_anthropic(
-    cand: TechCandidate,
-    role: str,
-    topic_label: str,
+def enrich_digest_batch_with_anthropic(
+    selected: list[tuple[str, TechCandidate]],
+    wcfg: dict[str, Any],
     api_key: str,
-    model: str,
-    max_words: int = 40,
-) -> dict[str, str] | None:
-    """Usa Anthropic API (si está configurada) con prompt estricto anti-alucinación."""
-    prompt = (
-        "Eres un editor técnico riguroso. Basándote ÚNICAMENTE en el título y resumen original adjuntos, "
-        "sin inventar autores, cifras, métricas ni resultados que no estén explícitos en el texto, "
-        "devuelve un JSON con las claves:\n"
-        '- "title_es": título traducido al español claro\n'
-        '- "hook": una sola frase breve que explique por qué importa\n'
-        f'- "summary_es": resumen propio en español de MÁXIMO {max_words} palabras (sin copiar frases literales)\n'
-        '- "project_line": una línea conectando la idea con Aula Ya (edtech/tutoría), Table Master (tablas/datos) '
-        "o PostMark (verificación/flujos de contenido) solo si aplica.\n\n"
-        f"Rol: {role}\nTema: {topic_label}\nTítulo original: {cand.title}\nResumen original: {cand.abstract[:1200]}"
-    )
-    try:
-        resp = make_session(retries=1).post(
-            "https://api.anthropic.com/v1/messages",
-            headers={
-                "x-api-key": api_key,
-                "anthropic-version": "2023-06-01",
-                "content-type": "application/json",
-            },
-            json={
-                "model": model,
-                "max_tokens": 350,
-                "temperature": 0.1,
-                "messages": [{"role": "user", "content": prompt}],
-            },
-            timeout=20,
-        )
-        resp.raise_for_status()
-        content = resp.json()["content"][0]["text"]
-        match = re.search(r"\{.*\}", content, re.DOTALL)
-        if not match:
-            return None
-        parsed = json.loads(match.group(0))
-        words = str(parsed.get("summary_es", "")).split()
-        if len(words) > max_words:
-            parsed["summary_es"] = " ".join(words[:max_words]).rstrip(".,;:") + "."
-        return parsed
-    except Exception as exc:  # noqa: BLE001
-        log.warning("Fallo enriquecimiento LLM para %r; usando resumen extractivo: %s", cand.title, exc)
+) -> dict[str, Any] | None:
+    """Hace UNA sola llamada por digest con las piezas seleccionadas y valida el JSON de respuesta."""
+    if not selected:
         return None
+    interests = wcfg.get("interests") or {}
+    max_words = int(wcfg.get("summary_max_words", 40))
+    primary_model = str(wcfg.get("anthropic_model", "claude-haiku-5-5"))
+    fallback_model = str(wcfg.get("anthropic_fallback_model", "claude-sonnet-5-5"))
+
+    items_payload = []
+    for idx, (role, cand) in enumerate(selected):
+        t_meta = interests.get(cand.matched_topic) or {}
+        items_payload.append(
+            {
+                "index": idx,
+                "role": role,
+                "topic": str(t_meta.get("label") or cand.matched_topic),
+                "title": cand.title,
+                "abstract": (cand.abstract or "")[:900],
+                "kind": cand.kind,
+            }
+        )
+
+    prompt = (
+        "Eres un editor técnico riguroso. Basándote ÚNICAMENTE en el título y resumen original de cada pieza, "
+        "sin inventar datos, cifras, métricas ni autores, devuelve EXCLUSIVAMENTE un objeto JSON válido con:\n"
+        '- "story_of_the_week": una frase llamativa en español que sintetice las piezas reales de esta semana.\n'
+        '- "pieces": una lista con un objeto por pieza en el mismo orden ("index"), cada uno con:\n'
+        '  - "index": entero\n'
+        '  - "title_es": traducción fiel del titular al español\n'
+        '  - "hook": frase de gancho concreta apoyada en un dato explícito del resumen original\n'
+        f'  - "summary_es": resumen propio en español de MÁXIMO {max_words} palabras (oraciones completas)\n'
+        '  - "project_line": cadena conectando la idea con Aula Ya (edtech/tutoría), Table Master (tablas/datos) '
+        "o PostMark (verificación/flujos editoriales) SOLO si la conexión es real y directa; si no aplica, null\n"
+        '  - "reading_minutes": entero estimado de tiempo de lectura en minutos.\n\n'
+        f"Piezas:\n{json.dumps(items_payload, ensure_ascii=False)}"
+    )
+
+    for model in (primary_model, fallback_model):
+        try:
+            resp = make_session(retries=1).post(
+                "https://api.anthropic.com/v1/messages",
+                headers={
+                    "x-api-key": api_key,
+                    "anthropic-version": "2023-06-01",
+                    "content-type": "application/json",
+                },
+                json={
+                    "model": model,
+                    "max_tokens": 1800,
+                    "temperature": 0.1,
+                    "messages": [{"role": "user", "content": prompt}],
+                },
+                timeout=30,
+            )
+            resp.raise_for_status()
+            content = resp.json()["content"][0]["text"]
+            match = re.search(r"\{.*\}", content, re.DOTALL)
+            if not match:
+                raise ValueError("La respuesta del LLM no contiene un bloque JSON")
+            parsed = json.loads(match.group(0))
+            if not isinstance(parsed.get("pieces"), list) or len(parsed["pieces"]) != len(selected):
+                raise ValueError("El JSON del LLM no devolvió la lista completa de piezas")
+            return parsed
+        except Exception as exc:  # noqa: BLE001
+            log.warning("Llamada batch a Anthropic (%s) falló: %s", model, exc)
+    log.info("Fallo JSON del LLM: se usa el modo extractivo sin LLM")
+    return None
 
 
 def build_digest_pieces(
     selected: list[tuple[str, TechCandidate]],
     wcfg: dict[str, Any],
     anthropic_key: str | None = None,
-) -> tuple[list[DigestPiece], bool]:
-    """Construye las piezas finales del digest (con LLM si hay clave, o extractivo corto determinista)."""
+) -> tuple[list[DigestPiece], bool, str | None]:
+    """Construye las piezas del digest conservando siempre el título original intacto."""
     interests = wcfg.get("interests") or {}
     projects_cfg = wcfg.get("projects") or {}
     max_words = int(wcfg.get("summary_max_words", 40))
-    model = str(wcfg.get("anthropic_model", "claude-3-5-haiku-latest"))
-    used_llm = False
 
-    if not anthropic_key:
-        log.info("ANTHROPIC_API_KEY no configurada: usando resumen extractivo propio corto (<= %d palabras)", max_words)
+    llm_batch: dict[str, Any] | None = None
+    if anthropic_key:
+        llm_batch = enrich_digest_batch_with_anthropic(selected, wcfg, anthropic_key)
+    else:
+        log.info("ANTHROPIC_API_KEY no configurada: usando modo extractivo sin LLM (<= %d palabras)", max_words)
+
+    used_llm = llm_batch is not None
+    llm_story = str(llm_batch.get("story_of_the_week") or "").strip() if llm_batch else None
+    llm_pieces = (llm_batch or {}).get("pieces") or []
 
     pieces: list[DigestPiece] = []
-    for role, cand in selected:
+    for idx, (role, cand) in enumerate(selected):
         t_meta = interests.get(cand.matched_topic) or {}
         topic_label = str(t_meta.get("label") or cand.matched_topic)
-        llm_data = (
-            _enrich_with_anthropic(cand, role, topic_label, anthropic_key, model, max_words)
-            if anthropic_key
-            else None
-        )
-        if llm_data:
-            used_llm = True
-            title_es = str(llm_data.get("title_es") or _spanish_title(cand.title, topic_label))
-            hook = str(llm_data.get("hook") or _hook_for_piece(role, cand, topic_label))
-            summary_es = str(llm_data.get("summary_es") or _own_summary_40w(cand, topic_label, max_words))
-            proj_line = str(llm_data.get("project_line") or _project_line_for_paper(cand, projects_cfg))
+        lang_tag = _detect_lang_tag(cand)
+
+        if used_llm and idx < len(llm_pieces) and isinstance(llm_pieces[idx], dict):
+            item_llm = llm_pieces[idx]
+            title_es = str(item_llm.get("title_es") or cand.title).strip()
+            hook = str(item_llm.get("hook") or _distinct_concrete_hook(role, cand, topic_label)).strip()
+            raw_sum = str(item_llm.get("summary_es") or "").strip()
+            words = raw_sum.split()
+            if len(words) > max_words:
+                raw_sum = " ".join(words[:max_words]).rstrip(".,;:") + "."
+            summary_es = raw_sum or _extractive_complete_summary(cand, max_words)
+            raw_proj = item_llm.get("project_line")
+            proj_line = str(raw_proj).strip() if raw_proj and str(raw_proj).lower() != "null" else ""
+            read_min = int(item_llm.get("reading_minutes") or _reading_minutes(cand))
         else:
-            title_es = _spanish_title(cand.title, topic_label)
-            hook = _hook_for_piece(role, cand, topic_label)
-            summary_es = _own_summary_40w(cand, topic_label, max_words)
-            proj_line = _project_line_for_paper(cand, projects_cfg) if cand.kind == "paper" else ""
+            # Sin LLM: título original intacto, sin etiquetas antepuestas ni traducciones parciales
+            title_es = cand.title
+            hook = _distinct_concrete_hook(role, cand, topic_label)
+            summary_es = _extractive_complete_summary(cand, max_words)
+            proj_line = _concrete_project_line(cand, projects_cfg)
+            read_min = _reading_minutes(cand)
 
         pieces.append(
             DigestPiece(
@@ -554,57 +698,78 @@ def build_digest_pieces(
                 kind=cand.kind,
                 topic=cand.matched_topic,
                 topic_label=topic_label,
-                title_es=title_es,
                 original_title=cand.title,
+                title_es=title_es,
                 hook=hook,
                 summary_es=summary_es,
-                reading_minutes=_reading_minutes(cand),
+                reading_minutes=read_min,
                 url=cand.url,
                 source=cand.source,
                 score=cand.score,
+                language_tag=lang_tag,
+                outside_radar=cand.outside_radar,
                 project_line=proj_line if cand.kind == "paper" else "",
             )
         )
-    return pieces, used_llm
+    return pieces, used_llm, llm_story
 
 
-def pick_concept_in_60s(pieces: list[DigestPiece]) -> dict[str, str]:
-    blob = " ".join(f"{p.original_title} {p.summary_es} {p.topic}" for p in pieces).lower()
+def pick_concept_in_60s(pieces: list[DigestPiece]) -> dict[str, Any]:
+    """Busca un término técnico que aparezca realmente en las lecturas de la semana; si ninguno aplica, lo indica."""
     for entry in CONCEPT_GLOSSARY:
-        if any(t in blob for t in entry["triggers"]):
-            return {
-                "term": entry["term"],
-                "explanation": entry["explanation"],
-                "everyday_example": entry["everyday_example"],
-            }
+        for p in pieces:
+            blob = normalize(f"{p.original_title} {p.summary_es} {p.hook}")
+            for trig in entry["triggers"]:
+                if re.search(rf"\b{re.escape(normalize(trig))}\b", blob):
+                    return {
+                        "term": entry["term"],
+                        "explanation": entry["explanation"],
+                        "everyday_example": entry["everyday_example"],
+                        "from_readings": True,
+                        "source_title": p.original_title,
+                    }
     fallback = CONCEPT_GLOSSARY[0]
     return {
         "term": fallback["term"],
         "explanation": fallback["explanation"],
         "everyday_example": fallback["everyday_example"],
+        "from_readings": False,
+        "source_title": "",
     }
 
 
 def build_weekly_challenge(pieces: list[DigestPiece]) -> str:
-    tool = next((p for p in pieces if p.role == ROLE_TOOL), None)
-    applied = next((p for p in pieces if p.role == ROLE_APPLIED), None)
-    target = tool or applied or (pieces[0] if pieces else None)
+    """Reto ejecutable coherente con el tipo de pieza:
+    - tool/repo -> probarla 20 minutos
+    - paper -> leer abstract y conclusión y escribir 3 notas
+    - news -> escribir cómo afecta a uno de tus proyectos
+    Nunca 'clonar' un artículo.
+    """
+    tool = next((p for p in pieces if p.kind == "tool"), None)
+    paper = next((p for p in pieces if p.kind == "paper"), None)
+    news = next((p for p in pieces if p.kind == "news"), None)
+    target = tool or paper or news
     if not target:
-        return "Dedica 20 minutos a revisar tu backlog de lecturas guardadas en biblioteca/."
+        return "Dedica 20 minutos a revisar tu biblioteca de lecturas guardadas en biblioteca/."
     if target.kind == "tool":
         return (
-            f"En 20 minutos: clona o instala «{target.original_title}» ({target.source}), "
-            f"corre un ejemplo mínimo con datos de Aula Ya o Table Master y anota si reduce código o latencia."
+            f"Herramienta/repo (20 min): prueba «{target.original_title}» ({target.url}) en un ejemplo pequeño "
+            "y anota si vale la pena integrarla en tu flujo."
+        )
+    if target.kind == "paper":
+        return (
+            f"Lectura enfocada (20 min): lee el abstract y la conclusión del paper «{target.original_title}» "
+            "y escribe 3 notas concretas con lo que podrías experimentar."
         )
     return (
-        f"En 25 minutos: lee la sección de método y resultados de «{target.original_title}» "
-        f"y escribe un boceto de 5 líneas sobre cómo validar esa idea en tu flujo actual."
+        f"Análisis rápido (15 min): revisa la noticia «{target.original_title}» "
+        "y escribe en 3 líneas cómo afecta a Aula Ya, Table Master o PostMark."
     )
 
 
-def build_weekly_quiz(pieces: list[DigestPiece], concept: dict[str, str]) -> QuizSpec:
-    """Construye una pregunta de opción múltiple (sendPoll tipo quiz) con respuesta explicada."""
-    term = concept["term"]
+def build_weekly_quiz(pieces: list[DigestPiece], concept: dict[str, Any]) -> QuizSpec:
+    """Construye un mini quiz de opción múltiple alineado con el concepto técnico de las lecturas."""
+    term = str(concept["term"])
     if "Cuantización" in term:
         return QuizSpec(
             question=f"Según el concepto de la semana ({term}), ¿qué ventaja directa aporta bajar de FP16 a INT4?",
@@ -635,15 +800,39 @@ def build_weekly_quiz(pieces: list[DigestPiece], concept: dict[str, str]) -> Qui
         )
     if "Optimización estocástica" in term:
         return QuizSpec(
-            question="¿Por qué la optimización estocástica es clave con grandes volúmenes de datos?",
+            question="¿Por qué la optimización estocástica y detección por ventana deslizante son útiles en línea?",
             options=[
-                "Estima la dirección de mejora con minilotes sin recorrer todo el dataset por paso",
-                "Garantiza encontrar siempre el mínimo global exacto en una sola iteración",
-                "Elimina todos los hiperparámetros de tasa de aprendizaje",
-                "Solo funciona cuando la función objetivo es estrictamente lineal",
+                "Estiman el estado o gradiente con muestras recientes sin recalcular todo el historial",
+                "Garantizan encontrar siempre el mínimo global exacto en un solo paso",
+                "Eliminan la varianza de cualquier proceso estocástico",
+                "Solo funcionan cuando los datos no cambian con el tiempo",
             ],
             correct_option_id=0,
-            explanation="Evaluar el gradiente en un minilote aleatorio reduce drásticamente el costo por iteración.",
+            explanation="Las muestras locales o ventanas deslizantes permiten adaptarse rápido con bajo costo.",
+        )
+    if "contexto" in term.lower():
+        return QuizSpec(
+            question="¿Qué problema resuelve la compactación de ventana de contexto en agentes y LLMs?",
+            options=[
+                "Mantiene las señales clave sin saturar la memoria de tokens en tareas largas",
+                "Aumenta el tamaño físico de la GPU durante la inferencia",
+                "Elimina la necesidad de instrucciones del sistema",
+                "Reemplaza los pesos del modelo por tablas hash",
+            ],
+            correct_option_id=0,
+            explanation="Compactar o resumir pasos intermedios evita degradación y costos al llenarse la ventana.",
+        )
+    if "tabulares" in term.lower():
+        return QuizSpec(
+            question="¿Qué ventaja ofrece un motor relacional o tabular embebido en un único ejecutable?",
+            options=[
+                "Consultas SQL y validación local sin administrar un servidor externo",
+                "Entrenamiento distribuido de redes convolucionales en clúster",
+                "Renderizado 3D en tiempo real en el navegador",
+                "Reemplazo automático de certificados TLS",
+            ],
+            correct_option_id=0,
+            explanation="Un motor embebido simplifica despliegues, pruebas y pipelines de datos locales.",
         )
     return QuizSpec(
         question=f"¿Qué permite lograr «{term}» al adaptar modelos para una tarea específica?",
@@ -668,28 +857,17 @@ def choose_weekly_format(week_num: int, last_format_index: int | None = None) ->
     return idx, FORMAT_NAMES[idx]
 
 
-def build_story_of_the_week(pieces: list[DigestPiece], format_name: str) -> str:
+def build_story_of_the_week(pieces: list[DigestPiece], llm_story: str | None = None) -> str:
+    """Con LLM: frase a partir de las piezas. Sin LLM: línea neutra con el tema dominante."""
     if not pieces:
-        return "Esta semana hubo pocas publicaciones que superaran el umbral de calidad; aquí va solo lo verificado."
+        return "Semana con pocas publicaciones que superaran el umbral de afinidad; solo se incluye lo verificado."
+    if llm_story:
+        return llm_story
     counts: dict[str, int] = {}
     for p in pieces:
         counts[p.topic_label] = counts.get(p.topic_label, 0) + 1
     dominant = max(counts, key=lambda k: counts[k])
-    lead = pieces[0]
-    if format_name == "ranking_top5":
-        return (
-            f"La conversación técnica de la semana giró en torno a {dominant.lower()}: "
-            f"desde «{lead.title_es}» hasta herramientas listas para llevar a producción local."
-        )
-    if format_name == "tres_cambios":
-        return (
-            f"Tres señales claras esta semana: {dominant.lower()} deja el laboratorio y se vuelve más compacto, "
-            f"medible y fácil de integrar en proyectos reales."
-        )
-    return (
-        f"La pregunta que atraviesa las lecturas de esta semana: ¿cómo aprovechar los avances en "
-        f"{dominant.lower()} sin depender de modelos gigantes ni perder rigor?"
-    )
+    return f"Tema dominante de la semana: {dominant} ({counts[dominant]} de {len(pieces)} piezas seleccionadas)."
 
 
 def build_weekly_digest(
@@ -698,8 +876,9 @@ def build_weekly_digest(
     ref_date: date | None = None,
     week_override: str | None = None,
     feedback_path: Path = FEEDBACK_JSON,
+    sent_path: Path = SENT_JSON,
 ) -> WeeklyDigest:
-    """Ejecuta la tubería completa de curaduría para la semana indicada."""
+    """Ejecuta la tubería completa de curaduría para la semana indicada (sin escribir archivos)."""
     wcfg = cfg.section("weekly_digest")
     if week_override:
         year, week_num, target_date = parse_week_id(week_override)
@@ -714,10 +893,13 @@ def build_weekly_digest(
     raw_candidates = gather_tech_candidates(cfg) if candidates is None else list(candidates)
 
     state = load_feedback(feedback_path)
+    sent_reg = history.read_sent_registry(sent_path)
     interests = wcfg.get("interests") or {}
     weights = effective_topic_weights(interests, state)
     read_ids = set(state.get("read_ids") or [])
-    max_age_days = float(wcfg.get("max_age_days", 7))
+    max_age_days = float(wcfg.get("max_age_days", 7.0))
+    min_affinity = float(wcfg.get("min_affinity_score", 2.0))
+    off_topic_kws = list(wcfg.get("off_topic_keywords") or DEFAULT_OFF_TOPIC)
 
     scored: list[TechCandidate] = []
     discarded_old_or_irrelevant = 0
@@ -726,7 +908,15 @@ def build_weekly_digest(
         if cand.short_id in read_ids:
             discarded_already_read += 1
             continue
-        s = score_candidate(cand, interests, weights, now_utc, max_age_days=max_age_days)
+        s = score_candidate(
+            cand,
+            interests,
+            weights,
+            now_utc,
+            max_age_days=max_age_days,
+            min_affinity=min_affinity,
+            off_topic_kws=off_topic_kws,
+        )
         if s > 0:
             scored.append(cand)
         else:
@@ -737,7 +927,7 @@ def build_weekly_digest(
     selected = select_diverse_pieces(deduped, int(wcfg.get("max_pieces", 7)))
 
     log.info(
-        "Curaduría Radar semanal (%s): leídos=%d, descartados_edad_o_tema=%d, ya_leídos=%d, "
+        "Curaduría Radar semanal (%s): leídos=%d, descartados_edad_o_afinidad=%d, ya_leídos=%d, "
         "descartados_duplicados=%d, elegidos=%d",
         week_id,
         len(raw_candidates),
@@ -747,12 +937,15 @@ def build_weekly_digest(
         len(selected),
     )
 
-    pieces, used_llm = build_digest_pieces(selected, wcfg, cfg.secrets.anthropic_key)
-    fmt_idx, fmt_name = choose_weekly_format(week_num, state.get("last_format_index"))
+    pieces, used_llm, llm_story = build_digest_pieces(selected, wcfg, cfg.secrets.anthropic_key)
+    last_fmt = sent_reg.get("last_weekly_format_index")
+    if last_fmt is None:
+        last_fmt = state.get("last_format_index")
+    fmt_idx, fmt_name = choose_weekly_format(week_num, last_fmt)
     concept = pick_concept_in_60s(pieces)
     challenge = build_weekly_challenge(pieces)
     quiz = build_weekly_quiz(pieces, concept)
-    story = build_story_of_the_week(pieces, fmt_name)
+    story = build_story_of_the_week(pieces, llm_story=llm_story if used_llm else None)
 
     return WeeklyDigest(
         week_id=week_id,
@@ -777,81 +970,101 @@ def build_weekly_digest(
     )
 
 
-def _format_piece_html(idx: int, p: DigestPiece) -> str:
+def _format_piece_html(idx: int, p: DigestPiece, used_llm: bool = False) -> str:
+    """Formatea una pieza conservando intacto el título original y poniendo la etiqueta de tema en línea propia."""
     link = html.escape(p.url, quote=True)
+    radar_note = " · <i>fuera de tu radar habitual</i>" if p.outside_radar else ""
     head = (
-        f'{idx}. <b>[{esc(p.role)}]</b> <a href="{link}">{esc(p.title_es)}</a> '
+        f'{idx}. <b>[{esc(p.role)}]</b> <a href="{link}">{esc(p.original_title)}</a> '
         f"<i>({p.reading_minutes} min · {esc(p.source)})</i>"
     )
     lines = [
         head,
-        f"   🎯 {esc(p.hook)}",
-        f"   {esc(p.summary_es)}",
+        f"   🏷️ {esc(p.topic_label)}{radar_note}",
     ]
+    if used_llm and p.title_es and p.title_es != p.original_title:
+        lines.append(f"   🇪🇸 <i>{esc(p.title_es)}</i>")
+    lines.append(f"   🎯 {esc(p.hook)}")
+    lines.append(f"   {esc(p.summary_es)}")
     if p.project_line:
         lines.append(f"   🛠️ <i>{esc(p.project_line)}</i>")
     return "\n".join(lines)
 
 
-def format_weekly_messages(digest: WeeklyDigest) -> tuple[list[str], list[dict[str, Any] | None]]:
-    """Divide el Radar semanal en 2 o 3 mensajes cortos (<= 4096 caracteres) con botones inline."""
+def format_weekly_messages(
+    digest: WeeklyDigest,
+) -> tuple[list[str], list[dict[str, Any] | None], list[bool]]:
+    """Construye los mensajes del Radar semanal:
+    - Mensaje 1 (teaser pantalla de bloqueo): máx. 4 líneas (historia + 3 titulares), ÚNICO con sonido.
+    - Mensaje 2 (silencioso, silent=True): papers de la semana con detalle y teclado inline.
+    - Mensaje 3 (silencioso, silent=True): lanzamientos/herramienta/joya + Concepto en 60s + Reto de la semana.
+    """
     headers = {
-        "ranking_top5": "📡 <b>Radar semanal · Ranking de lecturas clave</b>",
-        "tres_cambios": "📡 <b>Radar semanal · Tres cosas que cambiaron esta semana</b>",
-        "pregunta_semana": "📡 <b>Radar semanal · La pregunta técnica de la semana</b>",
+        "ranking_top5": "📡 <b>Radar semanal · Ranking</b>",
+        "tres_cambios": "📡 <b>Radar semanal · Tres cambios</b>",
+        "pregunta_semana": "📡 <b>Radar semanal · Pregunta clave</b>",
     }
-    header = headers.get(digest.format_name, "📡 <b>Radar semanal de tecnología</b>")
+    header = headers.get(digest.format_name, "📡 <b>Radar semanal</b>")
 
     if not digest.pieces:
         msg = (
-            f"{header} ({esc(digest.week_id)})\n\n"
-            f"{esc(digest.story_of_the_week)}\n\n"
-            "<i>Esta semana no hubo suficientes candidatos verificados para armar las 7 piezas sin inventar.</i>"
+            f"{header} ({esc(digest.week_id)}) — {esc(digest.story_of_the_week)}\n"
+            "<i>Esta semana no hubo suficientes candidatos que superaran el umbral de afinidad.</i>"
         )
-        return [msg[:MAX_LEN]], [None]
+        return [msg[:MAX_LEN]], [None], [False]
 
-    papers = [p for p in digest.pieces if p.kind == "paper"]
-    others = [p for p in digest.pieces if p.kind != "paper"]
+    # Mensaje 1: Teaser de máximo 4 líneas (el único con sonido)
+    teaser_lines = [f"{header} ({esc(digest.week_id)}) — {esc(digest.story_of_the_week)}"]
+    for i, p in enumerate(digest.pieces[:3], 1):
+        teaser_lines.append(f"{i}. {esc(p.original_title)} <i>({esc(p.source)})</i>")
+    msg1 = "\n".join(teaser_lines[:4])[:MAX_LEN]
+    kb1 = build_piece_keyboard(digest.pieces[0].id, digest.pieces[0].topic)
 
-    # Mensaje 1: Historia de la semana + 3 Papers
-    m1_lines = [
-        f"{header} · <b>{esc(digest.week_id)}</b>",
-        f"💡 <b>Historia de la semana:</b> {esc(digest.story_of_the_week)}",
-        "",
-        "📄 <b>Papers de la semana</b>",
-    ]
+    paper_roles = (ROLE_ACCESSIBLE, ROLE_DEEP, ROLE_APPLIED)
+    papers = [p for p in digest.pieces if p.role in paper_roles]
+    others = [p for p in digest.pieces if p.role not in paper_roles]
+
+    # Mensaje 2: Papers en detalle (silencioso)
+    m2_lines = ["📄 <b>Papers de la semana</b>"]
     for i, p in enumerate(papers, 1):
-        m1_lines.append("")
-        m1_lines.append(_format_piece_html(i, p))
-    msg1 = "\n".join(m1_lines)[:MAX_LEN]
-    kb1 = build_piece_keyboard(papers[0].id, papers[0].topic) if papers else None
-
-    # Mensaje 2: Noticias de impacto, Herramienta para probar y Joya de la semana
-    m2_lines = ["🚀 <b>Lanzamientos, herramienta y joya de la semana</b>"]
-    start_idx = len(papers) + 1
-    for i, p in enumerate(others, start_idx):
         m2_lines.append("")
-        m2_lines.append(_format_piece_html(i, p))
+        m2_lines.append(_format_piece_html(i, p, used_llm=digest.used_llm))
     msg2 = "\n".join(m2_lines)[:MAX_LEN]
-    kb2 = build_piece_keyboard(others[0].id, others[0].topic) if others else None
+    kb2 = build_piece_keyboard(papers[0].id, papers[0].topic) if papers else None
 
-    # Mensaje 3: Concepto en 60 segundos + Reto de la semana
+    # Mensaje 3: Lanzamientos, herramienta, joya + Concepto en 60s + Reto (silencioso)
+    m3_lines: list[str] = []
+    if others:
+        m3_lines.append("🚀 <b>Lanzamientos, herramienta y joya</b>")
+        start_idx = len(papers) + 1
+        for i, p in enumerate(others, start_idx):
+            m3_lines.append("")
+            m3_lines.append(_format_piece_html(i, p, used_llm=digest.used_llm))
+        m3_lines.append("")
+
     c = digest.concept
-    m3_lines = [
-        f"🧠 <b>Concepto en 60 segundos: {esc(c['term'])}</b>",
-        esc(c["explanation"]),
-        f"<i>Ejemplo cotidiano:</i> {esc(c['everyday_example'])}",
-        "",
-        "⚡ <b>Reto de la semana (15-30 min)</b>",
-        esc(digest.challenge),
-    ]
+    origin_note = (
+        f" <i>(término presente en «{esc(c['source_title'])}»)</i>"
+        if c.get("from_readings")
+        else " <i>(concepto de la lista local — sin coincidencia directa esta semana)</i>"
+    )
+    m3_lines.extend(
+        [
+            f"🧠 <b>Concepto en 60 segundos: {esc(c['term'])}</b>{origin_note}",
+            esc(c["explanation"]),
+            f"<i>Ejemplo cotidiano:</i> {esc(c['everyday_example'])}",
+            "",
+            "⚡ <b>Reto de la semana (15-30 min)</b>",
+            esc(digest.challenge),
+        ]
+    )
     msg3 = "\n".join(m3_lines)[:MAX_LEN]
-    tail_piece = others[-1] if others else papers[-1]
+    tail_piece = others[0] if others else papers[-1]
     kb3 = build_piece_keyboard(tail_piece.id, tail_piece.topic)
 
-    if others:
-        return [msg1, msg2, msg3], [kb1, kb2, kb3]
-    return [msg1, msg3], [kb1, kb3]
+    if papers:
+        return [msg1, msg2, msg3], [kb1, kb2, kb3], [False, True, True]
+    return [msg1, msg3], [kb1, kb3], [False, True]
 
 
 def render_digest_markdown(digest: WeeklyDigest) -> str:
@@ -870,12 +1083,22 @@ def render_digest_markdown(digest: WeeklyDigest) -> str:
         lines.append("*Semana con contenido insuficiente verificado; se envió resumen corto.*")
         lines.append("")
     for i, p in enumerate(digest.pieces, 1):
+        radar_tag = " *(fuera de tu radar habitual)*" if p.outside_radar else ""
+        meta_line = (
+            f"- **Tema:** {p.topic_label}{radar_tag} · **Fuente:** {p.source} "
+            f"· **Lectura:** ~{p.reading_minutes} min"
+        )
         lines.extend(
             [
-                f"### {i}. [{p.role}] [{p.title_es}]({p.url})",
-                f"- **Título original:** {p.original_title}",
-                f"- **Fuente:** {p.source} · **Tema:** {p.topic_label} · **Lectura:** ~{p.reading_minutes} min",
-                f"- **Por qué importa:** {p.hook}",
+                f"### {i}. [{p.role}] [{p.original_title}]({p.url})",
+                meta_line,
+            ]
+        )
+        if digest.used_llm and p.title_es and p.title_es != p.original_title:
+            lines.append(f"- **Traducción:** {p.title_es}")
+        lines.extend(
+            [
+                f"- **Gancho:** {p.hook}",
                 f"- **Resumen:** {p.summary_es}",
             ]
         )
@@ -884,9 +1107,16 @@ def render_digest_markdown(digest: WeeklyDigest) -> str:
         lines.append("")
 
     c = digest.concept
+    origin = (
+        f"Término detectado en «{c.get('source_title')}»."
+        if c.get("from_readings")
+        else "Concepto seleccionado de la lista local (ningún término del glosario apareció literalmente esta semana)."
+    )
     lines.extend(
         [
             f"## Concepto en 60 segundos: {c['term']}",
+            "",
+            f"*{origin}*",
             "",
             c["explanation"],
             "",
@@ -914,13 +1144,12 @@ def write_digest_archive(
     digests_dir: Path = DIGESTS_DIR,
     docs_dir: Path = DOCS_DIR,
 ) -> Path:
-    """Escribe digests/AAAA/AAAA-Wnn.md, actualiza digests/README.md y docs/digests.json (Fase 3)."""
+    """Escribe digests/AAAA/AAAA-Wnn.md, actualiza digests/README.md y docs/digests.json (nunca en --dry-run)."""
     year_dir = digests_dir / str(digest.year)
     year_dir.mkdir(parents=True, exist_ok=True)
     md_path = year_dir / f"{digest.week_id}.md"
     md_path.write_text(render_digest_markdown(digest), encoding="utf-8")
 
-    # Actualiza docs/digests.json para el buscador web
     docs_dir.mkdir(parents=True, exist_ok=True)
     digests_json_path = docs_dir / "digests.json"
     entries: list[dict[str, Any]] = []
@@ -947,12 +1176,14 @@ def write_digest_archive(
                     "role": p.role,
                     "topic": p.topic,
                     "topic_label": p.topic_label,
+                    "original_title": p.original_title,
                     "title_es": p.title_es,
                     "hook": p.hook,
                     "summary_es": p.summary_es,
                     "reading_minutes": p.reading_minutes,
                     "url": p.url,
                     "source": p.source,
+                    "outside_radar": p.outside_radar,
                     "project_line": p.project_line,
                 }
                 for p in digest.pieces
@@ -964,11 +1195,10 @@ def write_digest_archive(
     entries.sort(key=lambda e: e["week_id"], reverse=True)
     digests_json_path.write_text(json.dumps(entries, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    # Reconstruye digests/README.md con un índice de todas las semanas archivadas
     idx_lines = [
         "# Archivo histórico del Radar semanal de tecnología",
         "",
-        "Índice de ediciones semanales generadas automáticamente.",
+        "Índice de ediciones semanales enviadas.",
         "",
         "| Semana | Fecha | Temas principales | Historia de la semana |",
         "|---|---|---|---|",
@@ -984,24 +1214,31 @@ def write_digest_archive(
     return md_path
 
 
-def already_sent_this_week(week_id: str, feedback_path: Path = FEEDBACK_JSON) -> bool:
-    state = load_feedback(feedback_path)
-    return week_id in (state.get("sent_weeks") or [])
+def already_sent_this_week(week_id: str, sent_path: Path = SENT_JSON) -> bool:
+    """Verifica en data/sent.json si la semana ya fue enviada realmente (nunca por existencia de archivo)."""
+    reg = history.read_sent_registry(sent_path)
+    return week_id in (reg.get("sent_weeks") or [])
 
 
-def mark_week_sent(digest: WeeklyDigest, feedback_path: Path = FEEDBACK_JSON) -> None:
-    state = load_feedback(feedback_path)
-    sent_weeks = state.setdefault("sent_weeks", [])
+def mark_week_sent(
+    digest: WeeklyDigest,
+    sent_path: Path = SENT_JSON,
+    feedback_path: Path = FEEDBACK_JSON,
+) -> None:
+    """Registra el envío real en data/sent.json y cataloga las piezas en data/feedback.json."""
+    reg = history.read_sent_registry(sent_path)
+    sent_weeks = reg.setdefault("sent_weeks", [])
     if digest.week_id not in sent_weeks:
         sent_weeks.append(digest.week_id)
-    state["last_format_index"] = digest.stats.get("format_index", 0)
-    save_feedback(state, feedback_path)
+    reg["last_weekly_format_index"] = digest.stats.get("format_index", 0)
+    history.write_sent_registry(reg, sent_path)
+
     register_pieces_in_catalog(
         [
             {
                 "id": p.id,
-                "title_es": p.title_es,
                 "title": p.original_title,
+                "title_es": p.title_es,
                 "url": p.url,
                 "topic": p.topic,
                 "topic_label": p.topic_label,
@@ -1019,11 +1256,10 @@ def mark_week_sent(digest: WeeklyDigest, feedback_path: Path = FEEDBACK_JSON) ->
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="weekly", description="Radar semanal de tecnología")
-    parser.add_argument("--dry-run", action="store_true", help="imprime el digest sin enviar a Telegram")
+    parser.add_argument("--dry-run", action="store_true", help="imprime el digest sin enviar ni escribir archivos")
     parser.add_argument("--force", action="store_true", help="envía aunque ya se haya enviado esta semana")
     parser.add_argument("--as-of", default=None, metavar="HH:MM", help="hora simulada de ejecución")
     parser.add_argument("--week", default=None, metavar="AAAA-Wnn", help="genera o regenera una semana específica")
-    parser.add_argument("--write-archive", action="store_true", help="escribe el archivo Markdown incluso en dry-run")
     parser.add_argument("--config", default=None, help="ruta alternativa a config.yaml")
     args = parser.parse_args(argv)
 
@@ -1035,11 +1271,12 @@ def main(argv: list[str] | None = None) -> int:
     today = datetime.now(cfg.tz).date()
     target_week = args.week or iso_week_id(today)
 
+    # Un --dry-run NUNCA escribe en data/, digests/ ni docs/, ni cuenta como enviado.
     if not args.dry_run:
         sync_telegram_feedback(cfg.secrets.telegram_token)
 
     if not args.dry_run and not args.force and already_sent_this_week(target_week):
-        log.info("Ya se envió el Radar semanal de %s; no se duplica.", target_week)
+        log.info("Ya se envió el Radar semanal de %s (según data/sent.json); no se duplica.", target_week)
         return 0
 
     if not args.dry_run and not (cfg.secrets.telegram_token and cfg.secrets.telegram_chat_id):
@@ -1047,16 +1284,22 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     digest = build_weekly_digest(cfg, ref_date=today, week_override=args.week)
-    messages, markups = format_weekly_messages(digest)
+    messages, markups, silent_flags = format_weekly_messages(digest)
 
     if args.dry_run:
-        if args.write_archive:
-            md_path = write_digest_archive(digest)
-            log.info("Archivo semanal escrito en %s", md_path)
-        for i, msg in enumerate(messages, 1):
-            print(f"----- radar semanal mensaje {i}/{len(messages)} ({len(msg)} caracteres) -----")
+        for i, (msg, is_silent) in enumerate(zip(messages, silent_flags, strict=False), 1):
+            sound_label = (
+                "SILENCIOSO (disable_notification=true)"
+                if is_silent
+                else "CON SONIDO (teaser pantalla bloqueo)"
+            )
+            lines_count = len(msg.splitlines())
+            print(
+                f"----- radar semanal mensaje {i}/{len(messages)} "
+                f"[{sound_label}, {lines_count} líneas, {len(msg)} caracteres] -----"
+            )
             print(msg)
-        print("----- mini quiz (sendPoll) -----")
+        print("----- mini quiz (sendPoll, disable_notification=true) -----")
         print(f"Pregunta: {digest.quiz.question}")
         for idx, opt in enumerate(digest.quiz.options):
             mark = "✅" if idx == digest.quiz.correct_option_id else "  "
@@ -1068,7 +1311,7 @@ def main(argv: list[str] | None = None) -> int:
         cfg.secrets.telegram_token,  # type: ignore[arg-type]
         cfg.secrets.telegram_chat_id,  # type: ignore[arg-type]
         messages,
-        disable_notification=False,
+        disable_notification=silent_flags,
         reply_markups=markups,
     )
     try:
@@ -1079,6 +1322,7 @@ def main(argv: list[str] | None = None) -> int:
             digest.quiz.options,
             digest.quiz.correct_option_id,
             digest.quiz.explanation,
+            disable_notification=True,
         )
     except Exception:
         log.exception("El digest se envió, pero falló el envío del mini quiz sendPoll")

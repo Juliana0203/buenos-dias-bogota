@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from brief.config import ROOT
-from brief.telegram import answer_callback_query, fetch_updates
+from brief.telegram import answer_callback_query, edit_message_reply_markup, fetch_updates
 
 log = logging.getLogger(__name__)
 
@@ -56,7 +56,6 @@ def load_feedback(path: Path = FEEDBACK_JSON) -> dict[str, Any]:
 
 def save_feedback(state: dict[str, Any], path: Path = FEEDBACK_JSON) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    # Limita historiales internos para que el archivo se mantenga liviano
     state["processed_callback_ids"] = state.get("processed_callback_ids", [])[-500:]
     state["events"] = state.get("events", [])[-300:]
     path.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -74,8 +73,8 @@ def register_pieces_in_catalog(
         if pid:
             catalog[pid] = {
                 "id": pid,
-                "title_es": p.get("title_es", ""),
-                "title": p.get("title", ""),
+                "title": p.get("title") or p.get("title_es") or "",
+                "title_es": p.get("title_es") or p.get("title") or "",
                 "url": p.get("url", ""),
                 "topic": p.get("topic", "software_engineering"),
                 "topic_label": p.get("topic_label", p.get("topic", "")),
@@ -124,9 +123,11 @@ def add_to_library(
 
     date_str = str(piece.get("date") or datetime.now(UTC).date().isoformat())
     year = date_str[:4] if len(date_str) >= 4 else str(datetime.now(UTC).year)
+    title_val = piece.get("title") or piece.get("title_es") or "Lectura guardada"
     entry = {
         "id": pid or url or "",
-        "title_es": piece.get("title_es") or piece.get("title") or "Lectura guardada",
+        "title": title_val,
+        "title_es": piece.get("title_es") or title_val,
         "url": url or "",
         "topic": piece.get("topic") or "general",
         "topic_label": piece.get("topic_label") or piece.get("topic") or "General",
@@ -141,7 +142,6 @@ def add_to_library(
     library_json.parent.mkdir(parents=True, exist_ok=True)
     library_json.write_text(json.dumps(existing, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    # Reconstruye biblioteca/AAAA.md ordenado por tema
     year_items = [i for i in existing if str(i.get("year")) == year]
     by_topic: dict[str, list[dict[str, Any]]] = {}
     for item in year_items:
@@ -153,7 +153,7 @@ def add_to_library(
         lines.append(f"## {topic_label}")
         lines.append("")
         for item in by_topic[topic_label]:
-            title = item["title_es"]
+            title = item.get("title") or item["title_es"]
             link = item["url"]
             week = f" ({item['week']})" if item.get("week") else ""
             hook = f" — *{item['hook']}*" if item.get("hook") else ""
@@ -165,20 +165,48 @@ def add_to_library(
     return True
 
 
+def build_piece_keyboard(
+    piece_id: str,
+    topic: str,
+    saved: bool = False,
+    read: bool = False,
+    feedback_done: str | None = None,
+) -> dict[str, Any]:
+    """Construye el teclado inline de Telegram (o su estado actualizado tras un clic)."""
+    save_btn = (
+        {"text": "✅ Guardado", "callback_data": f"noop:{piece_id}"[:64]}
+        if saved
+        else {"text": "📌 Guardar", "callback_data": f"save:{piece_id}"[:64]}
+    )
+    read_btn = (
+        {"text": "✅ Leída", "callback_data": f"noop:{piece_id}"[:64]}
+        if read
+        else {"text": "✅ Ya la leí", "callback_data": f"read:{piece_id}"[:64]}
+    )
+    if feedback_done == "more":
+        row2 = [{"text": "✅ Más como esto registrado", "callback_data": f"noop:{piece_id}"[:64]}]
+    elif feedback_done == "less":
+        row2 = [{"text": "✅ Menos como esto registrado", "callback_data": f"noop:{piece_id}"[:64]}]
+    else:
+        row2 = [
+            {"text": "🔼 Más como esto", "callback_data": f"more:{piece_id}:{topic}"[:64]},
+            {"text": "🔽 Menos como esto", "callback_data": f"less:{piece_id}:{topic}"[:64]},
+        ]
+    return {"inline_keyboard": [[save_btn, read_btn], row2]}
+
+
 def apply_callback_updates(
     updates: list[dict[str, Any]],
     feedback_path: Path = FEEDBACK_JSON,
     library_json: Path = LIBRARY_JSON,
     library_dir: Path = LIBRARY_DIR,
     answer_fn: Any = None,
+    edit_markup_fn: Any = None,
 ) -> dict[str, int]:
     """Procesa una lista de updates de Telegram (callback_query) sin duplicar eventos.
 
-    Formatos de callback_data soportados:
-    - ``save:<piece_id>``
-    - ``read:<piece_id>``
-    - ``more:<piece_id>:<topic>``
-    - ``less:<piece_id>:<topic>``
+    Además de responder answerCallbackQuery (ignorando consultas vencidas), reemplaza
+    el teclado del mensaje original con editMessageReplyMarkup (p. ej. '✅ Guardado').
     """
     state = load_feedback(feedback_path)
     last_id = int(state.get("last_update_id", 0))
@@ -199,8 +227,17 @@ def apply_callback_updates(
         piece_id = parts[1] if len(parts) > 1 else ""
         topic = parts[2] if len(parts) > 2 else ""
 
+        if action == "noop":
+            seen_cb.add(cb_id)
+            state["processed_callback_ids"].append(cb_id)
+            last_id = max(last_id, uid)
+            continue
+
         catalog = state.get("piece_catalog", {})
-        piece = catalog.get(piece_id, {"id": piece_id, "topic": topic or "general", "title_es": piece_id, "url": ""})
+        piece = catalog.get(
+            piece_id,
+            {"id": piece_id, "topic": topic or "general", "title": piece_id, "title_es": piece_id, "url": ""},
+        )
         if not topic:
             topic = str(piece.get("topic") or "general")
 
@@ -210,11 +247,10 @@ def apply_callback_updates(
                 state["saved_ids"].append(piece_id)
             added = add_to_library(piece, library_json=library_json, library_dir=library_dir)
             counts["saved"] += 1
-            reply_text = "📌 Guardado en tu biblioteca" if added else "📌 Ya estaba en tu biblioteca"
+            reply_text = "✅ Guardado en tu biblioteca" if added else "✅ Ya estaba en tu biblioteca"
         elif action == "read":
             if piece_id and piece_id not in state["read_ids"]:
                 state["read_ids"].append(piece_id)
-            # Leer una pieza también sube ligeramente el peso de su tema
             adj = state.setdefault("topic_adjustments", {})
             adj[topic] = round(float(adj.get(topic, 0.0)) + 0.05, 3)
             counts["read"] += 1
@@ -231,7 +267,26 @@ def apply_callback_updates(
             reply_text = f"🔽 Menos contenido de {topic}"
 
         if answer_fn and cb.get("id"):
-            answer_fn(str(cb["id"]), reply_text)
+            try:
+                answer_fn(str(cb["id"]), reply_text)
+            except Exception as exc:  # noqa: BLE001
+                log.warning("Error ignorado en answerCallbackQuery %s: %s", cb.get("id"), exc)
+
+        msg_obj = cb.get("message") or {}
+        chat_id = (msg_obj.get("chat") or {}).get("id")
+        message_id = msg_obj.get("message_id")
+        if edit_markup_fn and chat_id is not None and message_id is not None and piece_id:
+            new_kb = build_piece_keyboard(
+                piece_id,
+                topic,
+                saved=piece_id in state["saved_ids"] or action == "save",
+                read=piece_id in state["read_ids"] or action == "read",
+                feedback_done=action if action in ("more", "less") else None,
+            )
+            try:
+                edit_markup_fn(chat_id, int(message_id), new_kb)
+            except Exception as exc:  # noqa: BLE001
+                log.warning("Error ignorado en editMessageReplyMarkup %s: %s", message_id, exc)
 
         state["events"].append(
             {
@@ -289,20 +344,5 @@ def sync_telegram_feedback(
         library_json=library_json,
         library_dir=library_dir,
         answer_fn=lambda cb_id, txt: answer_callback_query(token, cb_id, txt),
+        edit_markup_fn=lambda cid, mid, kb: edit_message_reply_markup(token, cid, mid, kb),
     )
-
-
-def build_piece_keyboard(piece_id: str, topic: str) -> dict[str, Any]:
-    """Construye el teclado inline de Telegram para una pieza del digest."""
-    return {
-        "inline_keyboard": [
-            [
-                {"text": "📌 Guardar", "callback_data": f"save:{piece_id}"[:64]},
-                {"text": "✅ Ya la leí", "callback_data": f"read:{piece_id}"[:64]},
-            ],
-            [
-                {"text": "🔼 Más como esto", "callback_data": f"more:{piece_id}:{topic}"[:64]},
-                {"text": "🔽 Menos como esto", "callback_data": f"less:{piece_id}:{topic}"[:64]},
-            ],
-        ]
-    }

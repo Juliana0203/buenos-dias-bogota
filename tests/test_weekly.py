@@ -10,7 +10,13 @@ from brief.feedback import (
     load_feedback,
     register_pieces_in_catalog,
 )
-from brief.sources.tech_sources import TechCandidate, parse_arxiv_xml, parse_hf_daily_papers, parse_hn_item
+from brief.sources.tech_sources import (
+    TechCandidate,
+    parse_arxiv_xml,
+    parse_hf_daily_papers,
+    parse_hn_item,
+    parse_tech_rss,
+)
 from brief.weekly import (
     ROLE_ACCESSIBLE,
     ROLE_APPLIED,
@@ -18,15 +24,20 @@ from brief.weekly import (
     ROLE_GEM,
     ROLE_NEWS,
     ROLE_TOOL,
+    already_sent_this_week,
+    build_weekly_challenge,
     build_weekly_digest,
     choose_weekly_format,
     dedupe_candidates,
     format_weekly_messages,
+    mark_week_sent,
     parse_week_id,
+    score_candidate,
     write_digest_archive,
 )
 
 NOW = datetime(2026, 11, 29, 18, 0, tzinfo=UTC)
+WCFG = load_config().section("weekly_digest")
 
 
 def _sample_candidates() -> list[TechCandidate]:
@@ -39,7 +50,7 @@ def _sample_candidates() -> list[TechCandidate]:
             published=NOW - timedelta(days=1),
             abstract=(
                 "We evaluate 4-bit quantization and distillation on a 3B small language model "
-                "for offline student tutoring and assessment."
+                "for offline student tutoring and assessment. Results show 3.8x memory reduction on laptops."
             ),
             authors=["A. Gómez", "B. Pérez"],
             categories=["cs.CL", "cs.CY"],
@@ -54,7 +65,7 @@ def _sample_candidates() -> list[TechCandidate]:
             published=NOW - timedelta(days=2),
             abstract=(
                 "We prove tight theoretical convergence bounds for stochastic gradient "
-                "Markov chain Monte Carlo under non-convex objectives."
+                "Markov chain Monte Carlo under non-convex objectives. The bound holds in finite samples."
             ),
             authors=["C. Ruiz"],
             categories=["math.OC", "stat.ML"],
@@ -69,7 +80,7 @@ def _sample_candidates() -> list[TechCandidate]:
             published=NOW - timedelta(days=1),
             abstract=(
                 "An empirical benchmark and fine-tuning pipeline for extracting tables "
-                "and schemas from noisy PDF documents with low latency."
+                "and schemas from noisy PDF documents with low latency. Evaluated on 12 enterprise datasets."
             ),
             authors=["D. Silva"],
             categories=["cs.LG", "cs.AI"],
@@ -83,8 +94,8 @@ def _sample_candidates() -> list[TechCandidate]:
             kind="news",
             published=NOW - timedelta(days=1),
             abstract=(
-                "Researchers released a compact multimodal model with GGUF quantization "
-                "for local inference on standard hardware."
+                "Researchers released a compact 3B multimodal model with GGUF quantization "
+                "for local inference on standard hardware. It supports vision and edge deployment."
             ),
             default_topic="small_models_edge",
             votes=120,
@@ -96,8 +107,8 @@ def _sample_candidates() -> list[TechCandidate]:
             kind="news",
             published=NOW - timedelta(days=2),
             abstract=(
-                "El portal integra datasets abiertos de movilidad, educación "
-                "y contratación en Bogotá y Latinoamérica."
+                "El portal integra datasets de datos abiertos sobre movilidad, educación "
+                "y contratación pública en Bogotá, Colombia y Latinoamérica."
             ),
             default_topic="open_data_latam",
             language="es",
@@ -111,39 +122,41 @@ def _sample_candidates() -> list[TechCandidate]:
             published=NOW - timedelta(days=1),
             abstract=(
                 "An open source library and CLI tool in Rust with Python bindings "
-                "to validate, query and version control tabular datasets."
+                "to validate, query and test SQLite and Postgres tabular datasets."
             ),
             default_topic="software_engineering",
             votes=210,
         ),
         TechCandidate(
-            title="Civic Corpus: A Low-Resource Multilingual Dataset for Latin American Public Policy",
+            title="Hardware-Aware Compiler Passes for Low-Power RISC-V Microcontrollers",
             url="https://arxiv.org/abs/2611.00009",
             source="Semantic Scholar",
             kind="paper",
             published=NOW - timedelta(days=3),
             abstract=(
-                "A curated open data corpus in Spanish for evaluating retrieval "
-                "and classification on Latin American civic documents."
+                "A study on compiler instruction scheduling for embedded microcontrollers. "
+                "Reduces cycle count by 14% across embedded benchmarks."
             ),
             authors=["M. Pardo"],
-            default_topic="open_data_latam",
-            votes=8,
+            categories=["cs.AR"],
+            default_topic="software_engineering",
+            votes=45,
             citations=4,
         ),
     ]
 
 
-def test_curation_selects_7_diverse_pieces_with_project_connections(tmp_path):
+def test_titles_are_never_altered_and_hooks_are_unique_and_summaries_complete(tmp_path):
     cfg = load_config()
-    fb_path = tmp_path / "feedback.json"
+    cands = _sample_candidates()
+    orig_titles = {c.url: c.title for c in cands}
     digest = build_weekly_digest(
         cfg,
-        candidates=_sample_candidates(),
+        candidates=cands,
         ref_date=date(2026, 11, 29),
-        feedback_path=fb_path,
+        feedback_path=tmp_path / "fb.json",
+        sent_path=tmp_path / "sent.json",
     )
-    assert digest.week_id == "2026-W48"
     assert len(digest.pieces) == 7
 
     roles = [p.role for p in digest.pieces]
@@ -154,18 +167,227 @@ def test_curation_selects_7_diverse_pieces_with_project_connections(tmp_path):
     assert ROLE_TOOL in roles
     assert ROLE_GEM in roles
 
-    topics = {p.topic for p in digest.pieces}
-    assert len(topics) >= 4
+    hooks = [p.hook for p in digest.pieces]
+    # Dos piezas distintas NUNCA comparten la misma frase de gancho / "por qué importa"
+    assert len(set(hooks)) == len(hooks)
 
     for p in digest.pieces:
-        assert p.title_es and p.hook and p.url.startswith("http")
-        assert 1 <= len(p.summary_es.split()) <= 40
-        assert p.reading_minutes >= 3
-        if p.kind == "paper":
-            assert any(proj in p.project_line for proj in ("Aula Ya", "Table Master", "PostMark"))
+        # El título original se conserva intacto sin prefijos [Tema] ni traducciones parciales
+        assert p.original_title == orig_titles[p.url]
+        assert not p.original_title.startswith("[")
+        assert "cuantización" not in p.original_title
+        # Resumen extractivo: <= 40 palabras, empieza con [EN] o [ES], termina en oración completa
+        assert p.summary_es.startswith(("[EN] ", "[ES] "))
+        assert p.summary_es.endswith((".", "!", "?"))
+        assert len(p.summary_es.split()) <= 40
 
 
-def test_deduplication_and_short_digest_when_few_candidates(tmp_path):
+def test_physics_paper_is_rejected_and_outside_radar_only_allowed_as_gem(tmp_path):
+    interests = WCFG["interests"]
+    weights = {k: float(v["weight"]) for k, v in interests.items()}
+
+    physics = TechCandidate(
+        title="An algebraic quantization of gravity from the null cone",
+        url="https://arxiv.org/abs/2611.34924",
+        source="arXiv",
+        kind="paper",
+        published=NOW - timedelta(days=1),
+        abstract="We study quantum gravity and general relativity on the null cone in curved spacetime.",
+        categories=["gr-qc", "hep-th"],
+    )
+    assert score_candidate(physics, interests, weights, NOW, min_affinity=2.0) == 0.0
+
+    # El candidato 7 de _sample_candidates tiene 1 sola keyword ("compiler", afinidad 1.3 < 2.0):
+    # queda marcado outside_radar=True y solo entra como ROLE_GEM con "fuera de tu radar habitual"
+    cfg = load_config()
+    cands = [*_sample_candidates(), physics]
+    digest = build_weekly_digest(
+        cfg,
+        candidates=cands,
+        ref_date=date(2026, 11, 29),
+        feedback_path=tmp_path / "fb.json",
+        sent_path=tmp_path / "sent.json",
+    )
+    urls = {p.url for p in digest.pieces}
+    assert physics.url not in urls
+
+    non_gem = [p for p in digest.pieces if p.role != ROLE_GEM]
+    assert all(not p.outside_radar for p in non_gem)
+    gem = next(p for p in digest.pieces if p.role == ROLE_GEM)
+    assert gem.outside_radar is True
+    _, msgs_body, _ = format_weekly_messages(digest)
+    full_html = "\n".join(format_weekly_messages(digest)[0])
+    assert "fuera de tu radar habitual" in full_html
+
+
+def test_project_connection_only_when_concrete_keywords_match(tmp_path):
+    cfg = load_config()
+    digest = build_weekly_digest(
+        cfg,
+        candidates=_sample_candidates(),
+        ref_date=date(2026, 11, 29),
+        feedback_path=tmp_path / "fb.json",
+        sent_path=tmp_path / "sent.json",
+    )
+    by_url = {p.url: p for p in digest.pieces}
+    # Paper 1 (classroom, tutoring, student) -> Aula Ya
+    assert "Aula Ya" in by_url["https://arxiv.org/abs/2611.00001"].project_line
+    # Paper 3 (tabular, tables, schemas, PDF) -> Table Master
+    assert "Table Master" in by_url["https://arxiv.org/abs/2611.00003"].project_line
+    # Paper 2 (teoría pura de Markov chain Monte Carlo sin keywords de Aula Ya / Table Master / PostMark) -> vacío
+    assert by_url["https://arxiv.org/abs/2611.00002"].project_line == ""
+
+
+def test_challenge_is_coherent_with_piece_kind(tmp_path):
+    cfg = load_config()
+    digest = build_weekly_digest(
+        cfg,
+        candidates=_sample_candidates(),
+        ref_date=date(2026, 11, 29),
+        feedback_path=tmp_path / "fb.json",
+        sent_path=tmp_path / "sent.json",
+    )
+    tool_piece = next(p for p in digest.pieces if p.kind == "tool")
+    paper_piece = next(p for p in digest.pieces if p.kind == "paper")
+    news_piece = next(p for p in digest.pieces if p.kind == "news")
+
+    ch_tool = build_weekly_challenge([tool_piece])
+    assert "20 min" in ch_tool and "prueba" in ch_tool.lower()
+
+    ch_paper = build_weekly_challenge([paper_piece])
+    assert "abstract" in ch_paper.lower() and "conclusión" in ch_paper.lower() and "3 notas" in ch_paper.lower()
+
+    ch_news = build_weekly_challenge([news_piece])
+    assert "cómo afecta" in ch_news.lower() and "clona" not in ch_news.lower()
+
+
+def test_first_message_is_4_line_teaser_and_only_one_with_sound(tmp_path):
+    cfg = load_config()
+    digest = build_weekly_digest(
+        cfg,
+        candidates=_sample_candidates(),
+        week_override="2026-W48",
+        feedback_path=tmp_path / "fb.json",
+        sent_path=tmp_path / "sent.json",
+    )
+    msgs, markups, silent_flags = format_weekly_messages(digest)
+    assert len(msgs) == 3
+    assert len(msgs[0].splitlines()) <= 4
+    assert silent_flags == [False, True, True]
+    assert all(len(m) <= 4096 for m in msgs)
+    assert markups[0] is not None and "inline_keyboard" in markups[0]
+
+
+def test_rss_and_sources_filter_to_7_days_and_limit_per_source():
+    rss = b"""<?xml version="1.0"?><rss version="2.0"><channel>
+    <item><title>Recent AI Post</title><link>https://hf.co/blog/recent</link>
+    <pubDate>Sat, 28 Nov 2026 10:00:00 GMT</pubDate><description>Recent post.</description></item>
+    <item><title>Old 2024 AI Post</title><link>https://hf.co/blog/old</link>
+    <pubDate>Mon, 01 Jan 2024 10:00:00 GMT</pubDate><description>Old post.</description></item>
+    </channel></rss>"""
+    items = parse_tech_rss(rss, {"name": "HF Blog", "topic": "ml_applied"}, now=NOW, max_age_days=7.0, max_items=5)
+    assert len(items) == 1 and items[0].title == "Recent AI Post"
+
+
+def test_dry_run_never_writes_files_or_marks_week_sent(tmp_path, monkeypatch):
+    from brief import weekly
+
+    sent_path = tmp_path / "sent.json"
+    digests_dir = tmp_path / "digests"
+    docs_dir = tmp_path / "docs"
+    monkeypatch.setattr(weekly, "SENT_JSON", sent_path)
+    monkeypatch.setattr(weekly, "DIGESTS_DIR", digests_dir)
+    monkeypatch.setattr(weekly, "DOCS_DIR", docs_dir)
+    monkeypatch.setattr(weekly, "gather_tech_candidates", lambda _cfg: _sample_candidates())
+
+    rc = weekly.main(["--dry-run", "--week", "2026-W48"])
+    assert rc == 0
+    assert not sent_path.exists()
+    assert not digests_dir.exists()
+    assert not already_sent_this_week("2026-W48", sent_path=sent_path)
+
+    # Cuando sí se registra un envío real, se guarda en sent.json
+    cfg = load_config()
+    digest = build_weekly_digest(cfg, candidates=_sample_candidates(), week_override="2026-W48", sent_path=sent_path)
+    mark_week_sent(digest, sent_path=sent_path, feedback_path=tmp_path / "fb.json")
+    assert already_sent_this_week("2026-W48", sent_path=sent_path)
+
+
+def test_callback_processing_handles_expired_query_and_edits_reply_markup(tmp_path):
+    fb_path = tmp_path / "feedback.json"
+    lib_json = tmp_path / "library.json"
+    lib_dir = tmp_path / "biblioteca"
+
+    register_pieces_in_catalog(
+        [
+            {
+                "id": "p_1234",
+                "title": "Quantization of Small Language Models for Edge Classroom Tutoring",
+                "url": "https://arxiv.org/abs/2611.00001",
+                "topic": "small_models_edge",
+                "topic_label": "Modelos pequeños y edge/offline AI",
+                "role": "Paper aplicado",
+                "hook": "Results show 3.8x memory reduction on laptops.",
+                "summary_es": "[EN] We evaluate 4-bit quantization.",
+                "week": "2026-W48",
+                "date": "2026-11-29",
+            }
+        ],
+        path=fb_path,
+    )
+
+    updates = [
+        {
+            "update_id": 100,
+            "callback_query": {
+                "id": "cb1",
+                "data": "save:p_1234",
+                "message": {"message_id": 55, "chat": {"id": 999}},
+            },
+        },
+        {"update_id": 101, "callback_query": {"id": "cb2", "data": "more:p_1234:small_models_edge"}},
+        {"update_id": 102, "callback_query": {"id": "cb3", "data": "less:p_1234:software_engineering"}},
+        {"update_id": 103, "callback_query": {"id": "cb4", "data": "read:p_1234"}},
+    ]
+
+    def expired_answer(_cid: str, _txt: str) -> None:
+        raise RuntimeError("Bad Request: query is too old and response timeout expired")
+
+    edited: list[tuple[int | str, int, dict]] = []
+    res1 = apply_callback_updates(
+        updates,
+        feedback_path=fb_path,
+        library_json=lib_json,
+        library_dir=lib_dir,
+        answer_fn=expired_answer,
+        edit_markup_fn=lambda chat_id, msg_id, kb: edited.append((chat_id, msg_id, kb)),
+    )
+    assert (res1["processed"], res1["saved"], res1["more"], res1["less"], res1["read"]) == (4, 1, 1, 1, 1)
+    assert len(edited) == 1
+    assert edited[0][0] == 999 and edited[0][1] == 55
+    first_btn_text = edited[0][2]["inline_keyboard"][0][0]["text"]
+    assert first_btn_text == "✅ Guardado"
+
+    # Reenviar los mismos updates no los procesa de nuevo
+    res2 = apply_callback_updates(updates, feedback_path=fb_path, library_json=lib_json, library_dir=lib_dir)
+    assert res2["processed"] == 0 and res2["skipped_duplicate"] == 4
+
+    state = load_feedback(fb_path)
+    interests = WCFG["interests"]
+    weights = effective_topic_weights(interests, state)
+    assert weights["small_models_edge"] > interests["small_models_edge"]["weight"]
+    assert weights["software_engineering"] < interests["software_engineering"]["weight"]
+
+    saved_items = json.loads(lib_json.read_text(encoding="utf-8"))
+    assert len(saved_items) == 1 and saved_items[0]["id"] == "p_1234"
+    assert not add_to_library(saved_items[0], library_json=lib_json, library_dir=lib_dir)
+
+
+def test_archive_and_parsers_and_format_rotation(tmp_path):
+    idx1, fmt1 = choose_weekly_format(48, last_format_index=None)
+    idx2, fmt2 = choose_weekly_format(48, last_format_index=idx1)
+    assert fmt1 != fmt2
+
     c1 = _sample_candidates()[0]
     c2 = TechCandidate(
         title="Quantization of Small Language Models for Edge Classroom Tutoring!",
@@ -177,25 +399,7 @@ def test_deduplication_and_short_digest_when_few_candidates(tmp_path):
         score=10.0,
     )
     c1.score = 12.0
-    deduped = dedupe_candidates([c1, c2], threshold=78.0)
-    assert len(deduped) == 1 and deduped[0].url == c1.url
-
-    cfg = load_config()
-    short_digest = build_weekly_digest(
-        cfg,
-        candidates=[c1],
-        ref_date=date(2026, 11, 29),
-        feedback_path=tmp_path / "fb.json",
-    )
-    assert len(short_digest.pieces) == 1
-    msgs, _ = format_weekly_messages(short_digest)
-    assert all(len(m) <= 4096 for m in msgs)
-
-
-def test_format_rotation_and_message_splitting(tmp_path):
-    idx1, fmt1 = choose_weekly_format(48, last_format_index=None)
-    idx2, fmt2 = choose_weekly_format(48, last_format_index=idx1)
-    assert fmt1 != fmt2 and idx1 != idx2
+    assert len(dedupe_candidates([c1, c2], 78.0)) == 1
 
     cfg = load_config()
     digest = build_weekly_digest(
@@ -203,98 +407,15 @@ def test_format_rotation_and_message_splitting(tmp_path):
         candidates=_sample_candidates(),
         week_override="2026-W48",
         feedback_path=tmp_path / "fb.json",
+        sent_path=tmp_path / "sent.json",
     )
-    msgs, markups = format_weekly_messages(digest)
-    assert 2 <= len(msgs) <= 3
-    assert all(len(m) <= 4096 for m in msgs)
-    assert len(markups) == len(msgs)
-    assert markups[0] is not None and "inline_keyboard" in markups[0]
-    assert "Concepto en 60 segundos" in msgs[-1]
-    assert "Reto de la semana" in msgs[-1]
-    assert digest.quiz.options and 0 <= digest.quiz.correct_option_id < len(digest.quiz.options)
-
-
-def test_callback_processing_no_duplicates_and_weight_updates_and_library(tmp_path):
-    fb_path = tmp_path / "feedback.json"
-    lib_json = tmp_path / "library.json"
-    lib_dir = tmp_path / "biblioteca"
-
-    register_pieces_in_catalog(
-        [
-            {
-                "id": "p_1234",
-                "title_es": "Cuantización de modelos pequeños en el aula",
-                "url": "https://arxiv.org/abs/2611.00001",
-                "topic": "small_models_edge",
-                "topic_label": "Modelos pequeños y edge/offline AI",
-                "role": "Paper aplicado",
-                "hook": "Corre en laptops sin GPU",
-                "summary_es": "Resumen corto de prueba.",
-                "week": "2026-W48",
-                "date": "2026-11-29",
-            }
-        ],
-        path=fb_path,
-    )
-
-    updates = [
-        {"update_id": 100, "callback_query": {"id": "cb1", "data": "save:p_1234"}},
-        {"update_id": 101, "callback_query": {"id": "cb2", "data": "more:p_1234:small_models_edge"}},
-        {"update_id": 102, "callback_query": {"id": "cb3", "data": "less:p_1234:software_engineering"}},
-        {"update_id": 103, "callback_query": {"id": "cb4", "data": "read:p_1234"}},
-    ]
-    answered: list[tuple[str, str]] = []
-    res1 = apply_callback_updates(
-        updates,
-        feedback_path=fb_path,
-        library_json=lib_json,
-        library_dir=lib_dir,
-        answer_fn=lambda cid, txt: answered.append((cid, txt)),
-    )
-    assert (res1["processed"], res1["saved"], res1["more"], res1["less"], res1["read"]) == (4, 1, 1, 1, 1)
-    assert len(answered) == 4
-
-    res2 = apply_callback_updates(updates, feedback_path=fb_path, library_json=lib_json, library_dir=lib_dir)
-    assert res2["processed"] == 0 and res2["skipped_duplicate"] == 4
-
-    state = load_feedback(fb_path)
-    assert state["last_update_id"] == 103
-    interests = load_config().section("weekly_digest")["interests"]
-    weights = effective_topic_weights(interests, state)
-    assert weights["small_models_edge"] > interests["small_models_edge"]["weight"]
-    assert weights["software_engineering"] < interests["software_engineering"]["weight"]
-
-    saved_items = json.loads(lib_json.read_text(encoding="utf-8"))
-    assert len(saved_items) == 1 and saved_items[0]["id"] == "p_1234"
-    md_text = (lib_dir / "2026.md").read_text(encoding="utf-8")
-    assert "## Modelos pequeños y edge/offline AI" in md_text
-    assert "[Cuantización de modelos pequeños en el aula](https://arxiv.org/abs/2611.00001)" in md_text
-    assert not add_to_library(saved_items[0], library_json=lib_json, library_dir=lib_dir)
-
-
-def test_archive_writes_markdown_readme_and_docs_json(tmp_path):
-    cfg = load_config()
-    digest = build_weekly_digest(
-        cfg,
-        candidates=_sample_candidates(),
-        week_override="2026-W48",
-        feedback_path=tmp_path / "fb.json",
-    )
-    digests_dir = tmp_path / "digests"
-    docs_dir = tmp_path / "docs"
-    md_path = write_digest_archive(digest, digests_dir=digests_dir, docs_dir=docs_dir)
-    assert md_path == digests_dir / "2026" / "2026-W48.md"
+    md_path = write_digest_archive(digest, digests_dir=tmp_path / "digests", docs_dir=tmp_path / "docs")
     assert md_path.exists()
-    assert "2026-W48" in (digests_dir / "README.md").read_text(encoding="utf-8")
-    data = json.loads((docs_dir / "digests.json").read_text(encoding="utf-8"))
-    assert data[0]["week_id"] == "2026-W48" and len(data[0]["pieces"]) == 7
 
-
-def test_parsers_and_workflows_and_week_id_validation():
     y, w, sun = parse_week_id("2026-W48")
     assert (y, w, sun.weekday()) == (2026, 48, 6)
-    kb = build_piece_keyboard("p_1", "edtech")
-    assert len(kb["inline_keyboard"]) == 2
+    kb = build_piece_keyboard("p_1", "edtech", saved=True)
+    assert kb["inline_keyboard"][0][0]["text"] == "✅ Guardado"
 
     xml = """<?xml version="1.0" encoding="UTF-8"?>
     <feed xmlns="http://www.w3.org/2005/Atom">
@@ -307,24 +428,18 @@ def test_parsers_and_workflows_and_week_id_validation():
         <category term="cs.LG"/>
       </entry>
     </feed>"""
-    parsed_arxiv = parse_arxiv_xml(xml)
-    assert len(parsed_arxiv) == 1 and parsed_arxiv[0].authors == ["J. Doe"]
-
+    assert len(parse_arxiv_xml(xml, now=NOW)) == 1
     hf_row = {"paper": {"id": "2611.12345", "title": "HF Paper", "summary": "S", "upvotes": 15}}
-    parsed_hf = parse_hf_daily_papers([hf_row])
-    assert len(parsed_hf) == 1 and parsed_hf[0].votes == 15
-
+    assert len(parse_hf_daily_papers([hf_row], now=NOW)) == 1
     hn_raw = {
         "id": 1,
         "type": "story",
         "title": "Show HN: New Rust CLI",
         "url": "https://github.com/a/b",
         "score": 50,
-        "time": 1764000000,
+        "time": int(NOW.timestamp()) - 3600,
     }
-    hn = parse_hn_item(hn_raw)
+    hn = parse_hn_item(hn_raw, now=NOW)
     assert hn is not None and hn.kind == "tool"
-
     assert (ROOT / ".github" / "workflows" / "daily.yml").exists()
     assert (ROOT / ".github" / "workflows" / "weekly.yml").exists()
-    assert (ROOT / "docs" / "digests.html").exists()

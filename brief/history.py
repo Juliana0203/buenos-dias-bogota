@@ -13,6 +13,7 @@ from brief.config import ROOT
 from brief.models import CONF_HIGH, CONF_LOW, CONF_MID, Brief
 
 HISTORY_CSV = ROOT / "data" / "history.csv"
+SENT_JSON = ROOT / "data" / "sent.json"
 DOCS = ROOT / "docs"
 FIELDS = [
     "date",
@@ -47,6 +48,42 @@ def last_greeting_id(today: date, path: Path = HISTORY_CSV) -> str | None:
     iso = today.isoformat()
     prior = [r for r in read_history(path) if r.get("date") and r["date"] < iso and r.get("greeting_id")]
     return prior[-1]["greeting_id"] if prior else None
+
+
+def read_sent_registry(path: Path = SENT_JSON) -> dict[str, Any]:
+    """Lee el registro de envíos reales data/sent.json (nunca se escribe en --dry-run)."""
+    if not path.exists():
+        return {"sent_weeks": [], "last_trm_extreme_date": None, "last_weekly_format_index": None}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        data = {}
+    return {
+        "sent_weeks": list(data.get("sent_weeks") or []),
+        "last_trm_extreme_date": data.get("last_trm_extreme_date"),
+        "last_weekly_format_index": data.get("last_weekly_format_index"),
+    }
+
+
+def write_sent_registry(data: dict[str, Any], path: Path = SENT_JSON) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def last_trm_extreme_alert_date(path: Path = SENT_JSON) -> date | None:
+    raw = read_sent_registry(path).get("last_trm_extreme_date")
+    if not raw:
+        return None
+    try:
+        return date.fromisoformat(str(raw)[:10])
+    except ValueError:
+        return None
+
+
+def record_trm_extreme_alert(day: date, path: Path = SENT_JSON) -> None:
+    reg = read_sent_registry(path)
+    reg["last_trm_extreme_date"] = day.isoformat()
+    write_sent_registry(reg, path)
 
 
 def _num(v: float | None, nd: int = 1) -> str:

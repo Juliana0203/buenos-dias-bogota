@@ -16,16 +16,18 @@ from brief.models import (
 )
 from brief.personalization import ALL_TEMPLATES, build_greeting
 from brief.relevance import evaluate_relevance, format_smart_daily
+from brief.sources.good_news import pick_good_news
 
 REL_CFG = load_config().section("relevance")
 ALERTS_CFG = load_config().section("alerts")
+GOOD_CFG = load_config().section("good_news")
 
 
 def _stat(v, score=85):
     return Stat(value=v, low=v, high=v, spread=0.0, n=3, confidence="alta", sources=["A", "B", "C"], score=score)
 
 
-def _calm_brief(day: date = date(2026, 10, 27)) -> Brief:
+def _calm_brief(day: date = date(2026, 10, 27), trm_value: float = 3630.89) -> Brief:
     """Martes normal sin lluvia fuerte, sin extremo térmico, sin festivo ni alertas."""
     weather = WeatherSummary(
         temp=_stat(15),
@@ -50,16 +52,16 @@ def _calm_brief(day: date = date(2026, 10, 27)) -> Brief:
     )
     air = AirSummary(aqi=_stat(42), level="buena", pollutant="PM2.5", sources=["A"], confidence="alta", score=80)
     trm = TrmSummary(
-        value=4150.0,
+        value=trm_value,
         valid_from=day.isoformat(),
-        previous=4140.0,
-        change_abs=10.0,
-        change_pct=0.24,
-        avg30=4160.0,
-        vs_avg30_pct=-0.24,
+        previous=3620.0,
+        change_abs=10.89,
+        change_pct=0.30,
+        avg30=3650.0,
+        vs_avg30_pct=-0.52,
         is_min30=False,
         is_max30=False,
-        backup_value=4152.0,
+        backup_value=3632.0,
         sources=["T", "B"],
         confidence="alta",
         score=92,
@@ -77,8 +79,8 @@ def _calm_brief(day: date = date(2026, 10, 27)) -> Brief:
     )
 
 
-def test_calm_day_sends_two_line_silent_message():
-    b = _calm_brief()
+def test_calm_day_sends_two_line_silent_message_with_dynamic_values():
+    b = _calm_brief(trm_value=3630.89)
     b.relevance = evaluate_relevance(b, REL_CFG, ALERTS_CFG)
     assert not b.relevance.triggered and b.relevance.silent
     msgs = format_brief(b, ALERTS_CFG)
@@ -86,13 +88,31 @@ def test_calm_day_sends_two_line_silent_message():
     lines = msgs[0].splitlines()
     assert len(lines) == 2
     assert "sin alertas en Bogotá" in lines[0]
-    assert "Hoy:" in lines[1]
+    assert "Clima tranquilo" in lines[1]
+    assert "$3.630,89" in lines[1]
 
 
-def test_rain_in_outing_period_triggers_4_to_6_line_alert_with_umbrella_first():
+def test_routine_pico_y_placa_news_does_not_trigger_sound_alert():
+    b = _calm_brief()
+    routine = NewsItem(
+        "Pico y placa en Bogotá para el jueves 26 de noviembre: consulte las restricciones",
+        "https://eltiempo.com/bogota/pico-y-placa",
+        "El Tiempo",
+        datetime.now(UTC),
+    )
+    b.news = [routine]
+    b.relevance = evaluate_relevance(b, REL_CFG, ALERTS_CFG)
+    assert not b.relevance.triggered and b.relevance.silent
+    text = format_smart_daily(b, ALERTS_CFG)
+    assert len(text.splitlines()) == 2
+    assert "Pico y placa en Bogotá" in text
+
+
+def test_rain_in_outing_period_triggers_alert_and_never_says_clima_tranquilo():
     b = _calm_brief()
     assert b.weather is not None
-    b.weather.rain_periods["tarde"] = _stat(85)
+    b.weather.rain_periods["tarde"] = _stat(85, score=53)
+    b.weather.rain_score = 53
     b.weather.rain_peak_hour = 14
     b.relevance = evaluate_relevance(b, REL_CFG, ALERTS_CFG)
     assert b.relevance.triggered and not b.relevance.silent
@@ -100,25 +120,59 @@ def test_rain_in_outing_period_triggers_4_to_6_line_alert_with_umbrella_first():
     lines = text.splitlines()
     assert 4 <= len(lines) <= 6
     assert lines[0].startswith("☔ <b>Hoy sí lleva paraguas:</b>")
-    assert "85 %" in lines[0]
+    assert "Clima tranquilo" not in text
+    assert "lluvia hasta 85 %" in text
+    # La confianza de cada variable se muestra una sola vez (en la línea final)
+    assert text.count("lluvia 53 %") == 1
+    assert text.count("clima 88 %") == 1
+
+
+def test_trm_30d_extreme_does_not_repeat_within_5_days_unless_daily_change_ge_1_5_pct():
+    day = date(2026, 11, 26)
+    b = _calm_brief(day)
+    assert b.trm is not None
+    b.trm.change_pct = 0.40  # < 1.5 %
+    b.trm.is_max30 = True
+
+    # Primer día que alcanza máximo de 30 días (sin alerta previa en 5 días): sí dispara
+    res_first = evaluate_relevance(b, REL_CFG, ALERTS_CFG, last_trm_extreme_date=None)
+    assert any(a.key == "trm_move" for a in res_first.alerts)
+
+    # Al día siguiente sigue en máximo de 30 días durante la misma tendencia y var < 1.5 %: NO repite
+    res_repeat = evaluate_relevance(b, REL_CFG, ALERTS_CFG, last_trm_extreme_date=date(2026, 11, 24))
+    assert not any(a.key == "trm_move" for a in res_repeat.alerts)
+
+    # Si la variación diaria es >= 1.5 %, sí dispara aunque haya habido extremo hace 2 días
+    b.trm.change_pct = 1.75
+    res_big = evaluate_relevance(b, REL_CFG, ALERTS_CFG, last_trm_extreme_date=date(2026, 11, 24))
+    assert any(a.key == "trm_move" for a in res_big.alerts)
+
+
+def test_good_news_rejects_controversial_words():
+    now = datetime(2026, 11, 26, 12, 0, tzinfo=UTC)
+    controversial = NewsItem(
+        "Starmind, el polémico proyecto de Elon Musk aprobado por EE.UU. para lanzar satélites",
+        "https://bbc.com/mundo/1",
+        "BBC Mundo",
+        now,
+    )
+    assert pick_good_news([controversial], GOOD_CFG, now) is None
 
 
 def test_each_relevance_rule_triggers_independently():
-    # Sensación extrema fría
     b_cold = _calm_brief()
     assert b_cold.weather is not None
     b_cold.weather.feels_periods["mañana"] = FeelsRange(7, 13, 2)
     res_cold = evaluate_relevance(b_cold, REL_CFG, ALERTS_CFG)
     assert any(a.key == "feels_extreme_cold" for a in res_cold.alerts)
+    assert "Clima tranquilo" not in res_cold.useful_line
 
-    # UV >= 8
     b_uv = _calm_brief()
     assert b_uv.weather is not None
     b_uv.weather.uv = _stat(9)
     res_uv = evaluate_relevance(b_uv, REL_CFG, ALERTS_CFG)
     assert any(a.key == "uv_extreme" for a in res_uv.alerts)
 
-    # AQI dañino (>= 101)
     b_aqi = _calm_brief()
     assert b_aqi.air is not None
     b_aqi.air.aqi = _stat(115)
@@ -126,7 +180,6 @@ def test_each_relevance_rule_triggers_independently():
     res_aqi = evaluate_relevance(b_aqi, REL_CFG, ALERTS_CFG)
     assert any(a.key == "aqi_harmful" for a in res_aqi.alerts)
 
-    # Movilidad / pico y placa que me afecta
     b_mob = _calm_brief()
     b_mob.mobility = MobilitySummary(pyp_text="Hoy tienes pico y placa (placa 3), 06:00-09:00 y 15:00-19:00.")
     b_mob.news = [NewsItem("Cierre en la Autopista Norte por obras", "https://x.co/1", "El Tiempo", datetime.now(UTC))]
@@ -134,15 +187,6 @@ def test_each_relevance_rule_triggers_independently():
     keys = {a.key for a in res_mob.alerts}
     assert "pico_y_placa" in keys and "mobility_news" in keys
 
-    # TRM variación >= 1.5% o mín/máx 30 días
-    b_trm = _calm_brief()
-    assert b_trm.trm is not None
-    b_trm.trm.change_pct = -1.85
-    b_trm.trm.is_min30 = True
-    res_trm = evaluate_relevance(b_trm, REL_CFG, ALERTS_CFG)
-    assert any(a.key == "trm_move" for a in res_trm.alerts)
-
-    # Festivo hoy o mañana (25 dic)
     b_hol = _calm_brief(date(2026, 12, 24))
     res_hol = evaluate_relevance(b_hol, REL_CFG, ALERTS_CFG)
     assert any(a.key == "holiday_tomorrow" for a in res_hol.alerts)
@@ -153,13 +197,11 @@ def test_at_least_40_greeting_templates_and_no_consecutive_repeat(tmp_path):
     d1 = date(2026, 10, 26)
     g1 = build_greeting("Juli", d1)
     assert g1.template_id
-    # Si forzamos el mismo RNG y le pasamos last_template_id=g1.template_id, debe cambiar de plantilla.
     import random
 
     g_same_seed = build_greeting("Juli", d1, rng=random.Random(d1.toordinal()), last_template_id=g1.template_id)
     assert g_same_seed.template_id != g1.template_id
 
-    # Verifica que history.csv persiste greeting_id y last_greeting_id lo recupera.
     csv_path = tmp_path / "history.csv"
     b = _calm_brief(d1)
     history.append_row(history.build_row(b, sent=True), csv_path)

@@ -63,7 +63,9 @@ relevance:
   aqi_harmful: 101.0                    # AQI dañino (> 100, dañino para grupos sensibles o peor)
   holiday_today_or_tomorrow: true       # festivo hoy o mañana
   mobility_alert: true                  # cierres, paros, marchas o pico y placa que afecte tu placa
+  mobility_real_effect_keywords: ["cierre", "cierres", "desvio", "desvios", "paro", "marcha", "marchas", "bloqueo", "bloqueos", "suspension", "suspende", "suspenden", "suspendido", "accidente", "afectacion", "afectaciones", "retraso", "retrasos", "trancon", "manifestacion", "manifestaciones", "por obra", "por obras", "obra vial", "obras viales", "sin servicio", "inhabilitada"]
   trm_change_pct: 1.5                   # variación diaria >= 1.5 % o mínimo/máximo de 30 días
+  trm_extreme_cooldown_days: 5          # no repetir alerta de mín/máx de 30 días en los últimos 5 días
 
 weather:
   # Modelos de Open-Meteo que votan en cada variable (temperature también aporta viento y UV).
@@ -189,7 +191,7 @@ good_news:
     - {name: "Europa Press - Ciencia", url: "https://www.europapress.es/rss/rss.aspx?ch=69", enabled: true}
     - {name: "Mongabay Latam", url: "https://es.mongabay.com/feed/", enabled: true}
   positive_words: ["descubrimiento", "descubren", "avance", "avanza", "record", "rescate", "rescatan", "recuperacion", "recupera", "logro", "logra", "aprobado", "aprueba", "curacion", "reduccion", "reduce", "exito", "salvan", "esperanza", "mejora"]
-  negative_words: ["muerte", "muere", "muertos", "ataque", "guerra", "crisis", "accidente", "tragedia", "asesin", "bomba", "terror", "violencia", "masacre", "desastre", "secuestro", "conflicto", "invasion", "cancer", "pandemia", "derrota", "eleccion", "electoral", "balotaje", "anulacion", "fraude", "protesta", "denuncia", "polemica", "juicio", "condena", "sancion", "arancel", "trump", "bolsonaro", "politic", "gobierno", "presidente", "ataca", "heridos", "incendio", "inundacion", "sequia"]
+  negative_words: ["muerte", "muere", "muertos", "ataque", "guerra", "crisis", "accidente", "tragedia", "asesin", "bomba", "terror", "violencia", "masacre", "desastre", "secuestro", "conflicto", "invasion", "cancer", "pandemia", "derrota", "eleccion", "electoral", "balotaje", "anulacion", "fraude", "protesta", "denuncia", "polemica", "polemico", "controversia", "criticas", "critica", "demanda", "multa", "escandalo", "investigacion", "riesgo", "advertencia", "deuda", "deficit", "recesion", "inflacion", "pobreza", "desempleo", "fbi", "crimen", "delito", "policia", "robo", "carcel", "prision", "juicio", "condena", "sancion", "arancel", "trump", "bolsonaro", "politic", "gobierno", "presidente", "ataca", "heridos", "incendio", "inundacion", "sequia"]
   stopwords_en: ["the", "and", "with", "for", "from", "that", "this", "after", "will", "says"]
 
 # =====================================================================
@@ -199,21 +201,28 @@ weekly_digest:
   send_day: "sunday"
   send_time: "18:00"            # domingo 6:00 p. m. hora Bogotá
   max_age_days: 7
+  max_per_source: 15            # máximo de candidatos recientes (últimos 7 días) por fuente
   max_pieces: 7
+  min_affinity_score: 2.0       # puntaje mínimo de afinidad con mis intereses (salvo la "joya")
   summary_max_words: 40
   dedup_threshold: 78
-  anthropic_model: "claude-3-5-haiku-latest"
-  # Proyectos propios para conectar los papers en "En una línea para mi proyecto"
+  anthropic_model: "claude-haiku-5-5"
+  anthropic_fallback_model: "claude-sonnet-5-5"
+  off_topic_keywords: ["quantum gravity", "null cone", "astrophysics", "cosmology", "general relativity", "particle physics", "string theory", "black hole", "superconductor", "hadron"]
+  # Proyectos propios para conectar los papers solo cuando haya coincidencia real de términos clave
   projects:
     Aula Ya:
-      topics: ["edtech", "ml_applied", "small_models_edge"]
-      angle: "tutoría adaptativa, evaluación formativa y retroalimentación pedagógica de baja latencia"
+      topics: ["edtech"]
+      keywords: ["education", "tutor", "tutoring", "classroom", "student", "pedagogy", "assessment", "grading", "curriculum", "edtech", "educacion", "aula", "docente", "quiz"]
+      angle: "tutoría adaptativa, evaluación formativa y retroalimentación pedagógica"
     Table Master:
-      topics: ["ml_applied", "prob_optimization", "software_engineering", "open_data_latam"]
-      angle: "extracción, validación y consulta estructurada sobre tablas y documentos complejos"
+      topics: ["ml_applied", "prob_optimization"]
+      keywords: ["tabular", "table", "tables", "spreadsheet", "schema", "csv", "sqlite", "structured document", "document extraction", "pdf", "dataframe", "sql"]
+      angle: "extracción, validación y consulta estructurada sobre tablas y documentos"
     PostMark:
-      topics: ["software_engineering", "small_models_edge", "ml_applied", "open_data_latam"]
-      angle: "trazabilidad, verificación de contenido y clasificación automatizada en flujos editoriales"
+      topics: ["software_engineering", "small_models_edge"]
+      keywords: ["watermark", "provenance", "verification", "fact-check", "moderation", "editorial", "traceability", "hallucination"]
+      angle: "trazabilidad, verificación de contenido y clasificación en flujos editoriales"
   # Intereses ponderados (se ajustan dinámicamente con data/feedback.json)
   interests:
     ml_applied:

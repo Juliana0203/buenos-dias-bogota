@@ -1,0 +1,114 @@
+name: Radar semanal de tecnología
+
+on:
+  schedule:
+    - cron: "0 23 * * 0" # Domingo 6:00 p.m. America/Bogota (UTC-5) — principal
+    - cron: "30 23 * * 0" # Domingo 6:30 p.m. America/Bogota (UTC-5) — respaldo
+  workflow_dispatch:
+    inputs:
+      week:
+        description: "Semana ISO opcional a regenerar (AAAA-Wnn)"
+        required: false
+        default: ""
+      force:
+        description: "Forzar envío aunque ya se haya enviado esta semana"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-digest
+  cancel-in-progress: false
+
+jobs:
+  weekly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout del repositorio
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Configurar Python 3.12
+        id: setup_python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar dependencias
+        id: install_deps
+        run: pip install -r requirements.txt
+
+      - name: Sincronizar callbacks y enviar Radar semanal
+        id: send_weekly
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          INPUT_WEEK: ${{ inputs.week }}
+          INPUT_FORCE: ${{ inputs.force }}
+        run: |
+          git pull --rebase origin "${GITHUB_REF_NAME:-main}"
+          ARGS=""
+          if [ -n "$INPUT_WEEK" ]; then
+            ARGS="$ARGS --week $INPUT_WEEK"
+          fi
+          if [ "$INPUT_FORCE" = "true" ]; then
+            ARGS="$ARGS --force"
+          fi
+          python -m brief.weekly $ARGS
+
+      - name: Commit del digest semanal y biblioteca
+        id: commit_digest
+        if: always()
+        env:
+          OWNER: ${{ github.repository_owner }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          USER_ID=$(curl -fsS -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/users/$OWNER" | jq -r .id)
+          git config user.name "$OWNER"
+          git config user.email "${USER_ID}+${OWNER}@users.noreply.github.com"
+          git add data docs digests biblioteca || true
+          if git diff --cached --quiet; then
+            echo "Sin cambios que guardar"
+            exit 0
+          fi
+          WEEK_NUM=$(TZ=America/Bogota date +%V)
+          YEAR_NUM=$(TZ=America/Bogota date +%G)
+          git commit -m "digest: semana ${WEEK_NUM} de ${YEAR_NUM}"
+          git pull --rebase origin "${GITHUB_REF_NAME:-main}"
+          git push
+
+      - name: Avisar por Telegram si el Radar semanal falló
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          OUT_INSTALL: ${{ steps.install_deps.outcome }}
+          OUT_SEND: ${{ steps.send_weekly.outcome }}
+          OUT_COMMIT: ${{ steps.commit_digest.outcome }}
+        run: |
+          FAILED_STEP="paso desconocido"
+          if [ "$OUT_INSTALL" = "failure" ]; then
+            FAILED_STEP="Instalar dependencias"
+          elif [ "$OUT_SEND" = "failure" ]; then
+            FAILED_STEP="Sincronizar callbacks y enviar Radar semanal"
+          elif [ "$OUT_COMMIT" = "failure" ]; then
+            FAILED_STEP="Commit del digest semanal"
+          fi
+          MSG="el Radar semanal falló en '${FAILED_STEP}': revisa Actions"
+          echo "::error::${MSG}"
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+            curl -fsS --max-time 15 -X POST \
+              "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+              --data-urlencode "text=${MSG}" \
+              >/dev/null || echo "::warning::No se pudo enviar la alerta de fallo a Telegram."
+          fi
+          exit 1

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radar semanal de tecnología · Archivo y biblioteca</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; background: #f5f7fa; color: #1c2430; }
+  header { background: #1f4e79; color: #fff; padding: 1.2rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .8rem; }
+  header h1 { margin: 0; font-size: 1.4rem; }
+  nav a { color: #cfe0f1; text-decoration: none; margin-left: 1rem; font-weight: 500; }
+  nav a:hover { text-decoration: underline; color: #fff; }
+  main { max-width: 960px; margin: 0 auto; padding: 1rem; }
+  .card { background: #fff; border-radius: 10px; padding: 1rem 1.2rem; margin-bottom: 1rem;
+          box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+  .controls { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .controls input, .controls select { padding: .55rem .75rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: .95rem; flex: 1; min-width: 180px; }
+  .badge { display: inline-block; background: #e0f2fe; color: #0369a1; border-radius: 999px; padding: .15rem .6rem; font-size: .78rem; font-weight: 600; margin-right: .4rem; }
+  .role { background: #f1f5f9; color: #334155; }
+  .piece { border-left: 3px solid #1f4e79; padding-left: .8rem; margin: .85rem 0; }
+  .piece h4 { margin: 0 0 .25rem 0; font-size: 1rem; }
+  .piece p { margin: .2rem 0; font-size: .92rem; }
+  .project { color: #0f766e; font-style: italic; font-size: .88rem; }
+  small { color: #5b6773; }
+  a { color: #1f4e79; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>📡 Radar semanal de tecnología</h1>
+    <small style="color:#cfe0f1">Archivo público de digests y biblioteca personal</small>
+  </div>
+  <nav>
+    <a href="index.html">☀️ Resumen diario</a>
+    <a href="digests.html">📡 Radar semanal</a>
+  </nav>
+</header>
+<main>
+  <section class="card">
+    <h2>Buscar por tema o palabra clave</h2>
+    <div class="controls">
+      <input type="search" id="q" placeholder="Filtrar por título, resumen, proyecto (Aula Ya, Table Master, PostMark)...">
+      <select id="topic">
+        <option value="">Todos los temas</option>
+      </select>
+    </div>
+    <small id="counter"></small>
+  </section>
+
+  <div id="digests-list"></div>
+
+  <section class="card">
+    <h2>📌 Mi biblioteca personal de lecturas guardadas</h2>
+    <div id="library-list"><p>Aún no hay lecturas guardadas desde Telegram.</p></div>
+  </section>
+</main>
+<script>
+let allDigests = [];
+
+function escHtml(s) {
+  return String(s || "").replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+
+function renderDigests() {
+  const query = (document.getElementById("q").value || "").toLowerCase().trim();
+  const topicFilter = document.getElementById("topic").value;
+  const container = document.getElementById("digests-list");
+
+  let totalPieces = 0;
+  const htmlBlocks = [];
+
+  for (const d of allDigests) {
+    const pieces = (d.pieces || []).filter(p => {
+      if (topicFilter && p.topic_label !== topicFilter && p.topic !== topicFilter) return false;
+      if (!query) return true;
+      const hay = `${p.title_es} ${p.hook} ${p.summary_es} ${p.project_line || ""} ${p.topic_label} ${d.week_id}`.toLowerCase();
+      return hay.includes(query);
+    });
+    if (!pieces.length && (query || topicFilter)) continue;
+    totalPieces += pieces.length;
+
+    const piecesHtml = pieces.map(p => `
+      <div class="piece">
+        <h4>
+          <span class="badge role">${escHtml(p.role)}</span>
+          <span class="badge">${escHtml(p.topic_label)}</span>
+          <a href="${escHtml(p.url)}" target="_blank" rel="noopener">${escHtml(p.title_es)}</a>
+          <small>(~${escHtml(p.reading_minutes)} min · ${escHtml(p.source)})</small>
+        </h4>
+        <p><strong>🎯</strong> ${escHtml(p.hook)}</p>
+        <p>${escHtml(p.summary_es)}</p>
+        ${p.project_line ? `<p class="project">🛠️ ${escHtml(p.project_line)}</p>` : ""}
+      </div>
+    `).join("");
+
+    const concept = d.concept ? `
+      <p><strong>🧠 Concepto en 60s (${escHtml(d.concept.term)}):</strong> ${escHtml(d.concept.explanation)}
+      <em>Ejemplo: ${escHtml(d.concept.everyday_example)}</em></p>` : "";
+    const challenge = d.challenge ? `<p><strong>⚡ Reto de la semana:</strong> ${escHtml(d.challenge)}</p>` : "";
+
+    htmlBlocks.push(`
+      <section class="card">
+        <h2>${escHtml(d.week_id)} · <small>${escHtml(d.date)}</small></h2>
+        <p><strong>💡 Historia de la semana:</strong> ${escHtml(d.story_of_the_week)}</p>
+        ${piecesHtml || "<p><em>Sin piezas para este filtro.</em></p>"}
+        ${concept}
+        ${challenge}
+      </section>
+    `);
+  }
+
+  document.getElementById("counter").textContent =
+    `${htmlBlocks.length} edición(es) mostrada(s) · ${totalPieces} lectura(s)`;
+  container.innerHTML = htmlBlocks.length
+    ? htmlBlocks.join("")
+    : `<section class="card"><p>No se encontraron digests con ese filtro.</p></section>`;
+}
+
+async function init() {
+  const [digests, library] = await Promise.all([
+    fetch("digests.json").then(r => r.json()).catch(() => []),
+    fetch("library.json").then(r => r.json()).catch(() => []),
+  ]);
+  allDigests = Array.isArray(digests) ? digests : [];
+
+  const topics = new Set();
+  for (const d of allDigests) {
+    for (const p of (d.pieces || [])) {
+      if (p.topic_label) topics.add(p.topic_label);
+    }
+  }
+  const sel = document.getElementById("topic");
+  for (const t of Array.from(topics).sort()) {
+    const opt = document.createElement("option");
+    opt.value = t;
+    opt.textContent = t;
+    sel.appendChild(opt);
+  }
+
+  document.getElementById("q").addEventListener("input", renderDigests);
+  sel.addEventListener("change", renderDigests);
+  renderDigests();
+
+  if (Array.isArray(library) && library.length) {
+    document.getElementById("library-list").innerHTML = library.map(item => `
+      <div class="piece">
+        <h4>
+          <span class="badge">${escHtml(item.topic_label || item.topic)}</span>
+          <a href="${escHtml(item.url)}" target="_blank" rel="noopener">${escHtml(item.title_es)}</a>
+          <small>(${escHtml(item.week || item.saved_at)})</small>
+        </h4>
+        ${item.hook ? `<p>${escHtml(item.hook)}</p>` : ""}
+      </div>
+    `).join("");
+  }
+}
+init();
+</script>
+</body>
+</html>
