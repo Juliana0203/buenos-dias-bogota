@@ -191,3 +191,87 @@ good_news:
   positive_words: ["descubrimiento", "descubren", "avance", "avanza", "record", "rescate", "rescatan", "recuperacion", "recupera", "logro", "logra", "aprobado", "aprueba", "curacion", "reduccion", "reduce", "exito", "salvan", "esperanza", "mejora"]
   negative_words: ["muerte", "muere", "muertos", "ataque", "guerra", "crisis", "accidente", "tragedia", "asesin", "bomba", "terror", "violencia", "masacre", "desastre", "secuestro", "conflicto", "invasion", "cancer", "pandemia", "derrota", "eleccion", "electoral", "balotaje", "anulacion", "fraude", "protesta", "denuncia", "polemica", "juicio", "condena", "sancion", "arancel", "trump", "bolsonaro", "politic", "gobierno", "presidente", "ataca", "heridos", "incendio", "inundacion", "sequia"]
   stopwords_en: ["the", "and", "with", "for", "from", "that", "this", "after", "will", "says"]
+
+# =====================================================================
+# FASE 2: RADAR SEMANAL DE TECNOLOGÍA (Digest semanal)
+# =====================================================================
+weekly_digest:
+  send_day: "sunday"
+  send_time: "18:00"            # domingo 6:00 p. m. hora Bogotá
+  max_age_days: 7
+  max_pieces: 7
+  summary_max_words: 40
+  dedup_threshold: 78
+  anthropic_model: "claude-3-5-haiku-latest"
+  # Proyectos propios para conectar los papers en "En una línea para mi proyecto"
+  projects:
+    Aula Ya:
+      topics: ["edtech", "ml_applied", "small_models_edge"]
+      angle: "tutoría adaptativa, evaluación formativa y retroalimentación pedagógica de baja latencia"
+    Table Master:
+      topics: ["ml_applied", "prob_optimization", "software_engineering", "open_data_latam"]
+      angle: "extracción, validación y consulta estructurada sobre tablas y documentos complejos"
+    PostMark:
+      topics: ["software_engineering", "small_models_edge", "ml_applied", "open_data_latam"]
+      angle: "trazabilidad, verificación de contenido y clasificación automatizada en flujos editoriales"
+  # Intereses ponderados (se ajustan dinámicamente con data/feedback.json)
+  interests:
+    ml_applied:
+      label: "Machine learning aplicado"
+      weight: 1.5
+      keywords: ["machine learning", "fine-tuning", "rag", "retrieval", "inference", "benchmark", "evaluation", "tabular", "multimodal", "transformer", "embedding", "agent", "llm", "modelo", "entrenamiento"]
+    small_models_edge:
+      label: "Modelos pequeños y edge/offline AI"
+      weight: 1.6
+      keywords: ["small language model", "slm", "quantization", "gguf", "llama.cpp", "onnx", "edge", "on-device", "offline", "distillation", "lora", "qlora", "pruning", "low-resource", "1b", "3b", "7b", "bitnet", "compact"]
+    edtech:
+      label: "Educación y edtech"
+      weight: 1.5
+      keywords: ["education", "tutor", "tutoring", "learning", "classroom", "student", "pedagogy", "assessment", "curriculum", "educacion", "aula", "docente", "edtech", "quiz", "socratic"]
+    prob_optimization:
+      label: "Probabilidad y optimización"
+      weight: 1.4
+      keywords: ["bayesian", "stochastic", "markov", "monte carlo", "convex", "optimization", "combinatorial", "scheduling", "solver", "probabilistic", "variational", "gradient", "convergence", "linear programming"]
+    software_engineering:
+      label: "Ingeniería de software"
+      weight: 1.3
+      keywords: ["rust", "python", "typescript", "compiler", "database", "postgres", "sqlite", "distributed", "testing", "architecture", "cli", "open source", "github", "repository", "library", "framework", "tool", "performance"]
+    open_data_latam:
+      label: "Datos abiertos y Colombia/Latinoamérica"
+      weight: 1.4
+      keywords: ["open data", "datos abiertos", "dataset", "corpus", "colombia", "bogota", "latin america", "latam", "spanish", "espanol", "multilingual", "civic", "public policy", "gob"]
+  # Fuentes editables con etiqueta de tema e idioma
+  sources:
+    arxiv:
+      enabled: true
+      url: "https://export.arxiv.org/api/query"
+      categories: ["cs.LG", "cs.AI", "cs.CL", "stat.ML", "math.OC", "cs.CY"]
+      max_results: 30
+      topic: "ml_applied"
+      language: "en"
+    huggingface_papers:
+      enabled: true
+      url: "https://huggingface.co/api/daily_papers"
+      max_results: 20
+      topic: "small_models_edge"
+      language: "en"
+    semantic_scholar:
+      enabled: true
+      url: "https://api.semanticscholar.org/graph/v1/paper/search"
+      queries: ["small language model edge quantization", "AI education tutoring assessment", "stochastic optimization machine learning"]
+      max_results: 15
+      topic: "ml_applied"
+      language: "en"
+    hacker_news:
+      enabled: true
+      url: "https://hacker-news.firebaseio.com/v0"
+      max_items: 25
+      topic: "software_engineering"
+      language: "en"
+    rss_feeds:
+      - {name: "MIT Technology Review", url: "https://www.technologyreview.com/feed/", topic: "ml_applied", language: "en", enabled: true}
+      - {name: "Ars Technica", url: "https://feeds.arstechnica.com/arstechnica/index", topic: "software_engineering", language: "en", enabled: true}
+      - {name: "Hugging Face Blog", url: "https://huggingface.co/blog/feed.xml", topic: "small_models_edge", language: "en", enabled: true}
+      - {name: "Simon Willison", url: "https://simonwillison.net/atom/everything/", topic: "software_engineering", language: "en", enabled: true}
+      - {name: "Google Research Blog", url: "https://research.google/blog/rss/", topic: "prob_optimization", language: "en", enabled: true}
+      - {name: "Quanta Magazine", url: "https://api.quantamagazine.org/feed/", topic: "prob_optimization", language: "en", enabled: true}

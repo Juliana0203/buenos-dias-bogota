@@ -121,8 +121,28 @@ def main(argv: list[str] | None = None) -> int:
         metavar="HH:MM",
         help="simula la hora actual (hora Bogotá) para el cálculo de franjas 'ya pasó'",
     )
+    parser.add_argument(
+        "--week",
+        default=None,
+        metavar="AAAA-Wnn",
+        help="genera o regenera el Radar semanal de tecnología para la semana indicada",
+    )
     parser.add_argument("--config", default=None, help="ruta alternativa a config.yaml")
     args = parser.parse_args(argv)
+
+    if args.week is not None:
+        from brief import weekly
+
+        w_argv = ["--week", args.week]
+        if args.dry_run:
+            w_argv.append("--dry-run")
+        if args.force:
+            w_argv.append("--force")
+        if args.as_of:
+            w_argv.extend(["--as-of", args.as_of])
+        if args.config:
+            w_argv.extend(["--config", args.config])
+        return weekly.main(w_argv)
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     if hasattr(sys.stdout, "reconfigure"):
@@ -139,6 +159,11 @@ def main(argv: list[str] | None = None) -> int:
     if not args.dry_run and not (cfg.secrets.telegram_token and cfg.secrets.telegram_chat_id):
         log.error("Faltan TELEGRAM_BOT_TOKEN y/o TELEGRAM_CHAT_ID")
         return 2
+
+    if not args.dry_run:
+        from brief.feedback import sync_telegram_feedback
+
+        sync_telegram_feedback(cfg.secrets.telegram_token)
 
     brief = build_brief(cfg) if as_of_hour is None else build_brief(cfg, as_of_hour)
     if as_of_hour is not None and brief.weather is not None:
