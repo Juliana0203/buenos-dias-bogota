@@ -6,7 +6,7 @@ import argparse
 import logging
 import sys
 import time
-from datetime import datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 
 from brief import history
 from brief.config import Config, load_config
@@ -56,6 +56,101 @@ def wait_until_send_time(cfg: Config, now: datetime | None = None) -> float:
     log.info("Esperando %.0f s hasta las %s", remaining, sched.get("send_time"))
     time.sleep(remaining)
     return remaining
+
+
+def build_calm_fixture_brief(cfg: Config, today: date | None = None, now_hour: int = 8) -> Brief:
+    """Construye un Brief realista de un día calmado en Bogotá pasando por consensus y evaluate_relevance."""
+    from brief.consensus import (
+        consensus_air,
+        consensus_weather,
+        expected_air_sources,
+        expected_weather_sources,
+        parse_periods,
+    )
+    from brief.models import AirReading, NewsItem, WeatherReading
+    from brief.sources.trm import compute_trm
+
+    day = today or datetime.now(cfg.tz).date()
+    readings = [
+        WeatherReading(
+            "Open-Meteo/ECMWF",
+            temp=14.5,
+            feels_like=14.0,
+            tmin=11.0,
+            tmax=19.5,
+            wind_kmh=9.0,
+            uv=5.0,
+            hourly_pop={8: 15.0, 14: 25.0, 20: 10.0},
+            hourly_mm={8: 0.0, 14: 0.2, 20: 0.0},
+            hourly_feels={8: 13.0, 11: 16.0, 14: 18.0, 17: 16.0, 20: 12.0, 22: 11.0},
+        ),
+        WeatherReading(
+            "Open-Meteo/GFS",
+            temp=15.0,
+            feels_like=14.5,
+            tmin=11.5,
+            tmax=19.0,
+            wind_kmh=10.0,
+            uv=5.0,
+            hourly_pop={8: 10.0, 14: 20.0, 20: 15.0},
+            hourly_mm={8: 0.0, 14: 0.1, 20: 0.0},
+            hourly_feels={8: 13.5, 11: 15.5, 14: 17.5, 17: 15.5, 20: 12.5, 22: 11.5},
+        ),
+        WeatherReading(
+            "Open-Meteo/ICON",
+            temp=14.8,
+            feels_like=14.2,
+            tmin=11.2,
+            tmax=19.2,
+            wind_kmh=8.5,
+            uv=5.0,
+            hourly_mm={8: 0.0, 14: 0.1, 20: 0.0},
+            hourly_feels={8: 13.0, 11: 16.0, 14: 18.0, 17: 16.0, 20: 12.0, 22: 11.0},
+        ),
+    ]
+    weather = consensus_weather(
+        readings,
+        cfg.section("thresholds"),
+        parse_periods(cfg),
+        expected_weather_sources(cfg),
+        cfg.section("confidence"),
+        now_hour=now_hour,
+    )
+    air = consensus_air(
+        [AirReading("Open-Meteo AQ", aqi=38.0, pollutant="PM2.5")],
+        cfg.section("thresholds"),
+        expected_air_sources(cfg),
+        cfg.section("confidence"),
+    )
+    trm_rows = [
+        (day, day, 3630.89),
+        (day - timedelta(days=1), day - timedelta(days=1), 3618.50),
+        (day - timedelta(days=2), day - timedelta(days=2), 3605.00),
+        (day - timedelta(days=3), day - timedelta(days=3), 3655.00),
+        (day - timedelta(days=4), day - timedelta(days=4), 3610.00),
+    ]
+    trm = compute_trm(trm_rows, day, 3632.10, cfg.section("thresholds"), cfg.section("confidence"))
+    weekend_closure = NewsItem(
+        "Movilidad en Bogotá en VIVO hoy, 26 de noviembre: "
+        "Distrito anunció los cierres del fin de semana por Salsa al Parque",
+        "https://www.infobae.com/colombia/2026/11/26/movilidad-en-bogota-en-vivo/",
+        "Infobae Colombia",
+        datetime.now(UTC),
+    )
+    brief = Brief(
+        name=cfg.name,
+        today=day,
+        greeting=build_greeting(cfg.name, day, 22.5, last_template_id=history.last_greeting_id(day)),
+        weather=weather,
+        air=air,
+        trm=trm,
+        mobility=build_mobility(cfg, day),
+        news=[weekend_closure],
+        good_news=None,
+        quote=get_quote(cfg, day),
+    )
+    brief.relevance = evaluate_relevance(brief, cfg.section("relevance"), cfg.section("alerts"))
+    return brief
 
 
 def build_brief(cfg: Config, as_of_hour: int | None = None) -> Brief:
@@ -133,6 +228,11 @@ def main(argv: list[str] | None = None) -> int:
         metavar="AAAA-Wnn",
         help="genera o regenera el Radar semanal de tecnología para la semana indicada",
     )
+    parser.add_argument(
+        "--calm-fixture",
+        action="store_true",
+        help="usa un fixture realista de día calmado en Bogotá (para previsualizar el modo silencioso en --dry-run)",
+    )
     parser.add_argument("--config", default=None, help="ruta alternativa a config.yaml")
     args = parser.parse_args(argv)
 
@@ -171,7 +271,10 @@ def main(argv: list[str] | None = None) -> int:
 
         sync_telegram_feedback(cfg.secrets.telegram_token)
 
-    brief = build_brief(cfg) if as_of_hour is None else build_brief(cfg, as_of_hour)
+    if getattr(args, "calm_fixture", False):
+        brief = build_calm_fixture_brief(cfg, today, as_of_hour or 8)
+    else:
+        brief = build_brief(cfg) if as_of_hour is None else build_brief(cfg, as_of_hour)
     if as_of_hour is not None and brief.weather is not None:
         brief.weather.now_hour = as_of_hour
         if brief.relevance is not None:

@@ -201,38 +201,45 @@ weekly_digest:
   send_day: "sunday"
   send_time: "18:00"            # domingo 6:00 p. m. hora Bogotá
   max_age_days: 7
-  max_per_source: 15            # máximo de candidatos recientes (últimos 7 días) por fuente
+  max_per_source: 15            # máximo de candidatos recientes (últimos 7 días) leídos por fuente
   max_pieces: 7
+  max_pieces_per_source: 2      # máximo 2 piezas de la misma fuente en el digest
+  max_pieces_per_topic: 2       # máximo 2 piezas del mismo tema en el digest
   min_affinity_score: 2.0       # puntaje mínimo de afinidad con mis intereses (salvo la "joya")
-  summary_max_words: 40
+  summary_max_words: 25         # máximo 25 palabras, oración completa
   dedup_threshold: 78
   anthropic_model: "claude-haiku-5-5"
   anthropic_fallback_model: "claude-sonnet-5-5"
+  user_stack: ["python", "pandas", "scikit-learn", "sklearn", "tensorflow", "django", "postgres", "postgresql", "next.js", "nextjs", "typescript"]
   off_topic_keywords: ["quantum gravity", "null cone", "astrophysics", "cosmology", "general relativity", "particle physics", "string theory", "black hole", "superconductor", "hadron"]
-  # Proyectos propios para conectar los papers solo cuando haya coincidencia real de términos clave
+  # Proyectos propios (solo se muestra conexión si es real y hay términos clave concretos)
   projects:
     Aula Ya:
-      topics: ["edtech"]
-      keywords: ["education", "tutor", "tutoring", "classroom", "student", "pedagogy", "assessment", "grading", "curriculum", "edtech", "educacion", "aula", "docente", "quiz"]
-      angle: "tutoría adaptativa, evaluación formativa y retroalimentación pedagógica"
+      description: "educación rural offline con IA local y SMS"
+      topics: ["edtech", "small_models_edge"]
+      keywords: ["education", "tutor", "tutoring", "classroom", "student", "pedagogy", "rural", "sms", "offline", "on-device", "low-resource", "edtech", "educacion", "aula", "docente"]
+      angle: "educación rural offline con IA local y SMS"
     Table Master:
+      description: "hojas de cálculo con IA para limpiar datos"
       topics: ["ml_applied", "prob_optimization"]
-      keywords: ["tabular", "table", "tables", "spreadsheet", "schema", "csv", "sqlite", "structured document", "document extraction", "pdf", "dataframe", "sql"]
-      angle: "extracción, validación y consulta estructurada sobre tablas y documentos"
+      keywords: ["spreadsheet", "spreadsheets", "tabular", "table", "tables", "data cleaning", "cleaning", "csv", "schema", "imputation", "pandas", "dataframe", "excel"]
+      angle: "hojas de cálculo con IA para limpiar y estructurar datos"
     PostMark:
-      topics: ["software_engineering", "small_models_edge"]
-      keywords: ["watermark", "provenance", "verification", "fact-check", "moderation", "editorial", "traceability", "hallucination"]
-      angle: "trazabilidad, verificación de contenido y clasificación en flujos editoriales"
+      description: "recuerdos anclados a lugares"
+      topics: ["software_engineering", "open_data_latam"]
+      keywords: ["geolocation", "location-based", "geospatial", "spatial", "places", "landmark", "geotag", "gis", "trajectory", "point of interest"]
+      angle: "experiencias y recuerdos anclados a lugares y contexto espacial"
   # Intereses ponderados (se ajustan dinámicamente con data/feedback.json)
   interests:
     ml_applied:
       label: "Machine learning aplicado"
       weight: 1.5
-      keywords: ["machine learning", "fine-tuning", "rag", "retrieval", "inference", "benchmark", "evaluation", "tabular", "multimodal", "transformer", "embedding", "agent", "llm", "modelo", "entrenamiento"]
+      keywords: ["machine learning", "fine-tuning", "rag", "retrieval", "inference", "benchmark", "evaluation", "tabular", "multimodal", "transformer", "embedding", "agent", "llm", "scikit-learn", "tensorflow", "pandas"]
     small_models_edge:
       label: "Modelos pequeños y edge/offline AI"
       weight: 1.6
-      keywords: ["small language model", "slm", "quantization", "gguf", "llama.cpp", "onnx", "edge", "on-device", "offline", "distillation", "lora", "qlora", "pruning", "low-resource", "1b", "3b", "7b", "bitnet", "compact"]
+      core_keywords: ["llama.cpp", "llamacpp", "gguf", "small language model", "slm", "on-device", "offline", "local llm", "local model", "quantization", "bitnet"]
+      keywords: ["small language model", "slm", "quantization", "gguf", "llama.cpp", "llamacpp", "onnx", "edge", "on-device", "offline", "local llm", "local model", "distillation", "lora", "qlora", "pruning", "low-resource", "1b", "3b", "7b", "bitnet", "compact", "cpu inference"]
     edtech:
       label: "Educación y edtech"
       weight: 1.5

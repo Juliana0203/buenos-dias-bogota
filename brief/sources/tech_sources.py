@@ -240,7 +240,13 @@ def fetch_semantic_scholar(
     src_cfg: dict[str, Any],
     max_age_days: float = 7.0,
     max_per_source: int = 15,
+    api_key: str | None = None,
 ) -> list[TechCandidate]:
+    """Consulta Semantic Scholar con reintento/backoff y S2_API_KEY opcional.
+
+    Si todas las consultas fallan (p. ej. HTTP 429) y obtiene 0 resultados, lanza excepción
+    para que la fuente se registre como fallida en lugar de devolver 0 silenciosamente.
+    """
     if not src_cfg.get("enabled", True):
         return []
     base_url = src_cfg.get("url", "https://api.semanticscholar.org/graph/v1/paper/search")
@@ -248,7 +254,10 @@ def fetch_semantic_scholar(
     year = datetime.now(UTC).year
     limit_per_q = max(3, min(max_per_source, int(src_cfg.get("max_results", 12))) // max(1, len(queries)))
     out: list[TechCandidate] = []
-    sess = make_session(retries=1, backoff=0.5)
+    sess = make_session(retries=2, backoff=1.0)
+    if api_key:
+        sess.headers.update({"x-api-key": api_key})
+    errors: list[str] = []
     for q in queries:
         try:
             data = get_json(
@@ -259,7 +268,7 @@ def fetch_semantic_scholar(
                     "year": f"{year}",
                     "fields": "title,abstract,url,publicationDate,citationCount,authors",
                 },
-                timeout=12,
+                timeout=15,
                 session=sess,
             )
             out.extend(
@@ -271,7 +280,10 @@ def fetch_semantic_scholar(
                 )
             )
         except Exception as exc:  # noqa: BLE001
+            errors.append(str(exc))
             log.warning("Semantic Scholar falló para query %r: %s", q, exc)
+    if not out and errors:
+        raise RuntimeError(f"Semantic Scholar sin resultados por fallo/rate-limit ({errors[0][:120]})")
     return out[:max_per_source]
 
 
@@ -429,7 +441,10 @@ def gather_tech_candidates(cfg: Config) -> list[TechCandidate]:
         )
     if (sources_cfg.get("semantic_scholar") or {}).get("enabled", True):
         tasks["Semantic Scholar"] = lambda: fetch_semantic_scholar(
-            sources_cfg.get("semantic_scholar") or {}, max_age_days, max_per_source
+            sources_cfg.get("semantic_scholar") or {},
+            max_age_days,
+            max_per_source,
+            api_key=cfg.secrets.s2_api_key,
         )
     if (sources_cfg.get("hacker_news") or {}).get("enabled", True):
         tasks["Hacker News"] = lambda: fetch_hacker_news(

@@ -1,11 +1,11 @@
-"""Evaluación de reglas de relevancia para el aviso diario inteligente (Fase 1 / Bloque A)."""
+"""Evaluación de reglas de relevancia para el aviso diario inteligente (Bloque A)."""
 
 from __future__ import annotations
 
 import html
 import re
 from collections.abc import Mapping
-from datetime import date
+from datetime import date, timedelta
 from typing import Any
 
 from brief.formatter import (
@@ -17,7 +17,7 @@ from brief.formatter import (
     fmt_stat,
 )
 from brief.models import Brief, NewsItem, RelevanceAlert, RelevanceResult
-from brief.personalization import date_es
+from brief.personalization import DAYS, MONTHS, date_es
 from brief.sources.news import normalize
 
 DEFAULT_REAL_MOBILITY_EFFECTS = [
@@ -50,12 +50,89 @@ DEFAULT_REAL_MOBILITY_EFFECTS = [
     "inhabilitada",
 ]
 
+_WEEKDAYS_NORM = [normalize(d) for d in DAYS]
+_MONTHS_MAP = {normalize(m): idx + 1 for idx, m in enumerate(MONTHS)}
+_DATE_RE = re.compile(
+    r"\b(\d{1,2})(?:\s*(?:,|y|al|a)\s*(\d{1,2}))?\s+de\s+(" + "|".join(_MONTHS_MAP.keys()) + r")\b"
+)
 
-def is_real_mobility_disruption(item: NewsItem, rel_cfg: Mapping[str, Any] | None = None) -> bool:
-    """True si la noticia reporta una afectación real en vías/servicio y NO es una nota rutinaria de pico y placa."""
-    text = normalize(f"{item.title} {item.summary}")
+
+def _has_real_effect_words(text: str, rel_cfg: Mapping[str, Any] | None = None) -> bool:
     effects = list((rel_cfg or {}).get("mobility_real_effect_keywords") or DEFAULT_REAL_MOBILITY_EFFECTS)
     return any(re.search(rf"\b{re.escape(normalize(kw))}", text) for kw in effects)
+
+
+def is_effect_within_24h(item: NewsItem, today: date) -> bool:
+    """True si la noticia describe un efecto para hoy o las próximas 24 h (o el viernes si es del fin de semana)."""
+    text = normalize(f"{item.title} {item.summary}")
+    tomorrow = today + timedelta(days=1)
+    wd_today = today.weekday()
+
+    # 1. Cierres o eventos de "fin de semana": solo suenan en viernes (4), sábado (5) o domingo (6)
+    if "fin de semana" in text and wd_today not in (4, 5, 6):
+        return False
+
+    # 2. Fechas explícitas en el texto ("28 de noviembre", "28 y 29 de noviembre")
+    explicit_dates: list[date] = []
+    for m in _DATE_RE.finditer(text):
+        d1_str, d2_str, month_name = m.group(1), m.group(2), m.group(3)
+        month_num = _MONTHS_MAP.get(month_name)
+        if not month_num:
+            continue
+        for d_raw in (d1_str, d2_str):
+            if not d_raw:
+                continue
+            try:
+                explicit_dates.append(date(today.year, month_num, int(d_raw)))
+            except ValueError:
+                continue
+    if explicit_dates:
+        allowed_dates = {today, tomorrow}
+        if wd_today == 4:  # el viernes también permite avisar cierres del sábado/domingo de ese fin de semana
+            allowed_dates.update({today + timedelta(days=2), today + timedelta(days=3)})
+        if not any(d in allowed_dates for d in explicit_dates):
+            return False
+
+    # 3. Días de la semana explícitos
+    mentioned_wds = {idx for idx, w_name in enumerate(_WEEKDAYS_NORM) if re.search(rf"\b{w_name}\b", text)}
+    if mentioned_wds:
+        allowed_wds = {wd_today, (wd_today + 1) % 7}
+        if wd_today == 4:
+            allowed_wds.update({5, 6})
+        if not (mentioned_wds & allowed_wds):
+            return False
+
+    return True
+
+
+def is_real_mobility_disruption(
+    item: NewsItem,
+    rel_cfg: Mapping[str, Any] | None = None,
+    today: date | None = None,
+) -> bool:
+    """True si la noticia reporta una afectación real hoy o en las próximas 24 h.
+
+    - Las notas 'en vivo' o 'minuto a minuto' solo cuentan si el titular menciona un efecto actual
+      (y no un anuncio de cierres de fin de semana con normalidad actual).
+    - Las notas rutinarias de pico y placa no disparan sonido.
+    """
+    title_norm = normalize(item.title)
+    full_norm = normalize(f"{item.title} {item.summary}")
+
+    if not _has_real_effect_words(full_norm, rel_cfg):
+        return False
+
+    is_live_blog = "en vivo" in title_norm or "minuto a minuto" in title_norm
+    if is_live_blog:
+        if not _has_real_effect_words(title_norm, rel_cfg):
+            return False
+        if "con normalidad" in title_norm and "fin de semana" in title_norm:
+            return False
+
+    if today is not None and not is_effect_within_24h(item, today):
+        return False
+
+    return True
 
 
 def evaluate_relevance(
@@ -89,7 +166,7 @@ def evaluate_relevance(
             headline = f"☔ <b>Hoy sí lleva paraguas:</b> lluvia al {best_val:.0f} % en la {best_period}{peak_info}."
             found.append(RelevanceAlert(key="rain_outing", priority=1, headline=headline))
 
-    # 2. Alerta de movilidad real (cierres, paros, marchas, bloqueos o pico y placa que afecte hoy según mi placa)
+    # 2. Alerta de movilidad real hoy o en las próximas 24 h (o pico y placa que afecte hoy según mi placa)
     if rel_cfg.get("mobility_alert", True):
         pyp = brief.mobility.pyp_text or ""
         if "Hoy tienes pico y placa" in pyp:
@@ -100,7 +177,7 @@ def evaluate_relevance(
                     headline=f"🚗 <b>Pico y placa activo:</b> {esc(pyp)}",
                 )
             )
-        real_news = [n for n in brief.news if is_real_mobility_disruption(n, rel_cfg)]
+        real_news = [n for n in brief.news if is_real_mobility_disruption(n, rel_cfg, today=brief.today)]
         if real_news:
             top = real_news[0]
             link = html.escape(top.link, quote=True)
@@ -189,12 +266,11 @@ def evaluate_relevance(
 
     found.sort(key=lambda x: x.priority)
 
-    weather_keys = {"rain_outing", "feels_extreme_cold", "feels_extreme_hot", "uv_extreme"}
-    weather_triggered = any(al.key in weather_keys for al in found)
+    triggered_keys = {al.key for al in found}
     useful = _build_useful_line(
         brief,
         alerts_cfg,
-        weather_triggered=weather_triggered,
+        triggered_keys=triggered_keys,
         include_inline_conf=not bool(found),
         rel_cfg=rel_cfg,
     )
@@ -211,10 +287,18 @@ def evaluate_relevance(
 def _build_useful_line(
     brief: Brief,
     alerts_cfg: Mapping[str, float],
-    weather_triggered: bool = False,
+    triggered_keys: set[str] | None = None,
     include_inline_conf: bool = False,
     rel_cfg: Mapping[str, Any] | None = None,
 ) -> str:
+    """Construye la línea 'Hoy:' sin repetir datos que ya tengan su propia alerta (lluvia, TRM).
+
+    Si todas las señales ya se mostraron en las alertas y no hay dato nuevo que aportar, devuelve ''.
+    """
+    triggered_keys = triggered_keys or set()
+    weather_keys = {"rain_outing", "feels_extreme_cold", "feels_extreme_hot", "uv_extreme"}
+    weather_triggered = bool(triggered_keys & weather_keys)
+
     w = brief.weather
     parts: list[str] = []
     if w:
@@ -234,22 +318,33 @@ def _build_useful_line(
         )
         umbrella_pct = float(alerts_cfg.get("rain_umbrella_pct", 40.0))
         if weather_triggered or max_rain >= umbrella_pct:
-            rain_tag = f", lluvia hasta {max_rain:.0f} %" if max_rain >= umbrella_pct else ""
-            parts.append(f"Clima: {temp_part}{tip}{rain_tag}")
+            # No repetir porcentaje de lluvia si ya se mostró en la alerta principal rain_outing
+            rain_tag = (
+                f", lluvia moderada ({max_rain:.0f} %)"
+                if (max_rain >= umbrella_pct and "rain_outing" not in triggered_keys)
+                else ""
+            )
+            if temp_part or tip:
+                parts.append(f"Clima: {temp_part}{tip}{rain_tag}")
         else:
             parts.append(f"Clima tranquilo ({temp_part}{tip})")
+
     if brief.good_news:
         link = html.escape(brief.good_news.link, quote=True)
         parts.append(f'buena noticia: <a href="{link}">{esc(brief.good_news.title)}</a>')
-    elif brief.trm:
+    elif brief.trm and "trm_move" not in triggered_keys:
         parts.append(f"TRM {_fmt_money(brief.trm.value)}")
-    # Si es mensaje silencioso y hay nota rutinaria de pico y placa, la incluye sin disparar sonido
+
+    # En mensaje silencioso incluye avisos que no dispararon sonido (p. ej. cierres de fin de semana o pico y placa)
     if include_inline_conf and brief.news:
-        routine = [n for n in brief.news if not is_real_mobility_disruption(n, rel_cfg)]
-        if routine:
-            top = routine[0]
+        non_urgent = [
+            n for n in brief.news if not is_real_mobility_disruption(n, rel_cfg, today=brief.today)
+        ]
+        if non_urgent:
+            top = non_urgent[0]
             link = html.escape(top.link, quote=True)
             parts.append(f'<a href="{link}">{esc(top.title)}</a>')
+
     if include_inline_conf:
         conf_bits: list[str] = []
         if w and w.score is not None:
@@ -258,8 +353,9 @@ def _build_useful_line(
             conf_bits.append(f"TRM {brief.trm.score} %")
         if conf_bits:
             parts.append(f"confianza: {', '.join(conf_bits)}")
+
     if not parts:
-        return f"✨ <i>“{esc(brief.quote.text)}”</i> — {esc(brief.quote.author)}"
+        return f"✨ <i>“{esc(brief.quote.text)}”</i> — {esc(brief.quote.author)}" if include_inline_conf else ""
     return "💡 Hoy: " + " · ".join(parts) + "."
 
 
@@ -279,8 +375,8 @@ def _build_confidence_summary(brief: Brief) -> str:
 def format_smart_daily(brief: Brief, alerts_cfg: Mapping[str, float] | None = None) -> str:
     """Formatea el mensaje diario inteligente:
     - Si ninguna regla se cumple: 2 líneas silenciosas (saludo corto + una cosa útil del día).
-    - Si se cumple alguna: 4 a 6 líneas con sonido, empezando por lo más importante y mostrando
-      la confianza una sola vez por dato en la línea de cierre.
+    - Si se cumple alguna: 4 a 6 líneas con sonido, empezando por lo más importante, sin repetir
+      datos en 'Hoy:' y mostrando la confianza una sola vez en la línea de cierre.
     """
     rel = brief.relevance
     if rel is None:
@@ -297,8 +393,9 @@ def format_smart_daily(brief: Brief, alerts_cfg: Mapping[str, float] | None = No
     lines.append(f"☀️ {esc(first_sentence)} <b>{esc(fecha)}</b>")
     for extra_alert in rel.alerts[1:3]:
         lines.append(extra_alert.headline)
-    lines.append(rel.useful_line)
-    if len(lines) < 4 and not rel.confidence_line:
+    if rel.useful_line:
+        lines.append(rel.useful_line)
+    if len(lines) < 4:
         lines.append(f"✨ <i>“{esc(brief.quote.text)}”</i> — {esc(brief.quote.author)}")
     if rel.confidence_line:
         lines = lines[:5]

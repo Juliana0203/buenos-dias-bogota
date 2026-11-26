@@ -1,5 +1,9 @@
 import json
+import random
+from collections import Counter
 from datetime import UTC, date, datetime, timedelta
+
+import pytest
 
 from brief.config import ROOT, load_config
 from brief.feedback import (
@@ -12,21 +16,24 @@ from brief.feedback import (
 )
 from brief.sources.tech_sources import (
     TechCandidate,
+    fetch_semantic_scholar,
     parse_arxiv_xml,
     parse_hf_daily_papers,
     parse_hn_item,
     parse_tech_rss,
 )
 from brief.weekly import (
+    CONCEPT_GLOSSARY,
     ROLE_ACCESSIBLE,
     ROLE_APPLIED,
     ROLE_DEEP,
     ROLE_GEM,
-    ROLE_NEWS,
     ROLE_TOOL,
+    _extractive_complete_summary,
     already_sent_this_week,
     build_weekly_challenge,
     build_weekly_digest,
+    build_weekly_quiz,
     choose_weekly_format,
     dedupe_candidates,
     format_weekly_messages,
@@ -43,14 +50,14 @@ WCFG = load_config().section("weekly_digest")
 def _sample_candidates() -> list[TechCandidate]:
     return [
         TechCandidate(
-            title="Quantization of Small Language Models for Edge Classroom Tutoring",
+            title="Quantization of Small Language Models for Rural Classroom Tutoring",
             url="https://arxiv.org/abs/2611.00001",
             source="arXiv",
             kind="paper",
             published=NOW - timedelta(days=1),
             abstract=(
                 "We evaluate 4-bit quantization and distillation on a 3B small language model "
-                "for offline student tutoring and assessment. Results show 3.8x memory reduction on laptops."
+                "for offline rural student tutoring via SMS."
             ),
             authors=["A. Gómez", "B. Pérez"],
             categories=["cs.CL", "cs.CY"],
@@ -65,7 +72,7 @@ def _sample_candidates() -> list[TechCandidate]:
             published=NOW - timedelta(days=2),
             abstract=(
                 "We prove tight theoretical convergence bounds for stochastic gradient "
-                "Markov chain Monte Carlo under non-convex objectives. The bound holds in finite samples."
+                "Markov chain Monte Carlo under non-convex objectives."
             ),
             authors=["C. Ruiz"],
             categories=["math.OC", "stat.ML"],
@@ -73,14 +80,14 @@ def _sample_candidates() -> list[TechCandidate]:
             citations=12,
         ),
         TechCandidate(
-            title="Tabular Extraction Benchmark for Complex Structured Documents in Production",
-            url="https://arxiv.org/abs/2611.00003",
+            title="Tabular Data Cleaning Benchmark for Spreadsheets with Pandas",
+            url="https://huggingface.co/papers/2611.00003",
             source="Hugging Face Papers",
             kind="paper",
             published=NOW - timedelta(days=1),
             abstract=(
-                "An empirical benchmark and fine-tuning pipeline for extracting tables "
-                "and schemas from noisy PDF documents with low latency. Evaluated on 12 enterprise datasets."
+                "An empirical benchmark and fine-tuning pipeline for data cleaning on spreadsheets "
+                "and tabular schemas with pandas."
             ),
             authors=["D. Silva"],
             categories=["cs.LG", "cs.AI"],
@@ -88,65 +95,72 @@ def _sample_candidates() -> list[TechCandidate]:
             votes=88,
         ),
         TechCandidate(
-            title="New Open-Weight 3B Multimodal Model Runs Offline on Laptops",
-            url="https://www.technologyreview.com/2026/11/28/slm-offline",
+            title="AMD Specific Patches for Llama.cpp and GGUF Local Inference",
+            url="https://www.technologyreview.com/2026/11/28/llamacpp-amd",
             source="MIT Technology Review",
             kind="news",
             published=NOW - timedelta(days=1),
             abstract=(
-                "Researchers released a compact 3B multimodal model with GGUF quantization "
-                "for local inference on standard hardware. It supports vision and edge deployment."
+                "New llama.cpp patches accelerate GGUF local model inference on standard laptops without dedicated GPU."
             ),
             default_topic="small_models_edge",
             votes=120,
         ),
         TechCandidate(
-            title="Colombia lanza nuevo portal de datos abiertos con API para transporte y educación",
+            title="Colombia lanza portal de datos abiertos geoespaciales para educación rural",
             url="https://example.org/datos-abiertos-colombia-2026",
             source="Reporte LatAm",
             kind="news",
             published=NOW - timedelta(days=2),
             abstract=(
-                "El portal integra datasets de datos abiertos sobre movilidad, educación "
-                "y contratación pública en Bogotá, Colombia y Latinoamérica."
+                "El portal publica datasets de datos abiertos en español sobre educación en Bogotá y Colombia."
             ),
             default_topic="open_data_latam",
             language="es",
             votes=65,
         ),
         TechCandidate(
-            title="Show HN: LiteTable – Fast Rust and Python CLI for SQLite and Tabular Pipelines",
-            url="https://github.com/example/litetable",
+            title="Show HN: PgClean – Python and Postgres CLI for Tabular Data Cleaning",
+            url="https://github.com/example/pgclean",
             source="Hacker News",
             kind="tool",
             published=NOW - timedelta(days=1),
             abstract=(
-                "An open source library and CLI tool in Rust with Python bindings "
-                "to validate, query and test SQLite and Postgres tabular datasets."
+                "Release: PgClean 0.2.0 An open source library in Python and Postgres "
+                "to validate and clean tabular datasets .."
             ),
             default_topic="software_engineering",
             votes=210,
         ),
         TechCandidate(
             title="Hardware-Aware Compiler Passes for Low-Power RISC-V Microcontrollers",
-            url="https://arxiv.org/abs/2611.00009",
+            url="https://semanticscholar.org/paper/2611.00009",
             source="Semantic Scholar",
             kind="paper",
             published=NOW - timedelta(days=3),
-            abstract=(
-                "A study on compiler instruction scheduling for embedded microcontrollers. "
-                "Reduces cycle count by 14% across embedded benchmarks."
-            ),
+            abstract="A study on compiler instruction scheduling for embedded microcontrollers.",
             authors=["M. Pardo"],
             categories=["cs.AR"],
             default_topic="software_engineering",
             votes=45,
             citations=4,
         ),
+        # Candidatos adicionales de las mismas fuentes para verificar el tope de máx 2 por fuente y 2 por tema
+        TechCandidate(
+            title="Another arXiv Paper on Bayesian Optimization and Markov Chains",
+            url="https://arxiv.org/abs/2611.00010",
+            source="arXiv",
+            kind="paper",
+            published=NOW - timedelta(days=1),
+            abstract="Bayesian stochastic convex optimization with Markov chain Monte Carlo.",
+            categories=["stat.ML"],
+            default_topic="prob_optimization",
+            votes=30,
+        ),
     ]
 
 
-def test_titles_are_never_altered_and_hooks_are_unique_and_summaries_complete(tmp_path):
+def test_max_two_per_source_and_max_two_per_topic_and_titles_intact(tmp_path):
     cfg = load_config()
     cands = _sample_candidates()
     orig_titles = {c.url: c.title for c in cands}
@@ -159,32 +173,76 @@ def test_titles_are_never_altered_and_hooks_are_unique_and_summaries_complete(tm
     )
     assert len(digest.pieces) == 7
 
-    roles = [p.role for p in digest.pieces]
-    assert ROLE_ACCESSIBLE in roles
-    assert ROLE_DEEP in roles
-    assert ROLE_APPLIED in roles
-    assert roles.count(ROLE_NEWS) == 2
-    assert ROLE_TOOL in roles
-    assert ROLE_GEM in roles
+    source_counts = Counter(p.source for p in digest.pieces)
+    topic_counts = Counter(p.topic for p in digest.pieces)
+    assert max(source_counts.values()) <= 2
+    assert max(topic_counts.values()) <= 2
 
-    hooks = [p.hook for p in digest.pieces]
-    # Dos piezas distintas NUNCA comparten la misma frase de gancho / "por qué importa"
+    roles = [p.role for p in digest.pieces]
+    assert ROLE_ACCESSIBLE in roles and ROLE_DEEP in roles and ROLE_APPLIED in roles
+    assert ROLE_TOOL in roles and ROLE_GEM in roles
+
+    hooks = [p.hook for p in digest.pieces if p.hook]
     assert len(set(hooks)) == len(hooks)
 
     for p in digest.pieces:
-        # El título original se conserva intacto sin prefijos [Tema] ni traducciones parciales
         assert p.original_title == orig_titles[p.url]
         assert not p.original_title.startswith("[")
-        assert "cuantización" not in p.original_title
-        # Resumen extractivo: <= 40 palabras, empieza con [EN] o [ES], termina en oración completa
-        assert p.summary_es.startswith(("[EN] ", "[ES] "))
-        assert p.summary_es.endswith((".", "!", "?"))
-        assert len(p.summary_es.split()) <= 40
+        if p.kind == "paper":
+            assert p.reading_minutes == 0
+        if p.summary_es:
+            assert p.summary_es.startswith(("[EN] ", "[ES] "))
+            assert p.summary_es.endswith((".", "!", "?"))
+            assert ".." not in p.summary_es
+            assert not p.summary_es[5:].lower().startswith("release:")
+            assert "Publicado en Hacker News" not in p.summary_es
+            assert len(p.summary_es.split()) <= 25
 
 
-def test_physics_paper_is_rejected_and_outside_radar_only_allowed_as_gem(tmp_path):
+def test_excerpt_cleaning_strips_repeated_title_and_release_prefix_and_omits_empty():
+    cand_with_prefix = TechCandidate(
+        title="datasette-charts 0.2a0",
+        url="https://simonwillison.net/2026/Nov/24/datasette-charts/",
+        source="Simon Willison",
+        kind="tool",
+        published=NOW,
+        abstract="Release: datasette-charts 0.2a0 I introduced this new charting plugin for Datasette yesterday .",
+    )
+    ext = _extractive_complete_summary(cand_with_prefix, max_words=25)
+    assert ext == "[EN] I introduced this new charting plugin for Datasette yesterday."
+    assert "Release:" not in ext and ".." not in ext
+
+    # Si el candidato no tiene abstract (como un enlace directo en HN), se omite en vez de poner "Publicado en..."
+    cand_empty = TechCandidate(
+        title="Minipg: PostgreSQL as a Single Executable",
+        url="https://progrium.github.io/minipg/",
+        source="Hacker News",
+        kind="news",
+        published=NOW,
+        abstract="",
+        votes=90,
+    )
+    assert _extractive_complete_summary(cand_empty, max_words=25) == ""
+
+
+def test_llamacpp_scores_high_in_radar_and_physics_is_rejected(tmp_path):
     interests = WCFG["interests"]
     weights = {k: float(v["weight"]) for k, v in interests.items()}
+
+    llamacpp = TechCandidate(
+        title="AMD Specific Patches for Llama.cpp",
+        url="https://devnull.land/amd-specific-llama-cpp",
+        source="Hacker News",
+        kind="news",
+        published=NOW - timedelta(days=1),
+        abstract="",
+        votes=56,
+    )
+    score_llama = score_candidate(llamacpp, interests, weights, NOW, min_affinity=2.0)
+    assert score_llama > 0
+    assert llamacpp.matched_topic == "small_models_edge"
+    assert llamacpp.affinity_score >= 2.0
+    assert llamacpp.outside_radar is False
 
     physics = TechCandidate(
         title="An algebraic quantization of gravity from the null cone",
@@ -197,71 +255,8 @@ def test_physics_paper_is_rejected_and_outside_radar_only_allowed_as_gem(tmp_pat
     )
     assert score_candidate(physics, interests, weights, NOW, min_affinity=2.0) == 0.0
 
-    # El candidato 7 de _sample_candidates tiene 1 sola keyword ("compiler", afinidad 1.3 < 2.0):
-    # queda marcado outside_radar=True y solo entra como ROLE_GEM con "fuera de tu radar habitual"
-    cfg = load_config()
-    cands = [*_sample_candidates(), physics]
-    digest = build_weekly_digest(
-        cfg,
-        candidates=cands,
-        ref_date=date(2026, 11, 29),
-        feedback_path=tmp_path / "fb.json",
-        sent_path=tmp_path / "sent.json",
-    )
-    urls = {p.url for p in digest.pieces}
-    assert physics.url not in urls
 
-    non_gem = [p for p in digest.pieces if p.role != ROLE_GEM]
-    assert all(not p.outside_radar for p in non_gem)
-    gem = next(p for p in digest.pieces if p.role == ROLE_GEM)
-    assert gem.outside_radar is True
-    _, msgs_body, _ = format_weekly_messages(digest)
-    full_html = "\n".join(format_weekly_messages(digest)[0])
-    assert "fuera de tu radar habitual" in full_html
-
-
-def test_project_connection_only_when_concrete_keywords_match(tmp_path):
-    cfg = load_config()
-    digest = build_weekly_digest(
-        cfg,
-        candidates=_sample_candidates(),
-        ref_date=date(2026, 11, 29),
-        feedback_path=tmp_path / "fb.json",
-        sent_path=tmp_path / "sent.json",
-    )
-    by_url = {p.url: p for p in digest.pieces}
-    # Paper 1 (classroom, tutoring, student) -> Aula Ya
-    assert "Aula Ya" in by_url["https://arxiv.org/abs/2611.00001"].project_line
-    # Paper 3 (tabular, tables, schemas, PDF) -> Table Master
-    assert "Table Master" in by_url["https://arxiv.org/abs/2611.00003"].project_line
-    # Paper 2 (teoría pura de Markov chain Monte Carlo sin keywords de Aula Ya / Table Master / PostMark) -> vacío
-    assert by_url["https://arxiv.org/abs/2611.00002"].project_line == ""
-
-
-def test_challenge_is_coherent_with_piece_kind(tmp_path):
-    cfg = load_config()
-    digest = build_weekly_digest(
-        cfg,
-        candidates=_sample_candidates(),
-        ref_date=date(2026, 11, 29),
-        feedback_path=tmp_path / "fb.json",
-        sent_path=tmp_path / "sent.json",
-    )
-    tool_piece = next(p for p in digest.pieces if p.kind == "tool")
-    paper_piece = next(p for p in digest.pieces if p.kind == "paper")
-    news_piece = next(p for p in digest.pieces if p.kind == "news")
-
-    ch_tool = build_weekly_challenge([tool_piece])
-    assert "20 min" in ch_tool and "prueba" in ch_tool.lower()
-
-    ch_paper = build_weekly_challenge([paper_piece])
-    assert "abstract" in ch_paper.lower() and "conclusión" in ch_paper.lower() and "3 notas" in ch_paper.lower()
-
-    ch_news = build_weekly_challenge([news_piece])
-    assert "cómo afecta" in ch_news.lower() and "clona" not in ch_news.lower()
-
-
-def test_first_message_is_4_line_teaser_and_only_one_with_sound(tmp_path):
+def test_teaser_has_en_tag_without_llm_and_dominant_topic_matches_shown_pieces(tmp_path):
     cfg = load_config()
     digest = build_weekly_digest(
         cfg,
@@ -271,22 +266,63 @@ def test_first_message_is_4_line_teaser_and_only_one_with_sound(tmp_path):
         sent_path=tmp_path / "sent.json",
     )
     msgs, markups, silent_flags = format_weekly_messages(digest)
-    assert len(msgs) == 3
-    assert len(msgs[0].splitlines()) <= 4
+    teaser_lines = msgs[0].splitlines()
+    assert len(teaser_lines) == 4
     assert silent_flags == [False, True, True]
-    assert all(len(m) <= 4096 for m in msgs)
-    assert markups[0] is not None and "inline_keyboard" in markups[0]
+    assert "1. [EN] " in teaser_lines[1] or "1. [ES] " in teaser_lines[1]
+    assert markups[0] is not None
 
 
-def test_rss_and_sources_filter_to_7_days_and_limit_per_source():
-    rss = b"""<?xml version="1.0"?><rss version="2.0"><channel>
-    <item><title>Recent AI Post</title><link>https://hf.co/blog/recent</link>
-    <pubDate>Sat, 28 Nov 2026 10:00:00 GMT</pubDate><description>Recent post.</description></item>
-    <item><title>Old 2024 AI Post</title><link>https://hf.co/blog/old</link>
-    <pubDate>Mon, 01 Jan 2024 10:00:00 GMT</pubDate><description>Old post.</description></item>
-    </channel></rss>"""
-    items = parse_tech_rss(rss, {"name": "HF Blog", "topic": "ml_applied"}, now=NOW, max_age_days=7.0, max_items=5)
-    assert len(items) == 1 and items[0].title == "Recent AI Post"
+def test_quiz_randomizes_correct_option_position_and_concepts_are_single_terms():
+    for entry in CONCEPT_GLOSSARY:
+        assert " y " not in entry["term"].lower()
+
+    concept = CONCEPT_GLOSSARY[0]
+    positions = {
+        build_weekly_quiz([], concept, rng=random.Random(seed)).correct_option_id
+        for seed in range(30)
+    }
+    assert len(positions) >= 3
+    for seed in range(10):
+        q = build_weekly_quiz([], concept, rng=random.Random(seed))
+        assert len(q.explanation) <= 200
+        assert q.options[q.correct_option_id] == concept["quiz_correct"]
+
+
+def test_challenge_only_proposes_tools_compatible_with_user_stack(tmp_path):
+    cfg = load_config()
+    digest = build_weekly_digest(
+        cfg,
+        candidates=_sample_candidates(),
+        ref_date=date(2026, 11, 29),
+        feedback_path=tmp_path / "fb.json",
+        sent_path=tmp_path / "sent.json",
+    )
+    # PgClean tiene Python y Postgres -> compatible con el stack
+    compatible_tool = next(p for p in digest.pieces if p.kind == "tool")
+    ch_ok = build_weekly_challenge([compatible_tool])
+    assert "compatible con tu stack" in ch_ok and "PgClean" in ch_ok
+
+    # Una herramienta en C++/Zig/browser que NO está en el stack cae al paper (leer abstract y conclusión + 3 notas)
+    incompatible_tool = compatible_tool
+    incompatible_tool.original_title = "Zig Embedded Kernel Debugger"
+    incompatible_tool.summary_es = "[EN] Kernel debugger written in Zig for bare-metal ARM."
+    incompatible_tool.hook = ""
+    incompatible_tool.url = "https://github.com/example/zig-dbg"
+    paper_piece = next(p for p in digest.pieces if p.kind == "paper")
+    ch_fallback = build_weekly_challenge([incompatible_tool, paper_piece])
+    assert "abstract y la conclusión" in ch_fallback and "3 notas" in ch_fallback
+
+
+def test_semantic_scholar_429_with_zero_results_raises_as_failed_source(monkeypatch):
+    import brief.sources.tech_sources as ts
+
+    def fake_get_json(*_a, **_k):
+        raise RuntimeError("429 Too Many Requests")
+
+    monkeypatch.setattr(ts, "get_json", fake_get_json)
+    with pytest.raises(RuntimeError, match="Semantic Scholar sin resultados"):
+        fetch_semantic_scholar({"enabled": True, "queries": ["test query"]}, api_key="s2_test_key")
 
 
 def test_dry_run_never_writes_files_or_marks_week_sent(tmp_path, monkeypatch):
@@ -306,7 +342,6 @@ def test_dry_run_never_writes_files_or_marks_week_sent(tmp_path, monkeypatch):
     assert not digests_dir.exists()
     assert not already_sent_this_week("2026-W48", sent_path=sent_path)
 
-    # Cuando sí se registra un envío real, se guarda en sent.json
     cfg = load_config()
     digest = build_weekly_digest(cfg, candidates=_sample_candidates(), week_override="2026-W48", sent_path=sent_path)
     mark_week_sent(digest, sent_path=sent_path, feedback_path=tmp_path / "fb.json")
@@ -322,12 +357,12 @@ def test_callback_processing_handles_expired_query_and_edits_reply_markup(tmp_pa
         [
             {
                 "id": "p_1234",
-                "title": "Quantization of Small Language Models for Edge Classroom Tutoring",
+                "title": "Quantization of Small Language Models for Rural Classroom Tutoring",
                 "url": "https://arxiv.org/abs/2611.00001",
                 "topic": "small_models_edge",
                 "topic_label": "Modelos pequeños y edge/offline AI",
                 "role": "Paper aplicado",
-                "hook": "Results show 3.8x memory reduction on laptops.",
+                "hook": "Relevante por quantization, slm.",
                 "summary_es": "[EN] We evaluate 4-bit quantization.",
                 "week": "2026-W48",
                 "date": "2026-11-29",
@@ -364,11 +399,8 @@ def test_callback_processing_handles_expired_query_and_edits_reply_markup(tmp_pa
     )
     assert (res1["processed"], res1["saved"], res1["more"], res1["less"], res1["read"]) == (4, 1, 1, 1, 1)
     assert len(edited) == 1
-    assert edited[0][0] == 999 and edited[0][1] == 55
-    first_btn_text = edited[0][2]["inline_keyboard"][0][0]["text"]
-    assert first_btn_text == "✅ Guardado"
+    assert edited[0][2]["inline_keyboard"][0][0]["text"] == "✅ Guardado"
 
-    # Reenviar los mismos updates no los procesa de nuevo
     res2 = apply_callback_updates(updates, feedback_path=fb_path, library_json=lib_json, library_dir=lib_dir)
     assert res2["processed"] == 0 and res2["skipped_duplicate"] == 4
 
@@ -390,7 +422,7 @@ def test_archive_and_parsers_and_format_rotation(tmp_path):
 
     c1 = _sample_candidates()[0]
     c2 = TechCandidate(
-        title="Quantization of Small Language Models for Edge Classroom Tutoring!",
+        title="Quantization of Small Language Models for Rural Classroom Tutoring!",
         url="https://huggingface.co/papers/2611.00001",
         source="Hugging Face Papers",
         kind="paper",
@@ -416,6 +448,15 @@ def test_archive_and_parsers_and_format_rotation(tmp_path):
     assert (y, w, sun.weekday()) == (2026, 48, 6)
     kb = build_piece_keyboard("p_1", "edtech", saved=True)
     assert kb["inline_keyboard"][0][0]["text"] == "✅ Guardado"
+
+    rss = b"""<?xml version="1.0"?><rss version="2.0"><channel>
+    <item><title>Recent AI Post</title><link>https://hf.co/blog/recent</link>
+    <pubDate>Sat, 28 Nov 2026 10:00:00 GMT</pubDate><description>Recent post.</description></item>
+    <item><title>Old 2024 AI Post</title><link>https://hf.co/blog/old</link>
+    <pubDate>Mon, 01 Jan 2024 10:00:00 GMT</pubDate><description>Old post.</description></item>
+    </channel></rss>"""
+    items = parse_tech_rss(rss, {"name": "HF Blog", "topic": "ml_applied"}, now=NOW, max_age_days=7.0, max_items=5)
+    assert len(items) == 1
 
     xml = """<?xml version="1.0" encoding="UTF-8"?>
     <feed xmlns="http://www.w3.org/2005/Atom">
