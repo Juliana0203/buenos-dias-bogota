@@ -8,7 +8,8 @@
   "aqi": "59",
   "trm": "3158.43",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-10-25",
@@ -19,7 +20,8 @@
   "aqi": "60",
   "trm": "3158.43",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-10-26",
@@ -30,7 +32,8 @@
   "aqi": "74",
   "trm": "3158.43",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-10-27",
@@ -41,7 +44,8 @@
   "aqi": "65",
   "trm": "3157.94",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-10-28",
@@ -52,7 +56,8 @@
   "aqi": "73",
   "trm": "3148.02",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-10-29",
@@ -63,7 +68,8 @@
   "aqi": "56",
   "trm": "3162.35",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-10-30",
@@ -74,7 +80,8 @@
   "aqi": "57",
   "trm": "3166.91",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-10-31",
@@ -85,7 +92,8 @@
   "aqi": "59",
   "trm": "3182.99",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-01",
@@ -96,7 +104,8 @@
   "aqi": "60",
   "trm": "3182.99",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-02",
@@ -107,7 +116,8 @@
   "aqi": "68",
   "trm": "3182.99",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-03",
@@ -118,7 +128,8 @@
   "aqi": "76",
   "trm": "3182.99",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-04",
@@ -129,7 +140,8 @@
   "aqi": "76",
   "trm": "3235.59",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-05",
@@ -140,7 +152,8 @@
   "aqi": "79",
   "trm": "3221.19",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-06",
@@ -151,7 +164,8 @@
   "aqi": "56",
   "trm": "3228.26",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-07",
@@ -162,7 +176,8 @@
   "aqi": "60",
   "trm": "3237.83",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-08",
@@ -173,7 +188,8 @@
   "aqi": "55",
   "trm": "3237.83",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-09",
@@ -184,7 +200,8 @@
   "aqi": "56",
   "trm": "3237.83",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-10",
@@ -195,7 +212,8 @@
   "aqi": "56",
   "trm": "3269.88",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-11",
@@ -206,7 +224,8 @@
   "aqi": "59",
   "trm": "3297.07",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-12",
@@ -217,7 +236,8 @@
   "aqi": "59",
   "trm": "3297.07",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-13",
@@ -228,7 +248,8 @@
   "aqi": "65",
   "trm": "3301.91",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-14",
@@ -239,7 +260,8 @@
   "aqi": "60",
   "trm": "3316.70",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-15",
@@ -250,7 +272,8 @@
   "aqi": "73",
   "trm": "3316.70",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-16",
@@ -261,7 +284,8 @@
   "aqi": "65",
   "trm": "3316.70",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-17",
@@ -272,7 +296,8 @@
   "aqi": "80",
   "trm": "3316.70",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-18",
@@ -283,7 +308,8 @@
   "aqi": "68",
   "trm": "3309.55",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-19",
@@ -294,7 +320,8 @@
   "aqi": "79",
   "trm": "3326.96",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-20",
@@ -305,7 +332,8 @@
   "aqi": "64",
   "trm": "3415.10",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-21",
@@ -316,7 +344,8 @@
   "aqi": "52",
   "trm": "3461.92",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-22",
@@ -327,7 +356,8 @@
   "aqi": "63",
   "trm": "3461.92",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-23",
@@ -338,7 +368,8 @@
   "aqi": "57",
   "trm": "3461.92",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-24",
@@ -349,7 +380,8 @@
   "aqi": "69",
   "trm": "3505.92",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
  },
  {
   "date": "2026-11-25",
@@ -360,6 +392,19 @@
   "aqi": "63",
   "trm": "3592.03",
   "confidence": "baja",
-  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com"
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": ""
+ },
+ {
+  "date": "2026-11-26",
+  "sent": "1",
+  "temp_min": "11.7",
+  "temp_max": "21.5",
+  "rain_prob": "87",
+  "aqi": "64",
+  "trm": "3630.89",
+  "confidence": "baja",
+  "sources": "Open-Meteo/ECMWF; Open-Meteo/GFS; Open-Meteo/ICON; Open-Meteo AQ; TRM Superfinanciera; open.er-api.com",
+  "greeting_id": "gen_13"
  }
 ]
