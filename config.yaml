@@ -52,6 +52,19 @@ alerts:
   feels_mild_c: 17          # sensación 12-17: chaqueta ligera
   feels_warm_c: 22          # sensación > esto: ropa fresca
 
+# Reglas de relevancia del aviso diario inteligente (solo habla con sonido cuando importa).
+relevance:
+  enabled: true
+  outing_periods: ["mañana", "tarde"]   # franjas en las que sales
+  rain_outing_pct: 70.0                 # lluvia probable en franja de salida (>= 70 %)
+  feels_cold_extreme_c: 9.0             # sensación térmica extrema baja (<= 9 °C)
+  feels_hot_extreme_c: 23.0             # sensación térmica extrema alta (>= 23 °C)
+  uv_extreme: 8.0                       # índice UV >= 8
+  aqi_harmful: 101.0                    # AQI dañino (> 100, dañino para grupos sensibles o peor)
+  holiday_today_or_tomorrow: true       # festivo hoy o mañana
+  mobility_alert: true                  # cierres, paros, marchas o pico y placa que afecte tu placa
+  trm_change_pct: 1.5                   # variación diaria >= 1.5 % o mínimo/máximo de 30 días
+
 weather:
   # Modelos de Open-Meteo que votan en cada variable (temperature también aporta viento y UV).
   # ICON queda fuera de precip_probability: en Bogotá casi no reporta probabilidad (máx. ~3 %).

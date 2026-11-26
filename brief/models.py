@@ -153,6 +153,28 @@ class Greeting:
     text: str
     holiday_today: str | None = None
     holiday_tomorrow: str | None = None
+    template_id: str = ""
+
+
+@dataclass
+class RelevanceAlert:
+    """Una condición de relevancia cumplida hoy, ordenada por prioridad."""
+
+    key: str
+    priority: int
+    headline: str
+    detail: str = ""
+
+
+@dataclass
+class RelevanceResult:
+    """Resultado de evaluar las reglas del diario inteligente."""
+
+    triggered: bool
+    silent: bool
+    alerts: list[RelevanceAlert] = field(default_factory=list)
+    useful_line: str = ""
+    confidence_line: str = ""
 
 
 @dataclass
@@ -170,6 +192,7 @@ class Brief:
     quote: Quote
     good_news: NewsItem | None = None
     notes: list[str] = field(default_factory=list)
+    relevance: RelevanceResult | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

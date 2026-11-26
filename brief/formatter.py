@@ -305,5 +305,13 @@ def split_message(sections: list[str], limit: int = MAX_LEN) -> list[str]:
 
 
 def format_brief(brief: Brief, alerts: Mapping[str, Any] | None = None) -> list[str]:
-    """Mensajes HTML listos para Telegram (uno o dos)."""
+    """Mensajes HTML listos para Telegram.
+
+    Si ``brief.relevance`` está presente (modo diario inteligente), genera el aviso
+    corto (2 líneas si es silencioso, o 4-6 líneas con sonido si hay alertas).
+    """
+    if brief.relevance is not None:
+        from brief.relevance import format_smart_daily
+
+        return [format_smart_daily(brief, alerts or {})]
     return split_message(build_sections(brief, alerts or {}))

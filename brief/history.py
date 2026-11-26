@@ -24,6 +24,7 @@ FIELDS = [
     "trm",
     "confidence",
     "sources",
+    "greeting_id",
 ]
 _RANK = {CONF_LOW: 0, CONF_MID: 1, CONF_HIGH: 2}
 
@@ -39,6 +40,13 @@ def already_sent_today(today: date, path: Path = HISTORY_CSV) -> bool:
     """True si ya hay una fila enviada (sent=1) para hoy."""
     iso = today.isoformat()
     return any(r.get("date") == iso and r.get("sent") == "1" for r in read_history(path))
+
+
+def last_greeting_id(today: date, path: Path = HISTORY_CSV) -> str | None:
+    """Devuelve el template_id del saludo del día anterior más reciente en history.csv, o None."""
+    iso = today.isoformat()
+    prior = [r for r in read_history(path) if r.get("date") and r["date"] < iso and r.get("greeting_id")]
+    return prior[-1]["greeting_id"] if prior else None
 
 
 def _num(v: float | None, nd: int = 1) -> str:
@@ -71,6 +79,7 @@ def build_row(brief: Brief, sent: bool) -> dict[str, str]:
         "trm": _num(t.value, 2) if t else "",
         "confidence": min(confs, key=lambda c: _RANK[c]) if confs else "",
         "sources": "; ".join(sources),
+        "greeting_id": brief.greeting.template_id,
     }
 
 
@@ -103,6 +112,8 @@ def write_latest(brief: Brief, row: dict[str, str], docs: Path = DOCS) -> None:
         "date": row["date"],
         "name": brief.name,
         "greeting": brief.greeting.text,
+        "greeting_id": brief.greeting.template_id,
+        "relevance": brief.relevance,
         "summary": row,
         "weather": brief.weather,
         "air": brief.air

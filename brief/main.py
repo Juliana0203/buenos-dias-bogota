@@ -1,4 +1,4 @@
-"""Orquestador: recopila datos, arma el mensaje, lo envía y guarda el histórico."""
+"""Orquestador: recopila datos, evalúa relevancia, arma el mensaje, lo envía y guarda el histórico."""
 
 from __future__ import annotations
 
@@ -15,6 +15,7 @@ from brief.formatter import _is_past_period, format_brief
 from brief.models import Brief
 from brief.personalization import build_greeting
 from brief.quotes import get_quote
+from brief.relevance import evaluate_relevance
 from brief.sources.good_news import gather_good_news
 from brief.sources.mobility import build_mobility
 from brief.sources.news import gather_news
@@ -58,7 +59,7 @@ def wait_until_send_time(cfg: Config, now: datetime | None = None) -> float:
 
 
 def build_brief(cfg: Config, as_of_hour: int | None = None) -> Brief:
-    """Reúne todas las secciones. Cada fuente fallida deja su sección en None."""
+    """Reúne todas las secciones y evalúa las reglas de relevancia del diario inteligente."""
     now = datetime.now(cfg.tz)
     today = now.date()
     res = run_parallel(
@@ -84,10 +85,11 @@ def build_brief(cfg: Config, as_of_hour: int | None = None) -> Brief:
         if weather
         else None
     )
-    return Brief(
+    prev_tpl = history.last_greeting_id(today)
+    brief = Brief(
         name=cfg.name,
         today=today,
-        greeting=build_greeting(cfg.name, today, rain),
+        greeting=build_greeting(cfg.name, today, rain, last_template_id=prev_tpl),
         weather=weather,
         air=air,
         trm=trm,
@@ -96,10 +98,20 @@ def build_brief(cfg: Config, as_of_hour: int | None = None) -> Brief:
         good_news=res["good_news"],
         quote=get_quote(cfg, today),
     )
+    rel_cfg = cfg.section("relevance")
+    if rel_cfg.get("enabled", True):
+        brief.relevance = evaluate_relevance(brief, rel_cfg, cfg.section("alerts"))
+        log.info(
+            "Relevancia diaria: triggered=%s, silent=%s, alertas=%s",
+            brief.relevance.triggered,
+            brief.relevance.silent,
+            [a.key for a in brief.relevance.alerts],
+        )
+    return brief
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="brief", description="Resumen matutino para Bogotá")
+    parser = argparse.ArgumentParser(prog="brief", description="Resumen matutino inteligente para Bogotá")
     parser.add_argument("--dry-run", action="store_true", help="imprime el mensaje sin enviar ni guardar")
     parser.add_argument("--no-wait", action="store_true", help="no espera hasta la hora de envío")
     parser.add_argument("--force", action="store_true", help="envía aunque ya se haya enviado hoy")
@@ -131,19 +143,27 @@ def main(argv: list[str] | None = None) -> int:
     brief = build_brief(cfg) if as_of_hour is None else build_brief(cfg, as_of_hour)
     if as_of_hour is not None and brief.weather is not None:
         brief.weather.now_hour = as_of_hour
+        if brief.relevance is not None:
+            brief.relevance = evaluate_relevance(brief, cfg.section("relevance"), cfg.section("alerts"))
     messages = format_brief(brief, cfg.section("alerts"))
+    silent = bool(brief.relevance and brief.relevance.silent)
 
     if args.dry_run:
+        mode = "SILENCIOSO (disable_notification=true)" if silent else "CON SONIDO (alerta relevante)"
         for i, msg in enumerate(messages, 1):
-            print(f"----- mensaje {i}/{len(messages)} ({len(msg)} caracteres) -----")
+            lines_count = len(msg.splitlines())
+            print(f"----- mensaje {i}/{len(messages)} [{mode}, {lines_count} líneas, {len(msg)} caracteres] -----")
             print(msg)
         return 0
 
     if not args.no_wait:
         wait_until_send_time(cfg)
-    send_messages(cfg.secrets.telegram_token, cfg.secrets.telegram_chat_id, messages)  # type: ignore[arg-type]
+    if silent:
+        send_messages(cfg.secrets.telegram_token, cfg.secrets.telegram_chat_id, messages, True)  # type: ignore[arg-type]
+    else:
+        send_messages(cfg.secrets.telegram_token, cfg.secrets.telegram_chat_id, messages)  # type: ignore[arg-type]
 
-    # El envío ya ocurrió: lo primero es registrarlo para que nunca se duplique.
+    # Se guarda history.csv y latest.json todos los días aunque sea el mensaje mínimo.
     row = history.build_row(brief, sent=True)
     try:
         history.append_row(row)

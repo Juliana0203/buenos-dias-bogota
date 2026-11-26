@@ -23,6 +23,7 @@ class Secrets:
     weatherapi_key: str | None = None
     openweather_key: str | None = None
     waqi_token: str | None = None
+    anthropic_key: str | None = None
 
     @classmethod
     def from_env(cls) -> Secrets:
@@ -35,6 +36,7 @@ class Secrets:
             weatherapi_key=env("WEATHERAPI_KEY"),
             openweather_key=env("OPENWEATHER_API_KEY"),
             waqi_token=env("WAQI_TOKEN"),
+            anthropic_key=env("ANTHROPIC_API_KEY"),
         )
 
 
